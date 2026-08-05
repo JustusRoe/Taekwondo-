@@ -28,8 +28,16 @@ Build-Schritt und ohne externe Abhängigkeiten. Alle Inhalte sind frei erfunden.
 │   ├── css/style.css       Gesamtes Layout, Farbwelt und Responsive-Regeln
 │   ├── js/main.js          Navigation, Lightbox, Formularprüfung, Scroll-Effekte
 │   └── img/                Stockfotos (JPG) und Favicon (SVG)
-└── downloads/              PDF-Dokumente des Download-Bereichs
+├── downloads/              PDF-Dokumente des Download-Bereichs
+└── praesentation/          Foliensatz zur Vorstellung des Entwurfs (PPTX)
 ```
+
+## Präsentation für den Verein
+
+`praesentation/Website-Entwurf-Taekwondo-Club.pptx` stellt den Entwurf in 15 Folien vor:
+Aufbau der Startseite, jeder Abschnitt als Bildschirmfoto, Mobilansicht, Gestaltungs- und
+Technikentscheidungen sowie die offenen Punkte und nächsten Schritte. Zu jeder Folie gibt
+es Notizen für den Vortrag.
 
 ## Lokal ansehen
 
