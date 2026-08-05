@@ -34,10 +34,9 @@ Build-Schritt und ohne externe Abhängigkeiten. Alle Inhalte sind frei erfunden.
 
 ## Präsentation für den Verein
 
-`praesentation/Website-Entwurf-Taekwondo-Club.pptx` stellt den Entwurf in 15 Folien vor:
-Aufbau der Startseite, jeder Abschnitt als Bildschirmfoto, Mobilansicht, Gestaltungs- und
-Technikentscheidungen sowie die offenen Punkte und nächsten Schritte. Zu jeder Folie gibt
-es Notizen für den Vortrag.
+`praesentation/Website-Entwurf-Taekwondo-Club.pptx` zeigt den Entwurf in 13 Folien –
+bewusst textarm: Abschnittstitel und Bildschirmfoto, dazu die Mobilansicht und eine kurze
+Liste der offenen Punkte. Erläuterungen stehen in den Folien­notizen.
 
 ## Lokal ansehen
 
