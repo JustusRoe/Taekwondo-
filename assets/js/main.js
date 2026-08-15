@@ -1,6 +1,6 @@
 /* =========================================================
-   Taekwondo Club Musterstadt e.V. – Interaktion
-   Reine Frontend-Demo, kein Server im Hintergrund.
+   Taekwondo im TV 1897 Steinau e.V. – Interaktion
+   Navigation, Terminkalender, Lightbox, Formularprüfung
    ========================================================= */
 (function () {
   'use strict';
@@ -209,12 +209,72 @@
       const name = form.elements.name.value.trim().split(' ')[0];
       status.hidden = false;
       status.textContent =
-        'Vielen Dank, ' + name + '. Diese Beispielseite versendet keine Nachrichten – ' +
-        'in einer produktiven Installation würde Ihre Anfrage jetzt an ' +
-        'info@tkd-musterstadt.de übermittelt.';
+        'Vielen Dank, ' + name + '. Dieser Entwurf versendet noch keine Nachrichten – ' +
+        'sobald die Seite freigeschaltet ist, geht Ihre Anfrage an ' +
+        'taekwondo@tv-steinau.de. Bis dahin erreichen Sie uns direkt unter dieser Adresse.';
       status.scrollIntoView({ block: 'nearest', behavior: 'smooth' });
       form.reset();
     });
+  }
+
+  /* ---------- Terminkalender ---------- */
+  /* Vergangene Termine werden ausgeblendet, der nächste hervorgehoben.
+     Ohne JavaScript bleibt schlicht die vollständige Liste stehen. */
+  var kalender = document.getElementById('kalender');
+  if (kalender) {
+    var eintraege = Array.prototype.slice.call(
+      kalender.querySelectorAll('.kal-eintrag[data-datum]')
+    );
+    var heute = new Date();
+    heute.setHours(0, 0, 0, 0);
+
+    var vergangene = 0;
+    var naechsterGesetzt = false;
+
+    eintraege.forEach(function (li) {
+      var teile = li.dataset.datum.split('-');
+      var tag = new Date(+teile[0], teile[1] - 1, +teile[2]);
+
+      if (tag < heute) {
+        li.classList.add('ist-vergangen');
+        vergangene++;
+      } else if (!naechsterGesetzt && !li.classList.contains('ist-frei')) {
+        li.classList.add('ist-naechster');
+        naechsterGesetzt = true;
+      }
+    });
+
+    /* Zunächst nur die nächsten acht Termine zeigen – der Rest auf Klick */
+    var kommende = eintraege.filter(function (li) {
+      return !li.classList.contains('ist-vergangen');
+    });
+    kommende.slice(8).forEach(function (li) { li.classList.add('ist-spaeter'); });
+
+    /* Monatsüberschriften ohne sichtbare Termine ausblenden */
+    Array.prototype.slice.call(kalender.querySelectorAll('.kal-monat'))
+      .forEach(function (monat) {
+        var sichtbar = false;
+        var el = monat.nextElementSibling;
+        while (el && !el.classList.contains('kal-monat')) {
+          if (!el.classList.contains('ist-vergangen') &&
+              !el.classList.contains('ist-spaeter')) { sichtbar = true; break; }
+          el = el.nextElementSibling;
+        }
+        if (!sichtbar) monat.classList.add('ist-vergangen');
+      });
+
+    var versteckt = vergangene + Math.max(0, kommende.length - 8);
+    var schalter = document.getElementById('kalAlle');
+    if (schalter && versteckt > 0) {
+      schalter.hidden = false;
+      schalter.textContent = 'Alle ' + eintraege.length + ' Termine anzeigen';
+      schalter.addEventListener('click', function () {
+        var offen = kalender.classList.toggle('zeigt-alle');
+        schalter.textContent = offen
+          ? 'Nur die nächsten Termine anzeigen'
+          : 'Alle ' + eintraege.length + ' Termine anzeigen';
+      });
+    }
   }
 
   /* ---------- Jahreszahl im Footer ---------- */

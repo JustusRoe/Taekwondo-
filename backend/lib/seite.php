@@ -28,7 +28,7 @@ function kopf(string $titel, ?array $mitglied = null, bool $navigation = true): 
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title><?= h($titel) ?> – Mitgliederbereich | Taekwondo Club Musterstadt e.V.</title>
+<title><?= h($titel) ?> – Mitgliederbereich | TV 1897 Steinau e.V.</title>
 <meta name="robots" content="noindex">
 <link rel="stylesheet" href="<?= $web ?>/assets/css/style.css">
 <link rel="stylesheet" href="<?= $web ?>/assets/css/mitglieder.css">
@@ -40,15 +40,11 @@ function kopf(string $titel, ?array $mitglied = null, bool $navigation = true): 
 
 <header class="site-header member-header" id="top">
   <div class="container header-inner">
-    <a class="brand" href="<?= $web ?>/index.html" aria-label="Startseite Taekwondo Club Musterstadt">
-      <svg class="brand-mark" viewBox="0 0 40 40" aria-hidden="true" focusable="false">
-        <circle cx="20" cy="20" r="18.5" fill="none" stroke="#0f2b4a" stroke-width="1.4"/>
-        <path d="M20 4.5a7.75 7.75 0 0 1 0 15.5 7.75 7.75 0 0 0 0 15.5A15.5 15.5 0 0 0 20 4.5Z" fill="#b01c2e"/>
-        <path d="M20 4.5a7.75 7.75 0 0 0 0 15.5 7.75 7.75 0 0 1 0 15.5A15.5 15.5 0 0 1 20 4.5Z" fill="#0f2b4a"/>
-      </svg>
+    <a class="brand" href="<?= $web ?>/index.html" aria-label="Startseite Taekwondo im TV 1897 Steinau">
+      <img class="brand-logo" src="<?= $web ?>/assets/img/tv-steinau-logo.png" alt="Wappen des TV 1897 Steinau" width="440" height="299">
       <span class="brand-text">
-        <strong>Taekwondo Club</strong>
-        <span>Musterstadt e.V.</span>
+        <strong>Taekwondo</strong>
+        <span>TV 1897 Steinau e.V.</span>
       </span>
     </a>
     <span class="member-badge">Mitgliederbereich</span>
@@ -81,7 +77,7 @@ function fuss(): void
     ?>
 <footer class="site-footer">
   <div class="container footer-bottom" style="border-top:0;">
-    <p>© <?= date('Y') ?> Taekwondo Club Musterstadt e.V.</p>
+    <p>© <?= date('Y') ?> TV 1897 Steinau e.V.</p>
     <ul>
       <li><a href="<?= $web ?>/impressum.html">Impressum</a></li>
       <li><a href="<?= $web ?>/datenschutz.html">Datenschutz</a></li>

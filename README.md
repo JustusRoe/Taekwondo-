@@ -1,19 +1,21 @@
-# Taekwondo Club Musterstadt e.V. – Beispiel-Website
+# Taekwondo im TV 1897 Steinau e.V. – Website
 
-Musterseite für einen Taekwondo-Verein: statisches HTML/CSS/JS, ohne Framework, ohne
-Build-Schritt und ohne externe Abhängigkeiten. Alle Inhalte sind frei erfunden.
+Website der Taekwondo-Abteilung des TV 1897 Steinau e.V.: statisches HTML/CSS/JS, ohne
+Framework, ohne Build-Schritt und ohne externe Abhängigkeiten. Vereinsdaten, Rechtstexte
+und Trainingstermine sind echt; Fotos und Trainerprofile noch Platzhalter – siehe
+`CHECKLISTE-INHALTE.md`.
 
 ## Inhalt der Seite
 
 | Bereich | Beschreibung |
 | --- | --- |
-| Hero + Kennzahlen | Einstieg mit Foto, zwei Handlungsaufrufen und Vereinszahlen |
-| Verein | Vorstellung des Clubs und die fünf Prinzipien des Taekwondo |
-| Angebot | Vier Kursgruppen als Bildkarten (Kinder, Jugend, Erwachsene, Wettkampf) |
-| Trainingszeiten | Wochenplan als Tabelle mit Hallen-, Termin- und Einsteigerinfos |
+| Hero + Kennzahlen | Einstieg mit Foto, zwei Handlungsaufrufen und Kennzahlen |
+| Trainingsplan | Wochenübersicht und Terminkalender bis Dezember, nach Hallen farbig getrennt |
+| Angebot | Drei Gruppen als Bildkarten (Bambini, Breitensport, Selbstverteidigung) |
+| Abteilung | Die Abteilung im Turnverein und die fünf Prinzipien des Taekwondo |
 | Galerie | Sechs Bilder mit Lightbox (Klick, Schließen per ✕, Klick daneben oder `Esc`) |
 | Trainerteam | Drei Porträts mit Graduierung und Aufgabenbereich |
-| Downloads | Sieben PDF-Dokumente (Formulare und Vereinsunterlagen) |
+| Downloads | Mitgliedsformular und Änderungsmitteilung des Vereins, dazu die Beiträge |
 | Kontakt | Formular mit Validierung, Geschäftsstelle, Bürozeiten, Anfahrt |
 | Mitgliederbereich | Anmeldung, Videothek mit Filter und Player mit Abschnitten |
 | Impressum / Datenschutz | Eigene Unterseiten mit Mustertexten |
@@ -33,7 +35,8 @@ Build-Schritt und ohne externe Abhängigkeiten. Alle Inhalte sind frei erfunden.
 │   ├── css/mitglieder.css       Ergänzungen für den Mitgliederbereich
 │   ├── js/main.js               Navigation, Lightbox, Formularprüfung
 │   ├── js/mitglieder.js         Demo-Anmeldung, Filter, Player-Steuerung
-│   ├── js/videodaten.js         Beispieldaten der Videothek
+│   ├── js/videodaten.js         Daten der Videothek
+│   ├── js/trainingstermine.js   Trainingstermine – hier werden sie gepflegt
 │   ├── img/                     Stockfotos (JPG) und Favicon (SVG)
 │   └── video/                   Platzhaltervideos (MP4 + WebM) und Vorschaubilder
 ├── downloads/                   PDF-Dokumente des Download-Bereichs

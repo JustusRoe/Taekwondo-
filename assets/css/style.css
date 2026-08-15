@@ -1,6 +1,6 @@
 /* =========================================================
-   Taekwondo Club Musterstadt e.V. – Beispiel-Website
-   Farbwelt: weiß, Tinte, ein Rot als Akzent
+   Taekwondo im TV 1897 Steinau e.V.
+   Farbwelt: weiß, Tinte, das Rot des Vereinswappens
    ========================================================= */
 
 :root {
@@ -11,10 +11,12 @@
   --muted: #6a717d;
   --line: #e4e7ec;
   --line-strong: #d0d6de;
-  --accent: #b01c2e;
-  --accent-dark: #8d1524;
-  --accent-soft: #fdf3f4;
+  --accent: #c1191f;          /* Rot aus dem Vereinswappen */
+  --accent-dark: #9d1219;
+  --accent-soft: #fdf2f2;
   --navy: #0f2b4a;
+  --halle-a: #c1191f;         /* Farbmarken der beiden Hallen */
+  --halle-b: #0f2b4a;
 
   --font-head: Georgia, "Iowan Old Style", "Times New Roman", Times, serif;
   --font-body: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
@@ -150,6 +152,44 @@ p { margin: 0 0 1.1em; }
 .btn-ghost:hover { border-color: var(--ink); color: var(--ink); }
 .btn-block { display: flex; width: 100%; }
 
+/* Kleine Schaltfläche für Werkzeugleisten (Kalender, Player) */
+.tool-btn {
+  font: inherit;
+  font-size: .84rem;
+  font-weight: 500;
+  color: var(--ink-2);
+  background: #fff;
+  border: 1px solid var(--line-strong);
+  border-radius: var(--radius);
+  padding: 7px 13px;
+  cursor: pointer;
+}
+.tool-btn:hover { border-color: var(--ink); }
+.tool-btn[aria-pressed="true"] {
+  background: var(--accent);
+  border-color: var(--accent);
+  color: #fff;
+}
+
+
+.offen {
+  display: inline-block;
+  padding: 1px 8px;
+  border: 1px dashed var(--line-strong);
+  border-radius: 999px;
+  font-family: var(--font-body);
+  font-size: .72em;
+  font-weight: 600;
+  font-style: normal;
+  letter-spacing: .04em;
+  color: var(--muted);
+  background: var(--bg-soft);
+  vertical-align: middle;
+  /* kein nowrap: lange Hinweise müssen umbrechen dürfen,
+     sonst schiebt der Text schmale Bildschirme auseinander */
+  overflow-wrap: anywhere;
+}
+
 /* ---------- Header ---------- */
 
 .site-header {
@@ -179,6 +219,12 @@ p { margin: 0 0 1.1em; }
   color: var(--ink);
 }
 .brand-mark { width: 38px; height: 38px; flex: none; }
+.brand-logo {
+  height: 44px;
+  width: auto;
+  flex: none;
+  border-radius: 3px;
+}
 .brand-text { display: flex; flex-direction: column; line-height: 1.18; }
 .brand-text strong {
   font-family: var(--font-head);
@@ -211,7 +257,10 @@ p { margin: 0 0 1.1em; }
   transition: color .15s ease, background-color .15s ease;
 }
 .site-nav a:hover { color: var(--ink); background: var(--bg-soft); }
-.site-nav a.is-active { color: var(--accent); }
+/* Der aktive Punkt wird rot – aber nicht die rote Schaltfläche selbst,
+   sonst stünde roter Text auf rotem Grund und sie wirkt „farblos". */
+.site-nav a.is-active:not(.nav-cta) { color: var(--accent); }
+.site-nav .nav-cta.is-active { color: #fff; }
 .site-nav .nav-cta {
   margin-left: 8px;
   background: var(--accent);
@@ -380,7 +429,7 @@ p { margin: 0 0 1.1em; }
 /* Split (Verein) */
 .split {
   display: grid;
-  grid-template-columns: 0.9fr 1.1fr;
+  grid-template-columns: minmax(0, 0.9fr) minmax(0, 1.1fr);
   gap: clamp(32px, 5vw, 66px);
   align-items: start;
 }
@@ -460,6 +509,220 @@ p { margin: 0 0 1.1em; }
   font-size: .87rem;
   font-weight: 600;
   color: var(--ink-2);
+}
+
+/* ---------- Wochenplan mit Hallen ---------- */
+
+.plan {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 20px;
+  margin-bottom: 26px;
+}
+.plan-tag {
+  background: #fff;
+  border: 1px solid var(--line);
+  display: flex;
+  flex-direction: column;
+}
+.plan-kopf {
+  padding: 15px 20px;
+  border-bottom: 1px solid var(--line);
+  background: var(--bg-soft);
+}
+.plan-kopf strong {
+  display: block;
+  font-family: var(--font-head);
+  font-size: 1.12rem;
+  color: var(--ink);
+}
+.plan-kopf span {
+  font-size: .76rem;
+  letter-spacing: .12em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+.plan-liste { list-style: none; margin: 0; padding: 0; flex: 1; }
+.plan-liste li { padding: 18px 20px; }
+.plan-liste li + li { border-top: 1px solid var(--line); }
+
+.plan-zeit {
+  display: block;
+  font-family: var(--font-head);
+  font-size: 1.18rem;
+  font-weight: 700;
+  color: var(--ink);
+  font-variant-numeric: tabular-nums;
+  margin-bottom: 3px;
+}
+.plan-gruppe {
+  display: block;
+  font-size: .97rem;
+  font-weight: 600;
+  color: var(--ink-2);
+  margin-bottom: 10px;
+}
+.plan-hinweis {
+  display: block;
+  font-size: .84rem;
+  color: var(--muted);
+  margin-top: 8px;
+}
+
+.halle {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  font-size: .8rem;
+  font-weight: 600;
+  color: var(--ink-2);
+  padding: 4px 11px 4px 8px;
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  background: #fff;
+}
+.halle::before {
+  content: "";
+  width: 9px; height: 9px;
+  border-radius: 2px;
+  background: var(--halle-a);
+  flex: none;
+}
+.halle-b::before { background: var(--halle-b); }
+
+.plan-legende {
+  display: flex;
+  align-items: center;
+  gap: 10px 18px;
+  flex-wrap: wrap;
+  padding: 16px 20px;
+  background: var(--bg-soft);
+  border: 1px solid var(--line);
+  font-size: .88rem;
+  color: var(--muted);
+}
+.plan-legende .halle { background: #fff; }
+.plan-legende .halle + span { margin-right: 12px; }
+
+/* Farbmarken der beiden Hallen */
+.halle.ort-steines::before { background: var(--halle-a); }
+.halle.ort-schloss::before { background: var(--halle-b); }
+
+/* Gleichmäßige Info-Kästen unter dem Wochenplan */
+.info-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  gap: 20px;
+  margin-top: 30px;
+  align-items: start;
+}
+.beitrag-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  gap: clamp(24px, 3vw, 40px);
+  margin-top: 30px;
+  align-items: start;
+}
+@media (max-width: 760px) {
+  .beitrag-grid { grid-template-columns: 1fr; }
+}
+
+/* ---------- Terminkalender ---------- */
+
+.kalender {
+  margin-top: 30px;
+  background: #fff;
+  border: 1px solid var(--line);
+}
+.kal-kopf {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  flex-wrap: wrap;
+  padding: 20px 24px;
+  border-bottom: 1px solid var(--line);
+}
+.kal-kopf h3 { margin: 0; font-size: 1.15rem; }
+
+.kal-liste { list-style: none; margin: 0; padding: 0; }
+
+.kal-monat {
+  padding: 14px 24px 8px;
+  font-family: var(--font-body);
+  font-size: .72rem;
+  font-weight: 700;
+  letter-spacing: .14em;
+  text-transform: uppercase;
+  color: var(--muted);
+  background: var(--bg-soft);
+  border-bottom: 1px solid var(--line);
+}
+.kal-monat + .kal-eintrag { border-top: 0; }
+
+.kal-eintrag {
+  display: grid;
+  grid-template-columns: 120px 120px 1fr auto;
+  align-items: center;
+  gap: 16px;
+  padding: 14px 24px;
+  border-top: 1px solid var(--line);
+}
+.kal-eintrag:first-child { border-top: 0; }
+
+.kal-datum { display: flex; flex-direction: column; line-height: 1.25; }
+.kal-datum strong {
+  font-family: var(--font-head);
+  font-size: 1.05rem;
+  color: var(--ink);
+  font-variant-numeric: tabular-nums;
+}
+.kal-datum span { font-size: .78rem; color: var(--muted); }
+
+.kal-zeit {
+  font-variant-numeric: tabular-nums;
+  font-size: .93rem;
+  font-weight: 600;
+  color: var(--ink-2);
+  white-space: nowrap;
+}
+.kal-gruppe { font-size: .93rem; color: var(--ink-2); }
+.kal-hinweis { display: block; font-size: .8rem; color: var(--muted); }
+
+.kal-frei {
+  font-size: .82rem;
+  font-weight: 600;
+  color: var(--muted);
+  padding: 4px 11px;
+  border: 1px dashed var(--line-strong);
+  border-radius: 999px;
+  white-space: nowrap;
+}
+.kal-eintrag.ist-frei { background: var(--bg-soft); }
+.kal-eintrag.ist-frei .kal-datum strong,
+.kal-eintrag.ist-frei .kal-gruppe { color: var(--muted); }
+
+/* Der nächste Termin wird hervorgehoben */
+.kal-eintrag.ist-naechster {
+  background: var(--accent-soft);
+  box-shadow: inset 3px 0 0 var(--accent);
+}
+.kal-eintrag.ist-naechster .kal-datum strong { color: var(--accent); }
+
+.kal-eintrag.ist-vergangen,
+.kal-eintrag.ist-spaeter,
+.kal-monat.ist-vergangen { display: none; }
+.kalender.zeigt-alle .kal-eintrag.ist-spaeter { display: grid; }
+.kalender.zeigt-alle .kal-eintrag.ist-vergangen { display: grid; opacity: .5; }
+.kalender.zeigt-alle .kal-monat.ist-vergangen { display: list-item; opacity: .6; }
+
+.kal-fuss {
+  margin: 0;
+  padding: 16px 24px;
+  border-top: 1px solid var(--line);
+  font-size: .85rem;
+  color: var(--muted);
+  background: var(--bg-soft);
 }
 
 /* Trainingszeiten */
@@ -735,7 +998,7 @@ textarea { resize: vertical; min-height: 130px; }
 input:focus, select:focus, textarea:focus {
   outline: none;
   border-color: var(--accent);
-  box-shadow: 0 0 0 3px rgba(176, 28, 46, .12);
+  box-shadow: 0 0 0 3px rgba(193, 25, 31, .14);
 }
 input.has-error, textarea.has-error { border-color: var(--accent); background: var(--accent-soft); }
 
@@ -950,11 +1213,26 @@ input.has-error, textarea.has-error { border-color: var(--accent); background: v
   }
 }
 
+@media (max-width: 760px) {
+  .kal-eintrag {
+    grid-template-columns: 1fr auto;
+    gap: 4px 14px;
+    padding: 14px 18px;
+  }
+  .kal-datum { grid-row: 1; }
+  .kal-zeit { grid-row: 1; grid-column: 2; text-align: right; }
+  .kal-gruppe { grid-row: 2; grid-column: 1 / -1; }
+  .kal-eintrag .halle,
+  .kal-eintrag .kal-frei { grid-row: 3; grid-column: 1 / -1; justify-self: start; }
+  .kal-monat, .kal-fuss, .kal-kopf { padding-inline: 18px; }
+}
+
 @media (max-width: 900px) {
+  .plan { grid-template-columns: 1fr; gap: 16px; }
   .hero-grid { grid-template-columns: 1fr; }
   .hero-media { order: -1; }
   .hero-badge { left: auto; right: 14px; bottom: -16px; }
-  .split { grid-template-columns: 1fr; }
+  .split { grid-template-columns: minmax(0, 1fr); }
   .split-media img { aspect-ratio: 16 / 9; }
   .stats { grid-template-columns: repeat(2, 1fr); }
   .footer-grid { grid-template-columns: 1fr 1fr; }

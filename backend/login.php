@@ -41,8 +41,8 @@ kopf('Anmeldung');
     <div class="login-card">
       <h1>Anmeldung</h1>
       <p class="login-intro">
-        Der Mitgliederbereich enthält Trainingsvideos zu Grundschule, Formenlauf,
-        Partnertraining und Selbstverteidigung. Zugang erhalten alle aktiven Mitglieder.
+        Der Mitgliederbereich enthält Trainingsvideos zum Formenlauf (Poomsae) und zum
+        Einschrittkampf (Hanbon Kyorugi). Zugang erhalten aktive Mitglieder der Abteilung.
       </p>
 
       <form method="post" action="">
@@ -63,7 +63,7 @@ kopf('Anmeldung');
       </form>
 
       <p class="login-help">
-        Zugangsdaten vergessen? Bitte an die Geschäftsstelle wenden – Konten werden dort vergeben.
+        Zugangsdaten vergessen? Bitte an die Abteilungsleitung wenden – Konten werden im Training vergeben.
       </p>
     </div>
   </div>

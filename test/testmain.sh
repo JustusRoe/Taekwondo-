@@ -41,7 +41,7 @@ gruen(){ printf '\033[32m%s\033[0m\n' "$1"; }
 grau() { printf '\033[90m%s\033[0m\n' "$1"; }
 
 echo
-echo "Taekwondo Club Musterstadt – Testumgebung"
+echo "Taekwondo im TV 1897 Steinau – Testumgebung"
 echo "========================================================"
 
 # Einen früher gestarteten Testserver beenden

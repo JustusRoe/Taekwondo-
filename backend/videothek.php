@@ -41,7 +41,7 @@ kopf('Videothek', $mitglied);
     <div class="member-head">
       <div>
         <h1>Videothek</h1>
-        <p>Aufnahmen aus dem Training, sortiert nach Bereich. Jedes Video ist in Abschnitte geteilt.</p>
+        <p>Formenlauf (Poomsae) und Einschrittkampf (Hanbon Kyorugi). Jedes Video ist in Abschnitte geteilt.</p>
       </div>
       <p class="member-count">
         <?= count($videos) === $gesamt
