@@ -30,6 +30,28 @@ if ($dateiname === false) {
     exit('Video nicht gefunden.');
 }
 
+/**
+ * Optionales Ausweichformat: stream.php?v=slug&f=webm
+ *
+ * MP4 (H.264) genügt für alle gängigen Browser. Liegt daneben eine
+ * gleichnamige Datei in einem anderen Format, kann der Browser sie über
+ * diesen Weg anfordern – nützlich etwa für Firefox-Installationen ohne
+ * H.264. Erlaubt sind ausschließlich die hier aufgezählten Endungen.
+ */
+$format = strtolower((string) ($_GET['f'] ?? ''));
+if ($format !== '') {
+    if (!in_array($format, ['mp4', 'webm'], true)) {
+        http_response_code(400);
+        exit('Unbekanntes Format.');
+    }
+    $alternative = pathinfo((string) $dateiname, PATHINFO_FILENAME) . '.' . $format;
+    if (!is_file(rtrim(konfiguration()['video_ordner'], '/') . '/' . basename($alternative))) {
+        http_response_code(404);
+        exit('Video in diesem Format nicht vorhanden.');
+    }
+    $dateiname = $alternative;
+}
+
 // basename() verhindert, dass ein manipulierter Datenbankeintrag
 // auf Dateien außerhalb des Videoordners zeigen kann (../../).
 $pfad = rtrim(konfiguration()['video_ordner'], '/') . '/' . basename((string) $dateiname);

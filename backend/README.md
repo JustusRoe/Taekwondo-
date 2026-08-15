@@ -41,8 +41,8 @@ sieht man die Ebene darüber.
 3. **`config.example.php` nach `config.php` kopieren** und die Zugangsdaten sowie den
    Pfad zu `videos-privat/` eintragen.
 4. **Videos per FTP** in `videos-privat/` laden, Vorschaubilder nach `assets/video/`.
-5. **Passwörter setzen.** Die Beispielkonten aus `schema.sql` haben beide das Passwort
-   `taekwondo` – vor dem Echtbetrieb ersetzen:
+5. **Passwörter setzen.** Die Testkonten aus `schema.sql` (`testuser` und `testtrainer`)
+   haben beide das Passwort `test1234` – vor dem Echtbetrieb löschen oder ersetzen:
    ```
    php -r "echo password_hash('NEUES_PASSWORT', PASSWORD_DEFAULT);"
    ```
@@ -79,6 +79,9 @@ sieht man die Ebene darüber.
   `basename()` Ausbrüche aus dem Videoordner.
 - HTTP-Range-Requests (Teilanfragen) – dadurch funktionieren Spulen und Kapitelsprünge,
   ohne dass das Video vorher komplett geladen wird.
+- Optionales Ausweichformat über `stream.php?v=…&f=webm`: Liegt neben der MP4-Datei eine
+  gleichnamige WebM-Fassung, bietet `video.php` sie als zweite Quelle an – hilfreich für
+  Browser ohne H.264. Erlaubt sind ausschließlich `mp4` und `webm`.
 
 ## Bekannte Fallstricke
 
@@ -93,9 +96,15 @@ sieht man die Ebene darüber.
 - **Upload-Grenze:** Videos gehören per FTP auf den Server, nicht über ein Formular –
   PHP-Uploads sind bei den meisten Paketen auf 64–128 MB begrenzt.
 
+## Ausprobieren ohne Hoster
+
+`./test/testmain.sh` richtet eine vollständige lokale Umgebung ein – SQLite statt MySQL,
+Testkonten, Videoablage und Konfiguration – startet den Server und prüft alles durch.
+Einzelheiten in `test/README.md`.
+
 ## Vor dem Freischalten
 
-- Beispielkonten löschen oder mit neuen Passwörtern versehen.
+- Testkonten (`testuser`, `testtrainer`) löschen oder mit neuen Passwörtern versehen.
 - Einwilligungen der gefilmten Personen einholen; bei Minderjährigen von den
   Erziehungsberechtigten.
 - Datenschutzhinweise um die Mitgliederverwaltung ergänzen und einen

@@ -77,14 +77,15 @@ CREATE TABLE IF NOT EXISTS login_versuche (
 -- Beispieldaten (entsprechen dem Entwurf im Frontend)
 -- =========================================================
 
--- Passwort beider Konten: taekwondo
--- Erzeugt mit: php -r "echo password_hash('taekwondo', PASSWORD_DEFAULT);"
--- Vor dem Echtbetrieb ersetzen!
+-- Testkonten. Passwort beider Konten: test1234
+-- Neues Passwort erzeugen mit:
+--   php -r "echo password_hash('NEUES_PASSWORT', PASSWORD_DEFAULT);"
+-- VOR DEM ECHTBETRIEB ERSETZEN ODER LÖSCHEN!
 INSERT INTO mitglieder (benutzername, name, email, passwort_hash, rolle) VALUES
-  ('mitglied', 'Alex Muster', 'alex@example.de',
-   '$2y$12$l97glQj90vCM7LehQhgVGOOuB/payquZCdWIx.1kDYIW6g92ACxoq', 'mitglied'),
-  ('trainer',  'Daniel Lee',  'lee@example.de',
-   '$2y$12$l97glQj90vCM7LehQhgVGOOuB/payquZCdWIx.1kDYIW6g92ACxoq', 'trainer');
+  ('testuser',    'Test Nutzer',  'testuser@example.de',
+   '$2y$12$l0r.Y4R6V9ovEaM.86aROez/bqHQDADpVuGCc559XdCmBhYBnKR0.', 'mitglied'),
+  ('testtrainer', 'Test Trainer', 'testtrainer@example.de',
+   '$2y$12$l0r.Y4R6V9ovEaM.86aROez/bqHQDADpVuGCc559XdCmBhYBnKR0.', 'trainer');
 
 INSERT INTO videos (slug, titel, bereich, grad, trainer, beschreibung, dateiname, posterdatei, dauer, veroeffentlicht_am) VALUES
   ('poomsae-taegeuk-il-jang', 'Taegeuk Il Jang – Schritt für Schritt', 'Poomsae', 'ab 8. Kup', 'Daniel Lee',

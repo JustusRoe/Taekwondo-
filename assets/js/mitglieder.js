@@ -10,9 +10,15 @@
 (function () {
   'use strict';
 
-  var DEMO_BENUTZER = 'mitglied';
-  var DEMO_PASSWORT = 'taekwondo';
+  /* Dieselben Testkonten wie in der Serverfassung (test/setup.php).
+     Hier stehen sie im Klartext, weil dieser Entwurf nur zeigt, wie der
+     Ablauf aussieht – geprüft wird später auf dem Server. */
+  var TESTKONTEN = {
+    testuser:    { passwort: 'test1234', name: 'Test Nutzer',  rolle: 'Mitglied' },
+    testtrainer: { passwort: 'test1234', name: 'Test Trainer', rolle: 'Trainer' }
+  };
   var SCHLUESSEL = 'tkd-demo-anmeldung';
+  var NAME_SCHLUESSEL = 'tkd-demo-name';
   var VIDEO_PFAD = 'assets/video/';
 
   /* ---------- Hilfsfunktionen ---------- */
@@ -75,13 +81,17 @@
       var b = loginForm.elements.benutzer.value.trim();
       var p = loginForm.elements.passwort.value;
 
-      if (b === DEMO_BENUTZER && p === DEMO_PASSWORT) {
-        try { sessionStorage.setItem(SCHLUESSEL, 'ja'); } catch (e) {}
+      var konto = Object.prototype.hasOwnProperty.call(TESTKONTEN, b) ? TESTKONTEN[b] : null;
+      if (konto && p === konto.passwort) {
+        try {
+          sessionStorage.setItem(SCHLUESSEL, 'ja');
+          sessionStorage.setItem(NAME_SCHLUESSEL, konto.name);
+        } catch (e) {}
         location.href = 'mitglieder-videothek.html';
         return;
       }
       fehler.textContent = 'Benutzername oder Passwort stimmen nicht. ' +
-        'Für den Entwurf: mitglied / taekwondo';
+        'Für den Entwurf: testuser / test1234';
       loginForm.elements.passwort.focus();
       loginForm.elements.passwort.select();
     });
@@ -98,13 +108,20 @@
     }
 
     var name = document.getElementById('userName');
-    if (name) name.textContent = 'Alex Muster';
+    if (name) {
+      var gespeicherterName = '';
+      try { gespeicherterName = sessionStorage.getItem(NAME_SCHLUESSEL) || ''; } catch (e) {}
+      name.textContent = gespeicherterName || 'Test Nutzer';
+    }
 
     var logout = document.getElementById('logoutLink');
     if (logout) {
       logout.addEventListener('click', function (event) {
         event.preventDefault();
-        try { sessionStorage.removeItem(SCHLUESSEL); } catch (e) {}
+        try {
+          sessionStorage.removeItem(SCHLUESSEL);
+          sessionStorage.removeItem(NAME_SCHLUESSEL);
+        } catch (e) {}
         location.href = 'mitglieder.html';
       });
     }

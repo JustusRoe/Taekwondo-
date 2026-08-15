@@ -53,7 +53,7 @@ Der Bereich besteht aus zwei Teilen, die bewusst getrennt sind:
 
 **1. Entwurf zum Anschauen** – die Dateien `mitglieder*.html`. Sie laufen ohne Server,
 zeigen Anmeldung, Videothek und Player und lassen sich dem Vorstand direkt vorführen.
-Zugang: Benutzer `mitglied`, Passwort `taekwondo`.
+Zugang: `testuser` / `test1234` (Mitglied) oder `testtrainer` / `test1234` (Trainer).
 
 > Diese Anmeldung schützt **nichts**. Sie läuft im Browser, die Videos liegen im
 > öffentlichen Ordner. Jede Seite weist oben darauf hin.
@@ -79,7 +79,20 @@ Abschnitten – so lässt sich das Springen und Spulen ausprobieren, ohne echte 
 veröffentlichen. Sie liegen als MP4 (H.264, das Format für den Echtbetrieb) und
 zusätzlich als WebM vor, damit sie auch in Browsern ohne H.264 abspielen.
 
-## Lokal ansehen
+## Alles auf einmal starten
+
+Für den Mitgliederbereich mit Datenbank genügt ein Befehl. Das Skript richtet die
+Testumgebung ein, startet den Server und prüft anschließend selbst, ob alle Dienste
+laufen:
+
+```bash
+./test/testmain.sh          # Windows ohne WSL: test\testmain.bat
+```
+
+Danach erreichbar unter `http://localhost:8080` – Einzelheiten und Optionen in
+`test/README.md`.
+
+## Nur die Website ansehen
 
 Die Seite kommt ohne Server aus – `index.html` lässt sich direkt im Browser öffnen.
 Für saubere Pfade und Download-Links empfiehlt sich ein kleiner lokaler Server:

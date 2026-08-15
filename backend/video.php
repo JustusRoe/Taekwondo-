@@ -32,6 +32,12 @@ $stmt = db()->prepare(
 $stmt->execute([$video['id']]);
 $weitere = $stmt->fetchAll();
 
+/* Liegt neben der MP4-Datei eine gleichnamige WebM-Fassung, wird sie als
+   Ausweichquelle angeboten – für Browser ohne H.264. */
+$basisname = pathinfo((string) $video['dateiname'], PATHINFO_FILENAME);
+$hatWebm = is_file(rtrim(konfiguration()['video_ordner'], '/') . '/' . $basisname . '.webm');
+$hatMp4  = is_file(rtrim(konfiguration()['video_ordner'], '/') . '/' . $basisname . '.mp4');
+
 kopf($video['titel'], $mitglied);
 ?>
 
@@ -45,7 +51,15 @@ kopf($video['titel'], $mitglied);
           <!-- Die Quelle zeigt auf stream.php, nicht auf die Datei selbst -->
           <video id="player" controls preload="metadata" playsinline
                  poster="<?= h(konfiguration()['poster_url'] . ($video['posterdatei'] ?? '')) ?>">
-            <source src="stream.php?v=<?= urlencode($video['slug']) ?>" type="video/mp4">
+            <?php if ($hatMp4): ?>
+              <source src="stream.php?v=<?= urlencode($video['slug']) ?>&amp;f=mp4" type="video/mp4">
+            <?php endif; ?>
+            <?php if ($hatWebm): ?>
+              <source src="stream.php?v=<?= urlencode($video['slug']) ?>&amp;f=webm" type="video/webm">
+            <?php endif; ?>
+            <?php if (!$hatMp4 && !$hatWebm): ?>
+              <source src="stream.php?v=<?= urlencode($video['slug']) ?>">
+            <?php endif; ?>
             Ihr Browser kann dieses Video nicht abspielen.
           </video>
         </div>

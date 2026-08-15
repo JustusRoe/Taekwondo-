@@ -7,3 +7,7 @@ videos-privat/
 # Systemdateien
 .DS_Store
 Thumbs.db
+
+# Lokale Testumgebung (wird von test/testmain.sh erzeugt)
+test/daten/
+test/videos-privat/
