@@ -163,13 +163,48 @@ Auftritte entstehen.
 ### Zu klären
 
 - [ ] 🔴 Entscheidung für eine Adresse
-- [ ] 🔴 Läuft die Seite beim Hoster des TV mit, oder braucht die Abteilung einen eigenen
-      Vertrag? Wichtig: **PHP 8 und MySQL** müssen enthalten sein, bei IONOS ab dem
-      Plus-Tarif
 - [ ] 🔴 Wer ist Vertragspartner? Der Verein sollte es sein, keine Privatperson
-- [ ] 🔴 Zieladresse für das Kontaktformular – vermutlich `taekwondo@tv-steinau.de`
 - [ ] 🟡 Wer bekommt die FTP-Zugangsdaten?
 - [ ] 🟡 Soll die Seite von tv-steinau.de aus verlinkt werden?
+
+### Empfehlung zum Tarif
+
+**IONOS Webhosting Standard** – <https://www.ionos.de/hosting/webhosting>
+
+Deckt alles ab, was die Seite braucht: 100 GB NVMe-Speicher, 10 MariaDB-Datenbanken
+(gebraucht wird eine), PHP 8.2 bis 8.4 frei wählbar, SSH-Zugang, 10 Cronjobs, tägliches
+Backup von Dateien und Datenbank, ein Postfach, im ersten Jahr eine Domain inklusive.
+
+Kosten: 3 € monatlich für sechs Monate, danach 6 €, dazu einmalig 10 € Einrichtung –
+also 64 € im ersten Jahr, danach 72 € im Jahr.
+
+Der Tarif **Plus** lohnt sich nicht: Er ist im ersten Jahr billiger (1 € monatlich),
+kostet danach aber 11 € statt 6 €. Auf drei Jahre gerechnet 286 € gegenüber 208 €.
+Die 200 GB und 100 Datenbanken braucht die Abteilung nicht.
+
+**Alternative:** ALL-INKL Privat+ – <https://all-inkl.com/webhosting/> – 7,95 € monatlich,
+100 GB, 25 Datenbanken, keine Einrichtungsgebühr, keine Mindestlaufzeit und keine
+Preiserhöhung nach dem Aktionszeitraum. Macht 95 € im Jahr statt 72 €. Die 23 € Aufpreis
+kaufen Planungssicherheit – für eine Vereinskasse, die einmal im Jahr beschließt, kann
+das den Ausschlag geben.
+
+### Kontaktformular und E-Mail
+
+Ein zusätzliches Postfach ist **nicht** nötig. `taekwondo@tv-steinau.de` bleibt, wo es
+ist, und wird nur Empfänger des Formulars.
+
+Wichtig für die Einrichtung: IONOS lässt seit dem 29.01.2024 vom Webspace aus keine
+Mails mehr mit einer Absenderadresse einer vertragsfremden Domain zu. Das Formular darf
+also **nicht** mit Absender `taekwondo@tv-steinau.de` verschicken. Der Aufbau ist:
+
+| Feld | Wert |
+| --- | --- |
+| Absender | das im Tarif enthaltene Postfach, z. B. `formular@taekwondo-steinau.de` |
+| Empfänger | `taekwondo@tv-steinau.de` |
+| Antwort an | die Adresse, die der Absender ins Formular eingetragen hat |
+
+Ein Klick auf „Antworten" geht damit direkt an den Anfragenden. Zu klären bleibt nur der
+Name des Absenderpostfachs.
 
 ---
 
