@@ -49,7 +49,7 @@ window.VIDEOTHEK = [
     "trainer": "Michael Buchhold",
     "datum": "2026-07-18",
     "dauer": 46,
-    "beschreibung": "Die zweite Form der Taegeuk-Reihe. Neu gegenüber Il Jang sind die Fußtechniken im Ablauf – achten Sie auf das Anheben des Knies vor jedem Tritt.",
+    "beschreibung": "Die zweite Form der Taegeuk-Reihe. Neu gegenüber Il Jang sind die Fußtechniken im Ablauf – achte auf das Anheben des Knies vor jedem Tritt.",
     "kapitel": [
       { "t": 0, "name": "Vorbereitung" },
       { "t": 13, "name": "Erste Sequenz" },

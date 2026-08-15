@@ -143,10 +143,10 @@
   if (form) {
     const validators = {
       name: function (value) {
-        return value.trim().length >= 2 ? '' : 'Bitte geben Sie Ihren Namen an.';
+        return value.trim().length >= 2 ? '' : 'Bitte gib deinen Namen an.';
       },
       email: function (value) {
-        if (!value.trim()) return 'Bitte geben Sie eine E-Mail-Adresse an.';
+        if (!value.trim()) return 'Bitte gib eine E-Mail-Adresse an.';
         return /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(value.trim())
           ? ''
           : 'Diese E-Mail-Adresse sieht nicht vollständig aus.';
@@ -154,7 +154,7 @@
       message: function (value) {
         return value.trim().length >= 10
           ? ''
-          : 'Bitte beschreiben Sie Ihr Anliegen in mindestens 10 Zeichen.';
+          : 'Bitte beschreibe dein Anliegen in mindestens 10 Zeichen.';
       }
     };
 
@@ -196,7 +196,7 @@
       });
 
       if (privacy && !privacy.checked) {
-        showError(privacy, 'Bitte bestätigen Sie die Datenschutzhinweise.');
+        showError(privacy, 'Bitte bestätige die Datenschutzhinweise.');
         if (!firstInvalid) firstInvalid = privacy;
       }
 
@@ -210,8 +210,8 @@
       status.hidden = false;
       status.textContent =
         'Vielen Dank, ' + name + '. Dieser Entwurf versendet noch keine Nachrichten – ' +
-        'sobald die Seite freigeschaltet ist, geht Ihre Anfrage an ' +
-        'taekwondo@tv-steinau.de. Bis dahin erreichen Sie uns direkt unter dieser Adresse.';
+        'sobald die Seite freigeschaltet ist, geht deine Anfrage an ' +
+        'taekwondo@tv-steinau.de. Bis dahin erreichst du uns direkt unter dieser Adresse.';
       status.scrollIntoView({ block: 'nearest', behavior: 'smooth' });
       form.reset();
     });

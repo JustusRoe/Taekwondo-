@@ -4,7 +4,7 @@ Stand nach der Umstellung auf den TV 1897 Steinau. Vieles ist inzwischen eingear
 hier steht nur noch, was offen ist.
 
 Auf der Website sind alle offenen Stellen mit einem gestrichelten Hinweis markiert
-(<em>„Name folgt"</em>, <em>„Dan-Grad folgt"</em> …). Sie sind damit im Entwurf sofort zu
+(<em>„Name folgt"</em>, <em>„Graduierung folgt"</em> …). So sind sie im Entwurf sofort zu
 finden und verschwinden, sobald die Angabe da ist.
 
 | Zeichen | Bedeutung |
@@ -17,7 +17,7 @@ finden und verschwinden, sobald die Angabe da ist.
 
 ## Bereits eingearbeitet
 
-Aus der Vereinsseite und Ihren Angaben ist alles Folgende schon drin:
+Aus der Vereinsseite und deinen Angaben ist alles Folgende schon drin:
 
 | Bereich | Quelle |
 | --- | --- |
@@ -28,18 +28,18 @@ Aus der Vereinsseite und Ihren Angaben ist alles Folgende schon drin:
 | Vereinswappen als Logo, Rot als Leitfarbe | tv-steinau.de |
 | Michael Buchhold als Abteilungsleiter, Telefon, taekwondo@tv-steinau.de | tv-steinau.de |
 | Schriftführer der Hessischen Taekwondo Union | h-t-u.de |
-| Alle 37 Trainingstermine bis Dezember mit Halle | Ihr Trainingsplan-PDF |
+| Alle 37 Trainingstermine bis Dezember mit Halle | dein Trainingsplan-PDF |
 | Halle am Steines und Halle am Schloss mit Adressen | steinau.eu |
-| Drei Gruppen, ca. 60 Mitglieder, 7 Trainer | Ihre Angaben |
+| Drei Gruppen, ca. 60 Mitglieder, acht Namen im Trainerteam | Deine Angaben |
 
 ---
 
 ## A · Trainerteam 🟡
 
-Der wichtigste offene Punkt – Sie haben die Porträts bereits.
+Der wichtigste offene Punkt – die Porträts habt ihr ja schon.
 
 - [ ] 🟡 **Porträtfotos** als JPG, Originalgröße, unbearbeitet (Zuschnitt mache ich)
-- [ ] 🟡 Für **jede der sieben Personen**:
+- [ ] 🟡 Für **jede der acht Personen**:
 
 | Feld | Beispiel |
 | --- | --- |
@@ -50,20 +50,21 @@ Der wichtigste offene Punkt – Sie haben die Porträts bereits.
 
 - [ ] 🔴 **Einverständnis jeder Person**, mit Name und Bild genannt zu werden
 - [ ] 🟡 Auch für Michael Buchhold fehlen noch Dan-Grad und Kurzvorstellung
+- [ ] ⚪ Stimmt die Zahl acht? Ursprünglich war von sieben Trainern die Rede
 
 ---
 
 ## B · Trainingsplan 🟡
 
-- [ ] 🔴 **Dienstagstraining bestätigen.** Sie hatten Dienstag und Donnerstag genannt, im
+- [ ] 🔴 **Dienstagstraining bestätigen.** Du hattest Dienstag und Donnerstag genannt, im
       Plan-PDF stehen aber nur Donnerstage. Findet dienstags Training statt? In welcher Halle?
-- [ ] 🟡 **Bambini-Zeit klären.** Sie sagten samstags 10:30 – 11:30; im Plan steht bei den
+- [ ] 🟡 **Bambini-Zeit klären.** Du sagtest samstags 10:30 – 11:30; im Plan steht bei den
       Terminen in der Halle am Schloss „Bambini 11.30 Uhr". Ist das die Regel dort?
 - [ ] 🟡 **Altersangabe Bambini** – ab wann bis wann?
 - [ ] ⚪ Ferienregelung in einem Satz (fällt Training aus oder wird es verlegt?)
 - [ ] ⚪ Termine ab Januar 2027, sobald der neue Plan steht
 
-Die Termine pflegen Sie später selbst in einer einzigen Datei:
+Die Termine pflegst du später selbst in einer einzigen Datei:
 `assets/js/trainingstermine.js`. Der Kalender auf der Startseite baut sich daraus auf.
 
 ---
@@ -111,7 +112,7 @@ Bis auf Weiteres bleiben die Stockfotos – so vereinbart.
 | Abteilung | 1 | hoch 3:4 | 1200 × 1600 px |
 | Gruppenkarten | 3 | quer 4:3 | 1200 × 900 px |
 | Galerie | 6 | 4 × quadratisch, 2 × quer 2:1 | 1200 × 1200 / 1600 × 800 px |
-| Trainerporträts | 7 | hoch 4:5 | 1000 × 1250 px |
+| Trainerporträts | 8 | hoch 4:5 | 1000 × 1250 px |
 
 ---
 
@@ -140,7 +141,7 @@ Eine Unteradresse der Vereinsseite. Kostet nichts, muss nicht registriert werden
 Zugehörigkeit zum Verein ist sofort sichtbar. Voraussetzung: Zugriff auf die Verwaltung
 von `tv-steinau.de` – dort betreut Michael Weber die Website.
 
-**2. `taekwondo-steinau.de` – Ihr Vorschlag, gute Wahl.**
+**2. `taekwondo-steinau.de` – dein Vorschlag, gute Wahl.**
 Kurz, sprechend, gut zu diktieren. Eine DNS-Abfrage zeigt derzeit keinen Eintrag, die
 Domain ist also wahrscheinlich frei – verbindlich prüfen lässt sich das nur beim
 Registrar. Kosten: 10–20 € im Jahr.
@@ -171,7 +172,7 @@ Auftritte entstehen.
 Alles andere lässt sich danach jederzeit nachziehen – die Seite ist bereits vollständig
 benutzbar.
 
-**Der größte sichtbare Sprung** kommt von A (Trainerteam), weil dort sechs von sieben
+**Der größte sichtbare Sprung** kommt von A (Trainerteam), weil dort sieben von acht
 Karten noch Platzhalter sind.
 
 ---

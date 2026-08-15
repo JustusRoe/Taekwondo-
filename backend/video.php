@@ -60,7 +60,7 @@ kopf($video['titel'], $mitglied);
             <?php if (!$hatMp4 && !$hatWebm): ?>
               <source src="stream.php?v=<?= urlencode($video['slug']) ?>">
             <?php endif; ?>
-            Ihr Browser kann dieses Video nicht abspielen.
+            Dein Browser kann dieses Video nicht abspielen.
           </video>
         </div>
 

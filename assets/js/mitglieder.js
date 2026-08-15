@@ -187,7 +187,7 @@
     player.innerHTML =
       '<source src="' + VIDEO_PFAD + video.slug + '.mp4" type="video/mp4">' +
       '<source src="' + VIDEO_PFAD + video.slug + '.webm" type="video/webm">' +
-      'Ihr Browser kann dieses Video nicht abspielen.';
+      'Dein Browser kann dieses Video nicht abspielen.';
     player.load();
 
     document.getElementById('videoTitel').textContent = video.titel;
