@@ -36,9 +36,12 @@ Aus der Vereinsseite und deinen Angaben ist alles Folgende schon drin:
 
 ## A · Trainerteam 🟡
 
-Der wichtigste offene Punkt – die Porträts habt ihr ja schon.
+Fünf Porträts sind da und eingebaut: Michael, Maxim, Justus, Arno und Anna-Karoline.
+Alle einheitlich angeschnitten – Kopf bis unter den Gürtelknoten, gleiche Kopfgröße,
+graue Mattenwand im Rücken.
 
-- [ ] 🟡 **Porträtfotos** als JPG, Originalgröße, unbearbeitet (Zuschnitt mache ich)
+- [ ] 🟡 **Porträtfotos von Andy, Julia und Aileen** – JPG, Originalgröße, unbearbeitet
+      (Zuschnitt mache ich). Bei Julia im T-Shirt, das ist so besprochen.
 - [ ] 🟡 Für **jede der acht Personen**:
 
 | Feld | Beispiel |
@@ -50,6 +53,9 @@ Der wichtigste offene Punkt – die Porträts habt ihr ja schon.
 
 - [ ] 🔴 **Einverständnis jeder Person**, mit Name und Bild genannt zu werden
 - [ ] 🟡 Auch für Michael Buchhold fehlen noch Dan-Grad und Kurzvorstellung
+- [ ] 🟡 **Graduierungen.** Auf den Bildern sind die Gürtel zu sehen – schwarz bei
+      Michael, Justus und Arno, rot bei Maxim, rot-schwarz bei Anna-Karoline. Welcher
+      Dan beziehungsweise Kup das genau ist, kann ich daraus nicht ablesen.
 - [ ] 🟡 Funktion von Aileen, Justus, Arno und Anna-Karoline – auf den Karten steht
       bisher nur „Training"
 
@@ -113,7 +119,7 @@ Bis auf Weiteres bleiben die Stockfotos – so vereinbart.
 | Abteilung | 1 | hoch 3:4 | 1200 × 1600 px |
 | Gruppenkarten | 3 | quer 4:3 | 1200 × 900 px |
 | Galerie | 6 | 4 × quadratisch, 2 × quer 2:1 | 1200 × 1200 / 1600 × 800 px |
-| Trainerporträts | 8 | hoch 4:5 | 1000 × 1250 px |
+| Trainerporträts | 3 noch offen | hoch 4:5 | 1000 × 1250 px |
 
 ---
 
@@ -173,8 +179,8 @@ Auftritte entstehen.
 Alles andere lässt sich danach jederzeit nachziehen – die Seite ist bereits vollständig
 benutzbar.
 
-**Der größte sichtbare Sprung** kommt von A (Trainerteam), weil dort sieben von acht
-Karten noch Platzhalter sind.
+**Der größte sichtbare Sprung** kommt von A (Trainerteam): Fünf Porträts stehen,
+drei fehlen noch, und bei allen acht fehlen Graduierung und Kurzvorstellung.
 
 ---
 

@@ -1281,12 +1281,13 @@ input.has-error, textarea.has-error { border-color: var(--accent); background: v
   .team { gap: 14px; }
   .member {
     display: grid;
-    grid-template-columns: 104px minmax(0, 1fr);
-    align-items: stretch;
+    grid-template-columns: 116px minmax(0, 1fr);
+    align-items: start;
   }
   .member img {
-    height: 100%;
-    aspect-ratio: auto;
+    /* 4:5 beibehalten statt auf Kartenhöhe zu strecken: sonst hängt der
+       Anschnitt an der Textlänge und jedes Porträt wäre anders gerahmt. */
+    aspect-ratio: 4 / 5;
     border-bottom: 0;
     border-right: 1px solid var(--line);
   }
