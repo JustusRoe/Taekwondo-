@@ -40,15 +40,8 @@ und Trainingstermine sind echt; Fotos und Trainerprofile noch Platzhalter – si
 │   ├── img/                     Stockfotos (JPG) und Favicon (SVG)
 │   └── video/                   Platzhaltervideos (MP4 + WebM) und Vorschaubilder
 ├── downloads/                   PDF-Dokumente des Download-Bereichs
-├── backend/                     Serverfassung des Mitgliederbereichs (PHP + MySQL)
-└── praesentation/               Foliensatz zur Vorstellung des Entwurfs (PPTX)
+└── backend/                     Serverfassung des Mitgliederbereichs (PHP + MySQL)
 ```
-
-## Präsentation für den Verein
-
-`praesentation/Website-Entwurf-Taekwondo-Club.pptx` zeigt den Entwurf in 13 Folien –
-bewusst textarm: Abschnittstitel und Bildschirmfoto, dazu die Mobilansicht und eine kurze
-Liste der offenen Punkte. Erläuterungen stehen in den Folien­notizen.
 
 ## Mitgliederbereich
 

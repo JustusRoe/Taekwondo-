@@ -492,3 +492,24 @@
   .member-nav a { font-size: .84rem; }
   .member-avatar { display: none; }
 }
+
+@media (max-width: 620px) {
+  /* Auf dem Telefon passt die Werkzeugleiste nicht in eine Zeile. Ohne
+     Umbruchstelle landet "Tempo" neben "+ 10 s" und die Tempostufen stehen
+     allein darunter. Der Abstandhalter wird deshalb zum Zeilenumbruch:
+     erst die Sprungtasten, dann das Tempo mit seiner Beschriftung. */
+  .player-tools { gap: 8px; }
+  .tool-sep { flex: 0 0 100%; height: 0; }
+}
+
+/* Tippziele auf Touch-Geräten – siehe Erläuterung in style.css */
+@media (pointer: coarse) {
+  .chip,
+  .crumb,
+  .member-nav a {
+    min-height: 44px;
+    display: inline-flex;
+    align-items: center;
+  }
+  .crumb { margin-bottom: 14px; }
+}

@@ -50,14 +50,15 @@ Der wichtigste offene Punkt – die Porträts habt ihr ja schon.
 
 - [ ] 🔴 **Einverständnis jeder Person**, mit Name und Bild genannt zu werden
 - [ ] 🟡 Auch für Michael Buchhold fehlen noch Dan-Grad und Kurzvorstellung
-- [ ] ⚪ Stimmt die Zahl acht? Ursprünglich war von sieben Trainern die Rede
+- [ ] 🟡 Funktion von Aileen, Justus, Arno und Anna-Karoline – auf den Karten steht
+      bisher nur „Training"
 
 ---
 
 ## B · Trainingsplan 🟡
 
-- [ ] 🔴 **Dienstagstraining bestätigen.** Du hattest Dienstag und Donnerstag genannt, im
-      Plan-PDF stehen aber nur Donnerstage. Findet dienstags Training statt? In welcher Halle?
+- [x] ✅ Dienstagstraining geklärt: Es gibt keins. Trainiert wird donnerstags
+      (Selbstverteidigung) und samstags (Training und Bambini).
 - [ ] 🟡 **Bambini-Zeit klären.** Du sagtest samstags 10:30 – 11:30; im Plan steht bei den
       Terminen in der Halle am Schloss „Bambini 11.30 Uhr". Ist das die Regel dort?
 - [ ] 🟡 **Altersangabe Bambini** – ab wann bis wann?
