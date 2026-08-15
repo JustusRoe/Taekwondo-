@@ -121,6 +121,12 @@ Nginx, IONOS) und über `backend/stream.php` dagegen vollständig.
   Formularfelder, deutschsprachige Alternativtexte, Rücksicht auf
   `prefers-reduced-motion`.
 
+## Was der Verein noch liefern muss
+
+`CHECKLISTE-INHALTE.md` listet vollständig auf, welche Angaben, Bilder und Dokumente
+fehlen, um alle Platzhalter zu ersetzen – nach Blöcken sortiert und danach gekennzeichnet,
+was die Veröffentlichung blockiert und was später nachgereicht werden kann.
+
 ## Hinweise zur Anpassung
 
 - **Kontaktformular:** rein clientseitig. `assets/js/main.js` prüft die Eingaben und zeigt
