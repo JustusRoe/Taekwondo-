@@ -15,21 +15,30 @@ Build-Schritt und ohne externe Abhängigkeiten. Alle Inhalte sind frei erfunden.
 | Trainerteam | Drei Porträts mit Graduierung und Aufgabenbereich |
 | Downloads | Sieben PDF-Dokumente (Formulare und Vereinsunterlagen) |
 | Kontakt | Formular mit Validierung, Geschäftsstelle, Bürozeiten, Anfahrt |
+| Mitgliederbereich | Anmeldung, Videothek mit Filter und Player mit Abschnitten |
 | Impressum / Datenschutz | Eigene Unterseiten mit Mustertexten |
 
 ## Projektstruktur
 
 ```
 .
-├── index.html              Startseite mit allen Abschnitten
-├── impressum.html          Impressum (Mustertext)
-├── datenschutz.html        Datenschutzhinweise (Mustertext)
+├── index.html                   Startseite mit allen Abschnitten
+├── impressum.html               Impressum (Mustertext)
+├── datenschutz.html             Datenschutzhinweise (Mustertext)
+├── mitglieder.html              Mitgliederbereich: Anmeldung (Entwurf)
+├── mitglieder-videothek.html    Mitgliederbereich: Videoübersicht (Entwurf)
+├── mitglieder-video.html        Mitgliederbereich: Player mit Abschnitten (Entwurf)
 ├── assets/
-│   ├── css/style.css       Gesamtes Layout, Farbwelt und Responsive-Regeln
-│   ├── js/main.js          Navigation, Lightbox, Formularprüfung, Scroll-Effekte
-│   └── img/                Stockfotos (JPG) und Favicon (SVG)
-├── downloads/              PDF-Dokumente des Download-Bereichs
-└── praesentation/          Foliensatz zur Vorstellung des Entwurfs (PPTX)
+│   ├── css/style.css            Layout, Farbwelt und Responsive-Regeln
+│   ├── css/mitglieder.css       Ergänzungen für den Mitgliederbereich
+│   ├── js/main.js               Navigation, Lightbox, Formularprüfung
+│   ├── js/mitglieder.js         Demo-Anmeldung, Filter, Player-Steuerung
+│   ├── js/videodaten.js         Beispieldaten der Videothek
+│   ├── img/                     Stockfotos (JPG) und Favicon (SVG)
+│   └── video/                   Platzhaltervideos (MP4 + WebM) und Vorschaubilder
+├── downloads/                   PDF-Dokumente des Download-Bereichs
+├── backend/                     Serverfassung des Mitgliederbereichs (PHP + MySQL)
+└── praesentation/               Foliensatz zur Vorstellung des Entwurfs (PPTX)
 ```
 
 ## Präsentation für den Verein
@@ -37,6 +46,38 @@ Build-Schritt und ohne externe Abhängigkeiten. Alle Inhalte sind frei erfunden.
 `praesentation/Website-Entwurf-Taekwondo-Club.pptx` zeigt den Entwurf in 13 Folien –
 bewusst textarm: Abschnittstitel und Bildschirmfoto, dazu die Mobilansicht und eine kurze
 Liste der offenen Punkte. Erläuterungen stehen in den Folien­notizen.
+
+## Mitgliederbereich
+
+Der Bereich besteht aus zwei Teilen, die bewusst getrennt sind:
+
+**1. Entwurf zum Anschauen** – die Dateien `mitglieder*.html`. Sie laufen ohne Server,
+zeigen Anmeldung, Videothek und Player und lassen sich dem Vorstand direkt vorführen.
+Zugang: Benutzer `mitglied`, Passwort `taekwondo`.
+
+> Diese Anmeldung schützt **nichts**. Sie läuft im Browser, die Videos liegen im
+> öffentlichen Ordner. Jede Seite weist oben darauf hin.
+
+**2. Serverfassung** – der Ordner `backend/`. Anmeldung gegen eine MySQL-Datenbank mit
+gehashten Passwörtern, Sperre nach Fehlversuchen, CSRF-Schutz und – der entscheidende
+Teil – `stream.php`: Die Videos liegen außerhalb des öffentlichen Ordners und werden erst
+nach geprüfter Sitzung ausgeliefert, mit Unterstützung für HTTP-Range-Requests, damit
+Spulen und Kapitelsprünge funktionieren. Einrichtung siehe `backend/README.md`.
+
+### Funktionen des Players
+
+- Abschnittsliste neben dem Video; ein Klick springt an die Stelle
+- Der laufende Abschnitt wird hervorgehoben
+- Sprungtasten −10 s / +10 s, Pfeiltasten für ±5 s, Leertaste für Pause
+- Abspieltempo 0,5× bis 1,5× – hilfreich, um Techniken langsam anzusehen
+- Zuletzt gesehene Stelle wird gemerkt und zum Weiterschauen angeboten
+
+### Platzhaltervideos
+
+In `assets/video/` liegen sechs kurze, selbst erzeugte Platzhalterclips mit sichtbaren
+Abschnitten – so lässt sich das Springen und Spulen ausprobieren, ohne echte Aufnahmen zu
+veröffentlichen. Sie liegen als MP4 (H.264, das Format für den Echtbetrieb) und
+zusätzlich als WebM vor, damit sie auch in Browsern ohne H.264 abspielen.
 
 ## Lokal ansehen
 
@@ -47,6 +88,10 @@ Für saubere Pfade und Download-Links empfiehlt sich ein kleiner lokaler Server:
 python3 -m http.server 8000
 # danach http://localhost:8000 aufrufen
 ```
+
+Hinweis: `python3 -m http.server` und `php -S` beantworten keine Range-Requests. Das
+Springen im Video funktioniert damit nur eingeschränkt – auf echten Servern (Apache,
+Nginx, IONOS) und über `backend/stream.php` dagegen vollständig.
 
 ## Gestaltung
 
@@ -69,6 +114,9 @@ python3 -m http.server 8000
   eine Bestätigung an; es werden keine Daten übertragen oder gespeichert. Für den
   Produktivbetrieb ist ein Formular-Endpunkt (z. B. PHP-Skript oder Formulardienst) im
   `submit`-Handler zu ergänzen.
+- **Mitgliederbereich:** Vor dem Echtbetrieb die Serverfassung aus `backend/` einrichten
+  und die Beispielkonten ersetzen. Für Aufnahmen mit erkennbaren Personen – besonders
+  Kindern – sind schriftliche Einwilligungen nötig, auch im geschützten Bereich.
 - **Vereinsdaten:** Name, Anschrift, Telefon, E-Mail, Registerangaben und Beiträge sind
   Platzhalter (`Musterstadt`, `12345`, `info@tkd-musterstadt.de`) und müssen vor einer
   Veröffentlichung ersetzt werden – auch in den PDFs im Ordner `downloads/`.

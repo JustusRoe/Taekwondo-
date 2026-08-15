@@ -716,6 +716,9 @@ p { margin: 0 0 1.1em; }
 input[type="text"],
 input[type="email"],
 input[type="tel"],
+input[type="password"],
+input[type="search"],
+input[type="date"],
 select,
 textarea {
   font: inherit;

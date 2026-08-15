@@ -1,0 +1,7 @@
+# Sitzungs- und Konfigurationsdateien nie ausliefern
+<FilesMatch "^(config\.php|.*\.sql|.*\.md)$">
+  Require all denied
+</FilesMatch>
+
+# Verzeichnisauflistung abschalten
+Options -Indexes

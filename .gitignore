@@ -1,0 +1,9 @@
+# Zugangsdaten des Servers – niemals ins Repository
+backend/config.php
+
+# Private Videoablage (liegt im Echtbetrieb außerhalb des Web-Ordners)
+videos-privat/
+
+# Systemdateien
+.DS_Store
+Thumbs.db
