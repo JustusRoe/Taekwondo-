@@ -102,6 +102,33 @@ Hinweis: `python3 -m http.server` und `php -S` beantworten keine Range-Requests.
 Springen im Video funktioniert damit nur eingeschränkt – auf echten Servern (Apache,
 Nginx, IONOS) und über `backend/stream.php` dagegen vollständig.
 
+## Vorschau im Netz (GitHub Pages)
+
+Um den Entwurf dem Vorstand zu zeigen, genügt GitHub Pages – kostenlos, kein zusätzliches
+Konto, das Repository liegt ja schon hier.
+
+**Einschalten:** Repository → *Settings* → *Pages* → unter *Source* „Deploy from a branch"
+wählen, als Branch `claude/taekwondo-club-website-jui1tt` und Ordner `/ (root)`, speichern.
+Nach ein bis zwei Minuten liegt die Seite unter:
+
+```
+https://justusroe.github.io/Taekwondo-/
+```
+
+**Was dort funktioniert:** die komplette Website samt Trainingsplan, Terminkalender,
+Galerie, Downloads und Kontaktformular (mit Entwurfshinweis statt Versand). Auch der
+Mitgliederbereich als Entwurf – Anmeldung mit `testuser` / `test1234`, Videothek, Player
+mit Abschnittssprüngen.
+
+**Was dort nicht funktioniert:** alles unter `backend/`. GitHub Pages liefert nur Dateien
+aus, es führt kein PHP aus. Die echte Anmeldung gegen die Datenbank und der geschützte
+Videoabruf über `stream.php` lassen sich nur auf einem PHP-Hoster oder lokal über
+`./test/testmain.sh` zeigen.
+
+**Vor dem Livegang wieder entfernen:** `robots.txt` sperrt derzeit alle Suchmaschinen aus,
+und `index.html` trägt ein `noindex`. Beides ist für den Entwurf gewollt – bleibt es
+stehen, findet Google die fertige Seite nie. Beide Stellen sind im Quelltext kommentiert.
+
 ## Gestaltung
 
 - **Grundton weiß.** Flächen sind weiß oder sehr helles Grau (`#f7f8fa`), Struktur entsteht
