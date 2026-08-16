@@ -1256,10 +1256,11 @@ input.has-error, textarea.has-error { border-color: var(--accent); background: v
 }
 
 @media (max-width: 620px) {
-  /* Trainerspalte weglassen, damit der Plan ohne Querscrollen lesbar bleibt */
+  /* Hier stand früher eine Regel, die die letzte Spalte ausblendete – gedacht für
+     die Trainerspalte des alten Wochenplans, den es als Tabelle nicht mehr gibt.
+     Übrig ist nur die Beitragstabelle, deren letzte Spalte die Beiträge enthält.
+     Nichts ausblenden: Die Tabelle hat zwei Spalten und passt auch auf 320 px. */
   .schedule { min-width: 0; font-size: .88rem; }
-  .schedule thead th:last-child,
-  .schedule tbody td:last-child { display: none; }
   .schedule thead th,
   .schedule td,
   .schedule tbody th { padding: 11px 12px; }
@@ -1272,6 +1273,15 @@ input.has-error, textarea.has-error { border-color: var(--accent); background: v
   .schedule thead th,
   .schedule td,
   .schedule tbody th { padding: 10px 9px; }
+}
+
+@media (max-width: 340px) {
+  /* Auf dem iPhone SE passt die Beitragstabelle sonst nicht in ihren Rahmen
+     und müsste seitlich gescrollt werden – für zwei Spalten unnötig. */
+  .schedule thead th,
+  .schedule td,
+  .schedule tbody th { padding: 10px 7px; }
+  .schedule thead th { letter-spacing: .04em; }
 }
 
 @media (max-width: 620px) {
