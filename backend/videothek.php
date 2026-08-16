@@ -7,9 +7,7 @@ $mitglied = anmeldung_verlangen();
 $bereich = (string) ($_GET['bereich'] ?? 'alle');
 $suche   = trim((string) ($_GET['q'] ?? ''));
 
-$sql = 'SELECT v.*, (SELECT COUNT(*) FROM kapitel k WHERE k.video_id = v.id) AS anzahl_kapitel
-          FROM videos v
-         WHERE v.sichtbar = 1';
+$sql = 'SELECT v.* FROM videos v WHERE v.sichtbar = 1';
 $werte = [];
 
 if ($bereich !== 'alle') {
@@ -41,7 +39,7 @@ kopf('Videothek', $mitglied);
     <div class="member-head">
       <div>
         <h1>Videothek</h1>
-        <p>Formenlauf (Poomsae) und Einschrittkampf (Hanbon Kyorugi). Jedes Video ist in Abschnitte geteilt.</p>
+        <p>Formenlauf (Poomsae) und Einschrittkampf (Hanbon Kyorugi).</p>
       </div>
       <p class="member-count">
         <?= count($videos) === $gesamt

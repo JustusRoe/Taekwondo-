@@ -32,6 +32,12 @@
 *::before,
 *::after { box-sizing: border-box; }
 
+/* Das hidden-Attribut setzt nur display:none als Voreinstellung. Jede eigene
+   display-Angabe – und sei es .field { display: flex } – hebelt es wieder aus,
+   und das Element bleibt sichtbar, obwohl das Skript es versteckt hat.
+   Diese Regel gilt für alle Elemente und erspart Einzelfallpflaster. */
+[hidden] { display: none !important; }
+
 html {
   scroll-behavior: smooth;
   scroll-padding-top: calc(var(--header-h) + 16px);
@@ -1113,7 +1119,6 @@ input.has-error, textarea.has-error { border-color: var(--accent); background: v
   place-items: center;
   padding: 5vw;
 }
-.lightbox[hidden] { display: none; }
 .lightbox-inner { max-width: 1000px; width: 100%; text-align: center; }
 .lightbox img {
   max-height: 78vh;

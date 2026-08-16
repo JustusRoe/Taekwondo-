@@ -60,9 +60,9 @@
       '<span class="video-body">' +
         '<span class="video-tag">' + v.bereich + '</span>' +
         '<h3>' + v.titel + '</h3>' +
-        '<span class="video-sub">' + v.grad + ' · ' + v.trainer + '</span>' +
+        '<span class="video-sub">' + v.grad + '</span>' +
         '<span class="video-foot">' +
-          '<span>' + v.kapitel.length + ' Abschnitte</span>' +
+          '<span>' + v.trainer + '</span>' +
           '<span>' + datum(v.datum) + '</span>' +
         '</span>' +
       '</span>';
@@ -201,7 +201,8 @@
 
     /* Springt an eine Stelle – wartet notfalls, bis die Videodaten da sind.
        Ohne diese Prüfung verwirft der Browser ein currentTime, das gesetzt
-       wird, bevor er die Länge des Videos kennt. */
+       wird, bevor er die Länge des Videos kennt. Gebraucht wird das noch
+       für „Weiterschauen". */
     function springeZu(sekunden) {
       if (player.readyState >= 1) {
         player.currentTime = sekunden;
@@ -213,38 +214,6 @@
         }, { once: true });
       }
     }
-
-    /* Abschnittsliste */
-    var liste = document.getElementById('chapterList');
-    video.kapitel.forEach(function (k, i) {
-      var li = document.createElement('li');
-      li.dataset.start = k.t;
-      li.innerHTML =
-        '<button type="button">' +
-          '<span class="ch-time">' + zeit(k.t) + '</span>' +
-          '<span class="ch-name">' + k.name + '</span>' +
-        '</button>';
-      li.querySelector('button').addEventListener('click', function () {
-        springeZu(k.t + 0.15);
-      });
-      liste.appendChild(li);
-    });
-
-    var eintraege = Array.prototype.slice.call(liste.children);
-
-    function aktivesKapitel() {
-      var t = player.currentTime;
-      var index = 0;
-      for (var i = 0; i < video.kapitel.length; i++) {
-        if (t >= video.kapitel[i].t) index = i;
-      }
-      eintraege.forEach(function (li, i) {
-        li.classList.toggle('is-current', i === index);
-      });
-    }
-
-    player.addEventListener('timeupdate', aktivesKapitel);
-    player.addEventListener('loadedmetadata', aktivesKapitel);
 
     /* Sprungtasten */
     document.getElementById('back10').addEventListener('click', function () {

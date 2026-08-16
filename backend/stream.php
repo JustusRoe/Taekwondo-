@@ -6,7 +6,7 @@
  * bekommt der Browser nie zu sehen. Aufruf:  stream.php?v=slug
  *
  * Wichtig ist die Unterstützung von HTTP-Range-Requests: Nur damit kann
- * der Browser im Video springen (Zurückspulen, Kapitel anwählen), ohne
+ * der Browser im Video springen (vor- und zurückspulen), ohne
  * es vorher komplett zu laden.
  */
 declare(strict_types=1);

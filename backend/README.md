@@ -24,7 +24,8 @@ wurde.
         ├── assets/…
         └── backend/              ← dieser Ordner
               ├── config.php      ← selbst anlegen, nicht ins Repository
-              ├── login.php  videothek.php  video.php  stream.php  admin.php
+              ├── login.php  videothek.php  video.php  stream.php
+              ├── admin.php  konten.php  upload.php
               └── lib/
 ```
 
@@ -40,9 +41,13 @@ sieht man die Ebene darüber.
    `mysql -h HOST -u BENUTZER -p DATENBANK < schema.sql`
 3. **`config.example.php` nach `config.php` kopieren** und die Zugangsdaten sowie den
    Pfad zu `videos-privat/` eintragen.
-4. **Videos per FTP** in `videos-privat/` laden, Vorschaubilder nach `assets/video/`.
-5. **Passwörter setzen.** Die Testkonten aus `schema.sql` (`testuser` und `testtrainer`)
-   haben beide das Passwort `test1234` – vor dem Echtbetrieb löschen oder ersetzen:
+4. **Schreibrechte prüfen.** Der Webserver muss in `videos-privat/` und in
+   `assets/video/` schreiben dürfen – dort landen die hochgeladenen Videos und die
+   Vorschaubilder. Meist genügt Rechte-Stufe 755; bei manchen Hostern 775.
+5. **Erstes Passwort setzen.** `schema.sql` legt ein einziges Trainerkonto an
+   (`testtrainer`, Passwort `test1234`). Damit meldet man sich einmal an und legt unter
+   *Verwaltung → Zugänge* die echten Konten an – danach dieses Konto löschen. Alternativ
+   direkt in der Datenbank:
    ```
    php -r "echo password_hash('NEUES_PASSWORT', PASSWORD_DEFAULT);"
    ```
@@ -55,16 +60,19 @@ sieht man die Ebene darüber.
 
 | Datei | Aufgabe |
 | --- | --- |
-| `schema.sql` | Tabellen `mitglieder`, `videos`, `kapitel`, `login_versuche` samt Beispieldaten |
+| `schema.sql` | Tabellen `mitglieder`, `videos`, `login_versuche` und das erste Trainerkonto |
 | `config.example.php` | Vorlage für Zugangsdaten und Pfade |
 | `lib/db.php` | Datenbankverbindung, Hilfsfunktionen |
 | `lib/auth.php` | Anmeldung, Sitzung, Sperre nach Fehlversuchen, CSRF-Token |
 | `lib/seite.php` | Gemeinsamer Seitenrahmen (nutzt dieselben Stylesheets wie die Website) |
 | `login.php` / `logout.php` | An- und Abmeldung |
 | `videothek.php` | Übersicht mit Filter und Suche |
-| `video.php` | Player mit Abschnitten, Spulen und Tempo |
+| `video.php` | Player mit Spulen, Tempo und Weiterschauen |
 | `stream.php` | **Geschützte Auslieferung der Videodatei mit Range-Unterstützung** |
-| `admin.php` | Kleine Verwaltung für das Trainerteam (nur Rolle `trainer`) |
+| `admin.php` | Verwaltung: Videos hochladen und löschen (nur Rolle `trainer`) |
+| `konten.php` | Verwaltung: Zugänge anlegen, ändern, Passwort setzen (nur `trainer`) |
+| `upload.php` | Nimmt Videodateien stückweise entgegen; antwortet mit JSON |
+| `lib/verwaltung.php` | Passwortvorschläge, Prüfungen, Aussperrschutz |
 
 ## Was eingebaut ist
 
@@ -77,8 +85,8 @@ sieht man die Ebene darüber.
 - CSRF-Token in allen Formularen.
 - `stream.php` prüft die Anmeldung, lässt nur bekannte Kürzel zu und verhindert über
   `basename()` Ausbrüche aus dem Videoordner.
-- HTTP-Range-Requests (Teilanfragen) – dadurch funktionieren Spulen und Kapitelsprünge,
-  ohne dass das Video vorher komplett geladen wird.
+- HTTP-Range-Requests (Teilanfragen) – dadurch funktioniert das Spulen, ohne dass das
+  Video vorher komplett geladen wird.
 - Optionales Ausweichformat über `stream.php?v=…&f=webm`: Liegt neben der MP4-Datei eine
   gleichnamige WebM-Fassung, bietet `video.php` sie als zweite Quelle an – hilfreich für
   Browser ohne H.264. Erlaubt sind ausschließlich `mp4` und `webm`.
@@ -93,8 +101,13 @@ sieht man die Ebene darüber.
 - **Große Dateien und `max_execution_time`:** Bei sehr langen Videos die Ausführungszeit
   im Hosting-Menü hochsetzen. `stream.php` ruft dafür `set_time_limit(0)` auf, was manche
   Hoster jedoch ignorieren.
-- **Upload-Grenze:** Videos gehören per FTP auf den Server, nicht über ein Formular –
-  PHP-Uploads sind bei den meisten Paketen auf 64–128 MB begrenzt.
+- **Upload-Grenzen sind umgangen, nicht aufgehoben.** `upload.php` nimmt die Datei in
+  Stücken von zwei Megabyte entgegen, deshalb spielen `upload_max_filesize`,
+  `post_max_size` und `max_execution_time` keine Rolle mehr – jede einzelne Anfrage ist
+  klein. Die Obergrenze steht stattdessen in `config.php` unter `max_video_mb`.
+- **Abgebrochene Uploads** hinterlassen eine `.part`-Datei in `videos-privat/.uploads/`.
+  Sie wird beim nächsten Upload entfernt, sobald sie älter als einen Tag ist; ein Cronjob
+  ist nicht nötig.
 
 ## Ausprobieren ohne Hoster
 
@@ -102,9 +115,32 @@ sieht man die Ebene darüber.
 Testkonten, Videoablage und Konfiguration – startet den Server und prüft alles durch.
 Einzelheiten in `test/README.md`.
 
+## Zugänge und Videos verwalten
+
+Beides läuft im Browser, FTP wird nicht mehr gebraucht.
+
+**Zugänge** (`konten.php`): Es gibt bewusst keine Selbstregistrierung. Das Trainerteam
+legt jedes Konto an und gibt Benutzername und Passwort im Training weiter. Die Seite
+schlägt ein Passwort vor, das sich diktieren lässt (`Gipfel-Delfin-455`), und zeigt es
+**genau einmal** an – gespeichert ist nur der Hash. Vergessene Passwörter werden neu
+gesetzt, nicht ausgelesen. Das letzte aktive Trainerkonto lässt sich weder löschen noch
+abstufen noch stilllegen, damit sich niemand aussperrt.
+
+**Videos** (`admin.php`): Datei auswählen, Angaben ergänzen, speichern. Drei Felder
+entfallen dabei, weil der Browser sie selbst ermitteln kann:
+
+| Feld | Woher es kommt |
+| --- | --- |
+| Trainer/in | das angemeldete Konto |
+| Länge | aus der Videodatei gelesen; klappt das nicht, erscheint ein Eingabefeld |
+| Vorschaubild | Standbild aus dem ersten Drittel des Videos |
+
+Die Videodatei bekommt beim Speichern den Namen des Kürzels – nie den Namen, unter dem
+sie hochgeladen wurde. Damit kann keine Eingabe aus dem Videoordner herausführen.
+
 ## Vor dem Freischalten
 
-- Testkonten (`testuser`, `testtrainer`) löschen oder mit neuen Passwörtern versehen.
+- Das mitgelieferte Trainerkonto (`testtrainer`) löschen, sobald echte Konten stehen.
 - Einwilligungen der gefilmten Personen einholen; bei Minderjährigen von den
   Erziehungsberechtigten.
 - Datenschutzhinweise um die Mitgliederverwaltung ergänzen und einen

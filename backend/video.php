@@ -20,14 +20,9 @@ if (!$video) {
     exit;
 }
 
-$stmt = db()->prepare('SELECT startsekunde, bezeichnung FROM kapitel WHERE video_id = ? ORDER BY startsekunde');
-$stmt->execute([$video['id']]);
-$kapitel = $stmt->fetchAll();
-
 $stmt = db()->prepare(
-    'SELECT v.*, (SELECT COUNT(*) FROM kapitel k WHERE k.video_id = v.id) AS anzahl_kapitel
-       FROM videos v WHERE v.sichtbar = 1 AND v.id <> ?
-      ORDER BY v.veroeffentlicht_am DESC LIMIT 3'
+    'SELECT * FROM videos WHERE sichtbar = 1 AND id <> ?
+      ORDER BY veroeffentlicht_am DESC LIMIT 3'
 );
 $stmt->execute([$video['id']]);
 $weitere = $stmt->fetchAll();
@@ -50,7 +45,9 @@ kopf($video['titel'], $mitglied);
         <div class="video-frame">
           <!-- Die Quelle zeigt auf stream.php, nicht auf die Datei selbst -->
           <video id="player" controls preload="metadata" playsinline
-                 poster="<?= h(konfiguration()['poster_url'] . ($video['posterdatei'] ?? '')) ?>">
+                 <?= $video['posterdatei']
+                       ? 'poster="' . h(konfiguration()['poster_url'] . $video['posterdatei']) . '"'
+                       : '' ?>>
             <?php if ($hatMp4): ?>
               <source src="stream.php?v=<?= urlencode($video['slug']) ?>&amp;f=mp4" type="video/mp4">
             <?php endif; ?>
@@ -85,20 +82,6 @@ kopf($video['titel'], $mitglied);
         </p>
         <p class="player-desc"><?= nl2br(h((string) $video['beschreibung'])) ?></p>
       </div>
-
-      <aside class="chapter-panel">
-        <h2>Abschnitte</h2>
-        <ol class="chapter-list" id="chapterList">
-          <?php foreach ($kapitel as $k): ?>
-            <li data-start="<?= (int) $k['startsekunde'] ?>">
-              <button type="button">
-                <span class="ch-time"><?= h(mmss((int) $k['startsekunde'])) ?></span>
-                <span class="ch-name"><?= h($k['bezeichnung']) ?></span>
-              </button>
-            </li>
-          <?php endforeach; ?>
-        </ol>
-      </aside>
     </div>
 
     <?php if ($weitere): ?>
@@ -113,38 +96,9 @@ kopf($video['titel'], $mitglied);
 </main>
 
 <script>
-/* Abschnittssprünge, Spulen und Tempo – dieselbe Bedienung wie im Entwurf. */
+/* Spulen und Tempo – dieselbe Bedienung wie im Entwurf. */
 (function () {
   var player = document.getElementById('player');
-  var eintraege = Array.prototype.slice.call(document.querySelectorAll('#chapterList li'));
-
-  function springeZu(sekunden) {
-    if (player.readyState >= 1) {
-      player.currentTime = sekunden;
-      player.play();
-    } else {
-      player.addEventListener('loadedmetadata', function () {
-        player.currentTime = sekunden;
-        player.play();
-      }, { once: true });
-    }
-  }
-
-  eintraege.forEach(function (li) {
-    li.querySelector('button').addEventListener('click', function () {
-      springeZu(parseInt(li.dataset.start, 10) + 0.15);
-    });
-  });
-
-  function aktivesKapitel() {
-    var t = player.currentTime, index = 0;
-    eintraege.forEach(function (li, i) {
-      if (t >= parseInt(li.dataset.start, 10)) index = i;
-    });
-    eintraege.forEach(function (li, i) { li.classList.toggle('is-current', i === index); });
-  }
-  player.addEventListener('timeupdate', aktivesKapitel);
-  player.addEventListener('loadedmetadata', aktivesKapitel);
 
   document.getElementById('back10').addEventListener('click', function () {
     player.currentTime = Math.max(0, player.currentTime - 10);

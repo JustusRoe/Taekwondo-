@@ -129,8 +129,8 @@ pruefe('Server: Videothek zeigt sechs Videos',
     $a['code'] === 200 && $anzahl === 6, 'gefunden: ' . $anzahl);
 
 $a = anfrage($basis . '/backend/video.php?v=taegeuk-il-jang');
-pruefe('Server: Videoseite mit vier Abschnitten',
-    $a['code'] === 200 && substr_count($a['inhalt'], 'class="ch-time"') === 4);
+pruefe('Server: Videoseite zeigt den Player',
+    $a['code'] === 200 && str_contains($a['inhalt'], 'id="player"'));
 
 /* Geschützte Auslieferung */
 $a = anfrage($basis . '/backend/stream.php?v=taegeuk-il-jang');
@@ -157,6 +157,12 @@ pruefe('Server: Pfadmanipulation abgewiesen', $a['code'] === 400, 'HTTP ' . $a['
 $a = anfrage($basis . '/backend/admin.php');
 pruefe('Server: Verwaltung für Mitglieder gesperrt', $a['code'] === 403, 'HTTP ' . $a['code']);
 
+$a = anfrage($basis . '/backend/konten.php');
+pruefe('Server: Zugangsverwaltung für Mitglieder gesperrt', $a['code'] === 403, 'HTTP ' . $a['code']);
+
+$a = anfrage($basis . '/backend/upload.php', [CURLOPT_POST => true, CURLOPT_POSTFIELDS => []]);
+pruefe('Server: Hochladen für Mitglieder gesperrt', $a['code'] === 403, 'HTTP ' . $a['code']);
+
 /* Trainerkonto */
 anfrage($basis . '/backend/logout.php');
 $a = anfrage($basis . '/backend/login.php');
@@ -168,6 +174,48 @@ anfrage($basis . '/backend/login.php', [
 ]);
 $a = anfrage($basis . '/backend/admin.php');
 pruefe('Server: Verwaltung für testtrainer erreichbar', $a['code'] === 200, 'HTTP ' . $a['code']);
+pruefe('Server: Verwaltung bietet ein Feld zum Hochladen',
+    str_contains($a['inhalt'], 'type="file"'));
+preg_match('/name="csrf" value="([^"]+)"/', $a['inhalt'], $t);
+$trainerToken = $t[1] ?? '';
+
+$a = anfrage($basis . '/backend/konten.php');
+pruefe('Server: Zugangsverwaltung für testtrainer erreichbar',
+    $a['code'] === 200 && str_contains($a['inhalt'], 'testuser'), 'HTTP ' . $a['code']);
+
+/* Hochladen: Anmeldung eines Uploads liefert eine Kennung */
+$a = anfrage($basis . '/backend/upload.php', [
+    CURLOPT_POST       => true,
+    CURLOPT_POSTFIELDS => http_build_query(['csrf' => $trainerToken, 'aktion' => 'start']),
+]);
+$start = json_decode($a['inhalt'], true);
+pruefe('Server: Upload lässt sich anmelden',
+    $a['code'] === 200 && isset($start['id']) && preg_match('/^[a-f0-9]{32}$/', $start['id']) === 1,
+    'Antwort: ' . substr($a['inhalt'], 0, 80));
+
+/* Ein Teilstück in falscher Reihenfolge muss abgelehnt werden – sonst
+   entstünde aus vertauschten Stücken eine unbrauchbare Datei. */
+$grenze = '----tkd' . bin2hex(random_bytes(8));
+$koerper = '';
+foreach (['csrf' => $trainerToken, 'id' => $start['id'] ?? '', 'versatz' => '999999'] as $feld => $wert) {
+    $koerper .= "--$grenze\r\nContent-Disposition: form-data; name=\"$feld\"\r\n\r\n$wert\r\n";
+}
+$koerper .= "--$grenze\r\nContent-Disposition: form-data; name=\"stueck\"; filename=\"t.bin\"\r\n"
+          . "Content-Type: application/octet-stream\r\n\r\nABCD\r\n--$grenze--\r\n";
+$a = anfrage($basis . '/backend/upload.php', [
+    CURLOPT_POST       => true,
+    CURLOPT_POSTFIELDS => $koerper,
+    CURLOPT_HTTPHEADER => ['Content-Type: multipart/form-data; boundary=' . $grenze],
+]);
+pruefe('Server: Teilstück in falscher Reihenfolge wird abgewiesen',
+    $a['code'] === 409, 'HTTP ' . $a['code']);
+
+/* Ohne CSRF-Token darf gar nichts durchgehen */
+$a = anfrage($basis . '/backend/upload.php', [
+    CURLOPT_POST       => true,
+    CURLOPT_POSTFIELDS => http_build_query(['aktion' => 'start']),
+]);
+pruefe('Server: Hochladen ohne CSRF-Token abgewiesen', $a['code'] === 400, 'HTTP ' . $a['code']);
 
 /* Abmelden */
 anfrage($basis . '/backend/logout.php');

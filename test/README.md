@@ -36,7 +36,7 @@ Beendet wird mit `Strg+C`. Bleibt einmal ein Server hängen: `./test/testmain.sh
 | Benutzername | Passwort | Rolle | Sieht |
 | --- | --- | --- | --- |
 | `testuser` | `test1234` | Mitglied | Videothek und Player |
-| `testtrainer` | `test1234` | Trainer | zusätzlich die Verwaltung |
+| `testtrainer` | `test1234` | Trainer | zusätzlich Videos hochladen und Zugänge verwalten |
 
 Beide Konten gelten in der Serverfassung **und** im Entwurf. In der Datenbank liegt nur
 der Hash des Passworts – erzeugt beim Einrichten, nicht fest eingetragen.
@@ -72,7 +72,7 @@ sehen beide Konten dasselbe. Die Verwaltung gibt es nur unter
 | `testmain.sh` / `testmain.bat` | Startskript: Voraussetzungen, Einrichtung, Server, Prüfung |
 | `setup.php` | Legt SQLite-Datenbank, Testkonten, Videoablage und `backend/config.php` an |
 | `router.php` | Statischer Auslieferer **mit** Range-Unterstützung für den PHP-Server |
-| `check.php` | 21 Prüfungen gegen den laufenden Server |
+| `check.php` | 29 Prüfungen gegen den laufenden Server |
 | `daten/server.pid` | Kennung des laufenden Servers, für `--stop` |
 | `daten/` | Testdatenbank und Serverprotokoll (nicht im Repository) |
 | `videos-privat/` | Kopie der Videos außerhalb des Web-Ordners (nicht im Repository) |
@@ -98,11 +98,13 @@ Testumgebung, nicht der Seite. `router.php` verhält sich wie Apache oder Nginx 
 - Spulen im Video über Range-Anfragen (`206 Partial Content`)
 - Videothek und `stream.php` ohne Anmeldung gesperrt (Umleitung)
 - Falsches Passwort abgewiesen, richtiges akzeptiert
-- Videothek zeigt sechs Videos, Videoseite vier Abschnitte
+- Videothek zeigt sechs Videos, Videoseite zeigt den Player
 - Geschütztes Video wird ausgeliefert und lässt sich spulen
 - Ausweichformat WebM, unbekanntes Format abgewiesen
 - Pfadmanipulation (`?v=../../etc/passwd`) abgewiesen
-- Verwaltung für Mitglieder gesperrt, für Trainer erreichbar
+- Verwaltung, Zugänge und Hochladen für Mitglieder gesperrt, für Trainer erreichbar
+- Upload lässt sich anmelden; Teilstücke in falscher Reihenfolge werden abgewiesen
+- Hochladen ohne CSRF-Token abgewiesen
 - Nach dem Abmelden wieder gesperrt
 
 ## Aufräumen

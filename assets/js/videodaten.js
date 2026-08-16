@@ -18,12 +18,7 @@ window.VIDEOTHEK = [
     "trainer": "Michael Buchhold",
     "datum": "2026-08-01",
     "dauer": 42,
-    "beschreibung": "Die Grundform als Einstieg in den Formenlauf. Zuerst die Stellung, dann der komplette Ablauf, zum Schluss die Fehler, die im Training am häufigsten auffallen.",
-    "kapitel": [
-      { "t": 0, "name": "Grundstellung" },
-      { "t": 12, "name": "Der Ablauf" },
-      { "t": 28, "name": "Häufige Fehler" }
-    ]
+    "beschreibung": "Die Grundform als Einstieg in den Formenlauf. Zuerst die Stellung, dann der komplette Ablauf, zum Schluss die Fehler, die im Training am häufigsten auffallen."
   },
   {
     "slug": "taegeuk-il-jang",
@@ -33,13 +28,7 @@ window.VIDEOTHEK = [
     "trainer": "Michael Buchhold",
     "datum": "2026-07-25",
     "dauer": 62,
-    "beschreibung": "Die erste Form der Taegeuk-Reihe in ruhigem Tempo. Zuerst der komplette Ablauf, danach die beiden Sequenzen einzeln mit den häufigsten Korrekturen: Stand zu kurz, Hüfte nicht mitgedreht, Blick zu früh.",
-    "kapitel": [
-      { "t": 0, "name": "Vorbereitung und Stand" },
-      { "t": 14, "name": "Erste Sequenz" },
-      { "t": 32, "name": "Zweite Sequenz" },
-      { "t": 48, "name": "Abschluss und Korrektur" }
-    ]
+    "beschreibung": "Die erste Form der Taegeuk-Reihe in ruhigem Tempo. Zuerst der komplette Ablauf, danach die beiden Sequenzen einzeln mit den häufigsten Korrekturen: Stand zu kurz, Hüfte nicht mitgedreht, Blick zu früh."
   },
   {
     "slug": "taegeuk-i-jang",
@@ -49,12 +38,7 @@ window.VIDEOTHEK = [
     "trainer": "Michael Buchhold",
     "datum": "2026-07-18",
     "dauer": 46,
-    "beschreibung": "Die zweite Form der Taegeuk-Reihe. Neu gegenüber Il Jang sind die Fußtechniken im Ablauf – achte auf das Anheben des Knies vor jedem Tritt.",
-    "kapitel": [
-      { "t": 0, "name": "Vorbereitung" },
-      { "t": 13, "name": "Erste Sequenz" },
-      { "t": 30, "name": "Zweite Sequenz" }
-    ]
+    "beschreibung": "Die zweite Form der Taegeuk-Reihe. Neu gegenüber Il Jang sind die Fußtechniken im Ablauf – achte auf das Anheben des Knies vor jedem Tritt."
   },
   {
     "slug": "taegeuk-sam-jang",
@@ -64,13 +48,7 @@ window.VIDEOTHEK = [
     "trainer": "Michael Buchhold",
     "datum": "2026-07-11",
     "dauer": 58,
-    "beschreibung": "Die dritte Form mit doppelten Handtechniken und schnellerem Wechsel der Richtung. Der Ablauf wird zunächst langsam gezeigt, dann im Prüfungstempo.",
-    "kapitel": [
-      { "t": 0, "name": "Vorbereitung" },
-      { "t": 14, "name": "Erste Sequenz" },
-      { "t": 30, "name": "Zweite Sequenz" },
-      { "t": 44, "name": "Abschluss" }
-    ]
+    "beschreibung": "Die dritte Form mit doppelten Handtechniken und schnellerem Wechsel der Richtung. Der Ablauf wird zunächst langsam gezeigt, dann im Prüfungstempo."
   },
   {
     "slug": "hanbon-kyorugi-1",
@@ -80,12 +58,7 @@ window.VIDEOTHEK = [
     "trainer": "Michael Buchhold",
     "datum": "2026-07-04",
     "dauer": 44,
-    "beschreibung": "Einschrittkampf mit fester Rollenverteilung. Wichtig ist die Distanz vor dem Angriff: einen halben Schritt zu nah, und der Block kommt zu spät.",
-    "kapitel": [
-      { "t": 0, "name": "Ablauf und Distanz" },
-      { "t": 15, "name": "Angriff und Block" },
-      { "t": 30, "name": "Konter" }
-    ]
+    "beschreibung": "Einschrittkampf mit fester Rollenverteilung. Wichtig ist die Distanz vor dem Angriff: einen halben Schritt zu nah, und der Block kommt zu spät."
   },
   {
     "slug": "hanbon-kyorugi-2",
@@ -95,11 +68,6 @@ window.VIDEOTHEK = [
     "trainer": "Michael Buchhold",
     "datum": "2026-06-27",
     "dauer": 42,
-    "beschreibung": "Zweite Form des Einschrittkampfs: statt zu blocken, wird ausgewichen. Der Konter kommt aus der Drehung – langsam üben, bis der Stand sicher steht.",
-    "kapitel": [
-      { "t": 0, "name": "Ausgangsstellung" },
-      { "t": 14, "name": "Ausweichen" },
-      { "t": 28, "name": "Konter und Abschluss" }
-    ]
+    "beschreibung": "Zweite Form des Einschrittkampfs: statt zu blocken, wird ausgewichen. Der Konter kommt aus der Drehung – langsam üben, bis der Stand sicher steht."
   }
 ];

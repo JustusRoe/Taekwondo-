@@ -93,20 +93,26 @@ function fuss(): void
 /** Eine Videokachel für die Übersicht. */
 function video_karte(array $v): void
 {
-    $poster = konfiguration()['poster_url'] . ($v['posterdatei'] ?? '');
+    // Ohne Vorschaubild bleibt die Fläche dunkel – ein <img> ohne Dateinamen
+    // würde sonst eine ins Leere laufende Anfrage auslösen.
+    $poster = $v['posterdatei']
+        ? konfiguration()['poster_url'] . $v['posterdatei']
+        : null;
     ?>
   <a class="video-card" href="video.php?v=<?= urlencode($v['slug']) ?>">
     <span class="video-thumb">
-      <img src="<?= h($poster) ?>" alt="" loading="lazy" width="640" height="360">
+      <?php if ($poster): ?>
+        <img src="<?= h($poster) ?>" alt="" loading="lazy" width="640" height="360">
+      <?php endif; ?>
       <span class="play-badge" aria-hidden="true"></span>
       <span class="video-duration"><?= h(mmss((int) $v['dauer'])) ?></span>
     </span>
     <span class="video-body">
       <span class="video-tag"><?= h($v['bereich']) ?></span>
       <h3><?= h($v['titel']) ?></h3>
-      <span class="video-sub"><?= h($v['grad']) ?> · <?= h($v['trainer']) ?></span>
+      <span class="video-sub"><?= h($v['grad']) ?></span>
       <span class="video-foot">
-        <span><?= (int) ($v['anzahl_kapitel'] ?? 0) ?> Abschnitte</span>
+        <span><?= h($v['trainer']) ?></span>
         <span><?= h(date('d.m.Y', strtotime((string) $v['veroeffentlicht_am']))) ?></span>
       </span>
     </span>

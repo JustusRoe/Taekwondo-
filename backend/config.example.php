@@ -28,7 +28,16 @@ return [
     'video_ordner'  => __DIR__ . '/../../videos-privat',
 
     // Vorschaubilder dürfen öffentlich liegen – sie verraten nichts.
+    // poster_ordner ist der Pfad auf der Festplatte, poster_url die Adresse,
+    // unter der derselbe Ordner im Browser erreichbar ist. Beim Hochladen
+    // schneidet der Browser ein Standbild aus dem Video; es landet hier.
+    'poster_ordner' => __DIR__ . '/../assets/video',
     'poster_url'    => '/assets/video/',
+
+    // Größte erlaubte Videodatei in Megabyte. Das Hochladen läuft in kleinen
+    // Stücken (siehe upload.php), deshalb sind hier auch Werte weit über
+    // upload_max_filesize der PHP-Einstellungen möglich.
+    'max_video_mb'  => 800,
 
     // --- Sicherheit -----------------------------------------------------
     // Nach so vielen Fehlversuchen innerhalb des Zeitfensters wird der

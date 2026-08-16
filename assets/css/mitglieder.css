@@ -336,11 +336,10 @@
 }
 .crumb:hover { color: var(--accent); }
 
+/* Der Player steht einspaltig. Eine Begrenzung der Breite hält das Video in
+   einer Größe, in der Technik erkennbar bleibt, ohne den Bildschirm zu füllen. */
 .player-layout {
-  display: grid;
-  grid-template-columns: minmax(0, 1fr) 340px;
-  gap: clamp(24px, 3vw, 40px);
-  align-items: start;
+  max-width: 980px;
 }
 
 .video-frame {
@@ -387,7 +386,6 @@
 .player-meta span:not(:last-child)::after { content: " ·"; }
 .player-desc { color: var(--ink-2); max-width: 62ch; }
 
-.resume[hidden] { display: none; }
 .resume {
   display: inline-flex;
   align-items: center;
@@ -413,14 +411,31 @@
   text-underline-offset: 2px;
 }
 
-/* Kapitelliste */
-.chapter-panel {
+/* ---------- Verwaltung ---------- */
+
+.verwaltung-menue { display: flex; gap: 8px; margin-bottom: 26px; flex-wrap: wrap; }
+
+.verwaltung-layout {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 360px;
+  gap: clamp(24px, 3vw, 40px);
+  align-items: start;
+}
+
+.abschnitt-titel {
+  font-size: 1.15rem;
+  margin-bottom: .8em;
+}
+
+.verwaltung-liste {
   background: #fff;
   border: 1px solid var(--line);
   position: sticky;
   top: calc(var(--header-h) + 20px);
+  max-height: calc(100vh - var(--header-h) - 60px);
+  overflow-y: auto;
 }
-.chapter-panel h2 {
+.verwaltung-liste h2 {
   font-family: var(--font-body);
   font-size: .74rem;
   font-weight: 700;
@@ -431,33 +446,119 @@
   padding: 20px 22px 14px;
   border-bottom: 1px solid var(--line);
 }
-.chapter-list { list-style: none; margin: 0; padding: 0; }
-.chapter-list li + li { border-top: 1px solid var(--line); }
-.chapter-list button {
-  width: 100%;
-  display: flex;
-  align-items: baseline;
-  gap: 14px;
-  padding: 14px 22px;
-  background: none;
-  border: 0;
-  font: inherit;
-  text-align: left;
-  cursor: pointer;
-  color: var(--ink-2);
-  transition: background-color .15s ease;
-}
-.chapter-list button:hover { background: var(--bg-soft); }
-.chapter-list .ch-time {
-  flex: none;
-  font-variant-numeric: tabular-nums;
+.verwaltung-liste ul { list-style: none; margin: 0; padding: 0; }
+.verwaltung-liste li { padding: 14px 22px; }
+.verwaltung-liste li + li { border-top: 1px solid var(--line); }
+.verwaltung-liste strong { display: block; font-size: .93rem; }
+.listen-zeile {
+  display: block;
   font-size: .82rem;
-  color: var(--accent);
-  font-weight: 600;
+  color: var(--muted);
+  margin-top: 2px;
 }
-.chapter-list .ch-name { font-size: .93rem; }
-.chapter-list li.is-current button { background: var(--accent-soft); }
-.chapter-list li.is-current .ch-name { color: var(--ink); font-weight: 600; }
+.verwaltung-liste form { margin-top: 8px; }
+
+.tool-btn-klein { font-size: .78rem; padding: 5px 11px; }
+
+/* Aufklappbares Bearbeiten je Konto */
+.verwaltung-liste details { margin-top: 10px; }
+.verwaltung-liste summary {
+  display: inline-flex;
+  align-items: center;
+  list-style: none;
+  cursor: pointer;
+}
+.verwaltung-liste summary::-webkit-details-marker { display: none; }
+.konto-form {
+  display: grid;
+  gap: 10px;
+  margin-top: 12px;
+  padding: 14px;
+  background: var(--bg-soft);
+  border: 1px solid var(--line);
+}
+.konto-form label {
+  display: grid;
+  gap: 4px;
+  font-size: .8rem;
+  font-weight: 600;
+  color: var(--ink-2);
+}
+.konto-form label.kasten {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-weight: 500;
+}
+.konto-form input[type="checkbox"] { width: auto; }
+.konto-form button { justify-self: start; }
+
+/* Fortschritt beim Hochladen */
+.upload-stand { margin: -6px 0 22px; }
+.upload-balken {
+  height: 8px;
+  background: var(--bg-soft);
+  border: 1px solid var(--line);
+  overflow: hidden;
+}
+.upload-balken span {
+  display: block;
+  height: 100%;
+  width: 0;
+  background: var(--accent);
+  transition: width .2s ease;
+}
+.upload-text { font-size: .86rem; color: var(--ink-2); margin: 8px 0 0; }
+.upload-text.ist-fehler { color: var(--accent); font-weight: 600; }
+
+.feld-hinweis {
+  display: block;
+  font-size: .8rem;
+  color: var(--muted);
+  margin-top: 5px;
+}
+
+.passwort-zeile { display: flex; gap: 8px; align-items: stretch; }
+.passwort-zeile input { flex: 1; }
+
+/* Zugangsdaten nach dem Anlegen – bewusst auffällig, sie sind nur einmal zu sehen */
+.passwort-kasten {
+  background: #fff;
+  border: 2px solid var(--accent);
+  padding: 22px 24px;
+  margin-bottom: 30px;
+}
+.passwort-kasten h2 {
+  font-size: .74rem;
+  font-family: var(--font-body);
+  font-weight: 700;
+  letter-spacing: .13em;
+  text-transform: uppercase;
+  color: var(--accent);
+  margin: 0 0 14px;
+}
+.passwort-kasten dl {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px 40px;
+  margin: 0 0 14px;
+}
+.passwort-kasten dt {
+  font-size: .78rem;
+  text-transform: uppercase;
+  letter-spacing: .08em;
+  color: var(--muted);
+}
+.passwort-kasten dd {
+  margin: 2px 0 0;
+  font-family: ui-monospace, "SF Mono", Menlo, Consolas, monospace;
+  font-size: 1.15rem;
+  font-weight: 600;
+  user-select: all;
+}
+.passwort-kasten p { font-size: .88rem; color: var(--ink-2); margin: 0; }
+
+.form-status.ist-fehler { border-left-color: var(--accent); }
 
 .next-up { margin-top: clamp(40px, 5vw, 64px); }
 .next-up h2 {
@@ -470,8 +571,8 @@
 /* ---------- Responsive ---------- */
 
 @media (max-width: 980px) {
-  .player-layout { grid-template-columns: 1fr; }
-  .chapter-panel { position: static; }
+  .verwaltung-layout { grid-template-columns: 1fr; }
+  .verwaltung-liste { position: static; max-height: none; }
 }
 
 @media (max-width: 760px) {

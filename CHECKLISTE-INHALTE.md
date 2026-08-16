@@ -127,12 +127,17 @@ Bis auf Weiteres bleiben die Stockfotos – so vereinbart.
 
 Eingerichtet für **Poomsae** und **Hanbon Kyorugi**, mit sechs Platzhaltervideos.
 
+Zugänge und Videos verwaltet ihr selbst im Browser – FTP wird nicht gebraucht.
+Konten legt nur das Trainerteam an, eine Selbstanmeldung gibt es nicht.
+
 - [ ] 🔴 **Einwilligung jeder gefilmten Person** – auch für den passwortgeschützten Bereich
 - [ ] 🟡 Wer vergibt die Zugänge und setzt Passwörter zurück?
 - [ ] 🟡 Bekommen alle Mitglieder Zugang oder nur bestimmte Gruppen?
-- [ ] 🟡 Mitgliederliste für die Kontenanlage: Benutzername, Name, E-Mail, Rolle
-- [ ] 🟡 Erste echte Videos mit: Titel, Bereich, Gürtelgrad, Trainer/in, Beschreibung und
-      den Abschnitten mit Startzeit
+- [ ] 🟡 Mitgliederliste für die Kontenanlage: Name, gewünschter Benutzername, E-Mail,
+      Rolle (Mitglied oder Trainer)
+- [ ] 🟡 Erste echte Videos. Nötig sind nur Titel, Bereich, Gürtelgrad und Beschreibung –
+      Länge, Vorschaubild und der Name der Trainerin oder des Trainers ergeben sich beim
+      Hochladen von selbst.
 
 **Videoformat:** MP4 (H.264 + AAC), 720p genügt, rund 90 MB je 10 Minuten.
 Kostenloses Werkzeug zum Umwandeln: HandBrake.

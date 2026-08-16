@@ -86,12 +86,6 @@ $pdo->exec('CREATE TABLE IF NOT EXISTS videos (
     veroeffentlicht_am TEXT NOT NULL,
     sichtbar INTEGER NOT NULL DEFAULT 1
 )');
-$pdo->exec('CREATE TABLE IF NOT EXISTS kapitel (
-    id INTEGER PRIMARY KEY AUTOINCREMENT,
-    video_id INTEGER NOT NULL REFERENCES videos(id) ON DELETE CASCADE,
-    startsekunde INTEGER NOT NULL,
-    bezeichnung TEXT NOT NULL
-)');
 $pdo->exec('CREATE TABLE IF NOT EXISTS login_versuche (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
     benutzername TEXT NOT NULL,
@@ -136,7 +130,6 @@ if (!is_array($daten)) {
     exit("FEHLER: assets/js/videodaten.js konnte nicht gelesen werden.\n");
 }
 
-$pdo->exec('DELETE FROM kapitel');
 $pdo->exec('DELETE FROM videos');
 
 $video = $pdo->prepare(
@@ -144,11 +137,6 @@ $video = $pdo->prepare(
                          dateiname, posterdatei, dauer, veroeffentlicht_am)
      VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)'
 );
-$kapitel = $pdo->prepare(
-    'INSERT INTO kapitel (video_id, startsekunde, bezeichnung) VALUES (?, ?, ?)'
-);
-
-$anzahlKapitel = 0;
 foreach ($daten as $d) {
     // Der Testbrowser spielt notfalls WebM ab; sonst MP4 wie im Echtbetrieb.
     $datei = is_file($ziel . '/' . $d['slug'] . '.mp4')
@@ -159,13 +147,8 @@ foreach ($daten as $d) {
         $d['slug'], $d['titel'], $d['bereich'], $d['grad'], $d['trainer'],
         $d['beschreibung'], $datei, $d['slug'] . '.jpg', $d['dauer'], $d['datum'],
     ]);
-    $id = (int) $pdo->lastInsertId();
-    foreach ($d['kapitel'] as $k) {
-        $kapitel->execute([$id, $k['t'], $k['name']]);
-        $anzahlKapitel++;
-    }
 }
-printf("  Videothek        %d Videos, %d Abschnitte\n", count($daten), $anzahlKapitel);
+printf("  Videothek        %d Videos\n", count($daten));
 
 /* ---------- 6. Konfiguration für das Backend ---------- */
 $config = <<<'PHP'
@@ -184,7 +167,9 @@ return [
         'passwort' => null,
     ],
     'video_ordner'    => __DIR__ . '/../test/videos-privat',
+    'poster_ordner'   => __DIR__ . '/../assets/video',
     'poster_url'      => '/assets/video/',
+    'max_video_mb'    => 800,
     'max_versuche'    => 5,
     'sperrminuten'    => 15,
     'sitzung_minuten' => 180,
