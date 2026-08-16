@@ -13,6 +13,24 @@ Unter Windows ohne WSL oder Git Bash stattdessen:
 test\testmain.bat
 ```
 
+## Auf dem Mac
+
+macOS bringt seit Version 12 (Monterey) kein PHP mehr mit. Einmalig einrichten:
+
+```bash
+php -v                       # kommt "command not found", dann weiter mit:
+brew install php             # setzt Homebrew voraus – https://brew.sh
+```
+
+Danach im Ordner des Projekts:
+
+```bash
+./test/testmain.sh
+```
+
+Das Skript prüft PHP-Version und Erweiterungen selbst und sagt, wenn etwas fehlt.
+Beendet wird mit `Strg+C`. Bleibt einmal ein Server hängen: `./test/testmain.sh --stop`.
+
 ## Testzugänge
 
 | Benutzername | Passwort | Rolle | Sieht |
@@ -22,6 +40,11 @@ test\testmain.bat
 
 Beide Konten gelten in der Serverfassung **und** im Entwurf. In der Datenbank liegt nur
 der Hash des Passworts – erzeugt beim Einrichten, nicht fest eingetragen.
+
+**Wichtig:** Die Spalte „Sieht" gilt für die **Serverfassung** unter `backend/`. Der
+Entwurf (`mitglieder*.html`) kennt keine Rollen und hat keinen Verwaltungsbereich – dort
+sehen beide Konten dasselbe. Die Verwaltung gibt es nur unter
+`http://localhost:8080/backend/login.php`.
 
 ## Was danach im Browser erreichbar ist
 
