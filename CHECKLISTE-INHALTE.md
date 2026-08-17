@@ -24,6 +24,7 @@ Aus der Vereinsseite und deinen Angaben ist alles Folgende schon drin:
 | Vereinsname, Anschrift, Telefon, Fax, E-Mail | tv-steinau.de |
 | Vorstand, Registergericht Schlüchtern, VR 176, Finanzamt Gelnhausen | tv-steinau.de |
 | Umlage, Anmelde- und Verbandsgebühr, Kündigung bis 15. November | eure Umlageerklärung |
+| Vereinsbeitrag 48 / 120 €, 10 € Verwaltungsgebühr, SEPA-Pflicht, Stand Juli 2024 | Beitrittserklärung |
 | Vier Abteilungsformulare als Download | eure PDFs |
 | Mitgliedsformular und Änderungsmitteilung als echte PDFs | tv-steinau.de |
 | Vereinswappen als Logo, Rot als Leitfarbe | tv-steinau.de |
@@ -84,11 +85,16 @@ Die Termine pflegst du später selbst in einer einzigen Datei:
 - [x] ✅ Umlage geklärt: Ja, es gibt eine. Die Sätze stehen jetzt auf der Seite
       (48 € einzeln, 30 € ab drei Familienmitgliedern, 65 € beziehungsweise 150 € für
       bestehende TV-Mitglieder), dazu 50 € Anmeldegebühr und 30 € Verbandsgebühr im Jahr.
-- [ ] 🔴 **Welche Vereinsbeiträge gelten?** Die Umlageerklärung nennt 48 € für eine
-      Einzelmitgliedschaft und 120 € ab drei Familienmitgliedern. Auf tv-steinau.de stehen
-      dagegen 40 € bis 17 Jahre, 45 € für Erwachsene und 110 € für Familien. Auf der Seite
-      steht derzeit die Umlageerklärung, weil sie aus der Abteilung kommt. Welche Zahlen
-      stimmen? Falsche Beiträge auf einer öffentlichen Seite ärgern Neumitglieder.
+- [x] ✅ Vereinsbeiträge geklärt: Die Beitrittserklärung (Stand Juli 2024) nennt 48 €
+      für Kinder, Jugendliche und Erwachsene gleichermaßen, 120 € ab drei Mitgliedern in
+      häuslicher Gemeinschaft, dazu 10 € einmalige Verwaltungsgebühr. Die Umlageerklärung
+      passt dazu. Die Zahlen auf tv-steinau.de (40 / 45 / 110 €) sind überholt.
+- [ ] ⚪ **Michael Weber Bescheid geben**, dass auf tv-steinau.de noch die alten Beiträge
+      stehen – das betrifft den ganzen Verein, nicht nur uns.
+- [ ] 🟡 **Umlage für bestehende TV-Mitglieder.** Die Umlageerklärung nennt 65 € pro Person
+      beziehungsweise 150 € ab drei Familienmitgliedern. Kommt das zum Grundbeitrag hinzu,
+      oder ist es der Gesamtbetrag? Auf der Seite steht deshalb nur die Umlage, ohne
+      Gesamtsumme – bei Neueintritten stehen die 96 € und 150 € dagegen ausgerechnet da.
 - [ ] ⚪ Stimmen die 60 Mitglieder ungefähr, oder soll die Zahl raus?
 - [ ] ⚪ Welchem Verband gehört die Abteilung an – Hessische Taekwondo Union, und darüber
       hinaus DTU?
