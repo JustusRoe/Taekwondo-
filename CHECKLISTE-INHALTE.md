@@ -38,12 +38,12 @@ Aus der Vereinsseite und deinen Angaben ist alles Folgende schon drin:
 
 ## A · Trainerteam 🟡
 
-Fünf Porträts sind da und eingebaut: Michael, Maxim, Justus, Arno und Anna-Karoline.
-Alle einheitlich angeschnitten – Kopf bis unter den Gürtelknoten, gleiche Kopfgröße,
-graue Mattenwand im Rücken.
+Sechs Porträts sind da und eingebaut: Michael, Maxim, Julia, Justus, Arno und
+Anna-Karoline. Alle einheitlich angeschnitten mit gleicher Kopfgröße vor derselben
+grauen Mattenwand.
 
-- [ ] 🟡 **Porträtfotos von Andy, Julia und Aileen** – JPG, Originalgröße, unbearbeitet
-      (Zuschnitt mache ich). Bei Julia im T-Shirt, das ist so besprochen.
+- [ ] 🟡 **Porträtfotos von Andy und Aileen** – JPG, Originalgröße, unbearbeitet
+      (Zuschnitt mache ich).
 - [ ] 🟡 Für **jede der acht Personen**:
 
 | Feld | Stand |
@@ -130,7 +130,7 @@ Bis auf Weiteres bleiben die Stockfotos – so vereinbart.
 | Abteilung | 1 | hoch 3:4 | 1200 × 1600 px |
 | Gruppenkarten | 3 | quer 4:3 | 1200 × 900 px |
 | Galerie | 6 | 4 × quadratisch, 2 × quer 2:1 | 1200 × 1200 / 1600 × 800 px |
-| Trainerporträts | 3 noch offen (Andy, Julia, Aileen) | hoch 4:5 | 1000 × 1250 px |
+| Trainerporträts | 2 noch offen (Andy, Aileen) | hoch 4:5 | 1000 × 1250 px |
 
 ---
 
