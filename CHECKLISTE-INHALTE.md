@@ -23,7 +23,8 @@ Aus der Vereinsseite und deinen Angaben ist alles Folgende schon drin:
 | --- | --- |
 | Vereinsname, Anschrift, Telefon, Fax, E-Mail | tv-steinau.de |
 | Vorstand, Registergericht Schlüchtern, VR 176, Finanzamt Gelnhausen | tv-steinau.de |
-| Jahresbeiträge 40 / 45 / 110 €, Kündigung bis 15. November | tv-steinau.de |
+| Umlage, Anmelde- und Verbandsgebühr, Kündigung bis 15. November | eure Umlageerklärung |
+| Vier Abteilungsformulare als Download | eure PDFs |
 | Mitgliedsformular und Änderungsmitteilung als echte PDFs | tv-steinau.de |
 | Vereinswappen als Logo, Rot als Leitfarbe | tv-steinau.de |
 | Michael Buchhold als Abteilungsleiter, Telefon, taekwondo@tv-steinau.de | tv-steinau.de |
@@ -44,18 +45,18 @@ graue Mattenwand im Rücken.
       (Zuschnitt mache ich). Bei Julia im T-Shirt, das ist so besprochen.
 - [ ] 🟡 Für **jede der acht Personen**:
 
-| Feld | Beispiel |
+| Feld | Stand |
 | --- | --- |
-| Name | |
-| Funktion | Trainerin Bambini / Übungsleiter Selbstverteidigung … |
-| Graduierung | 2. Dan, 1. Kup … |
-| Kurzvorstellung | 2–3 Sätze: seit wann dabei, Schwerpunkt, Lizenzen |
+| Name | ✅ alle acht |
+| Funktion | ✅ bei vieren; bei Aileen, Justus, Arno und Anna-Karoline steht „Training" |
+| Graduierung | ✅ alle |
+| Kurzvorstellung | offen – 2–3 Sätze je Person: seit wann dabei, Schwerpunkt, Lizenzen |
 
-- [ ] 🔴 **Einverständnis jeder Person**, mit Name und Bild genannt zu werden
-- [ ] 🟡 Auch für Michael Buchhold fehlen noch Dan-Grad und Kurzvorstellung
-- [ ] 🟡 **Graduierungen.** Auf den Bildern sind die Gürtel zu sehen – schwarz bei
-      Michael, Justus und Arno, rot bei Maxim, rot-schwarz bei Anna-Karoline. Welcher
-      Dan beziehungsweise Kup das genau ist, kann ich daraus nicht ablesen.
+- [x] ✅ Alle acht Namen und Graduierungen stehen. 1. Dan: Michael, Andy, Aileen, Arno
+      und Justus. 1. Kup: Maxim und Anna-Karoline. Julia hat keine Graduierung – bei ihr
+      entfällt die Zeile.
+- [ ] 🔴 **Einverständnis jeder Person**, mit Name und Bild genannt zu werden. Das
+      passende Formular liegt jetzt vor: `downloads/einwilligung-aufnahmen.pdf`.
 - [ ] 🟡 Funktion von Aileen, Justus, Arno und Anna-Karoline – auf den Karten steht
       bisher nur „Training"
 
@@ -80,8 +81,14 @@ Die Termine pflegst du später selbst in einer einzigen Datei:
 
 - [ ] 🟡 **Gründungsjahr der Taekwondo-Abteilung**
 - [ ] ⚪ Zwei bis drei Sätze zur Geschichte der Abteilung
-- [ ] 🟡 Gibt es für die Taekwondo-Abteilung eine **zusätzliche Umlage** neben dem
-      Vereinsbeitrag? Auf der Vereinsseite ist eine Umlage nur für Handball und Turnen erwähnt.
+- [x] ✅ Umlage geklärt: Ja, es gibt eine. Die Sätze stehen jetzt auf der Seite
+      (48 € einzeln, 30 € ab drei Familienmitgliedern, 65 € beziehungsweise 150 € für
+      bestehende TV-Mitglieder), dazu 50 € Anmeldegebühr und 30 € Verbandsgebühr im Jahr.
+- [ ] 🔴 **Welche Vereinsbeiträge gelten?** Die Umlageerklärung nennt 48 € für eine
+      Einzelmitgliedschaft und 120 € ab drei Familienmitgliedern. Auf tv-steinau.de stehen
+      dagegen 40 € bis 17 Jahre, 45 € für Erwachsene und 110 € für Familien. Auf der Seite
+      steht derzeit die Umlageerklärung, weil sie aus der Abteilung kommt. Welche Zahlen
+      stimmen? Falsche Beiträge auf einer öffentlichen Seite ärgern Neumitglieder.
 - [ ] ⚪ Stimmen die 60 Mitglieder ungefähr, oder soll die Zahl raus?
 - [ ] ⚪ Welchem Verband gehört die Abteilung an – Hessische Taekwondo Union, und darüber
       hinaus DTU?
@@ -119,7 +126,7 @@ Bis auf Weiteres bleiben die Stockfotos – so vereinbart.
 | Abteilung | 1 | hoch 3:4 | 1200 × 1600 px |
 | Gruppenkarten | 3 | quer 4:3 | 1200 × 900 px |
 | Galerie | 6 | 4 × quadratisch, 2 × quer 2:1 | 1200 × 1200 / 1600 × 800 px |
-| Trainerporträts | 3 noch offen | hoch 4:5 | 1000 × 1250 px |
+| Trainerporträts | 3 noch offen (Andy, Julia, Aileen) | hoch 4:5 | 1000 × 1250 px |
 
 ---
 

@@ -633,6 +633,32 @@ p { margin: 0 0 1.1em; }
   margin-top: 30px;
   align-items: start;
 }
+.beitrag-titel {
+  margin-top: clamp(38px, 5vw, 56px);
+  padding-top: 26px;
+  border-top: 1px solid var(--line);
+  font-size: 1.25rem;
+}
+/* Der Zusatz unter dem Betrag – etwa „zzgl. 48,00 € Vereinsbeitrag" */
+.beitrag-zusatz {
+  display: block;
+  font-size: .78rem;
+  font-weight: 400;
+  color: var(--muted);
+  margin-top: 2px;
+}
+
+/* Zwischenüberschrift der Downloadgruppen */
+.dl-gruppe {
+  font-family: var(--font-body);
+  font-size: .74rem;
+  font-weight: 700;
+  letter-spacing: .13em;
+  text-transform: uppercase;
+  color: var(--muted);
+  margin: 0 0 .9em;
+}
+.downloads + .dl-gruppe { margin-top: 2em; }
 @media (max-width: 760px) {
   .beitrag-grid { grid-template-columns: 1fr; }
 }
@@ -888,6 +914,14 @@ p { margin: 0 0 1.1em; }
   letter-spacing: .1em;
   text-transform: uppercase;
   color: var(--accent);
+  margin-bottom: .5em;
+}
+/* Graduierung als eigene Zeile: in der roten Versalzeile der Funktion
+   sähe „1. DAN" nach Abkürzung aus statt nach Gürtelgrad. */
+.member-grad {
+  font-size: .86rem;
+  font-weight: 600;
+  color: var(--ink-2);
   margin-bottom: 1em;
 }
 .member-body p:last-child {
