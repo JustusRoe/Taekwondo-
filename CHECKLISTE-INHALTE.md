@@ -72,10 +72,8 @@ graue Mattenwand im Rücken.
 - [x] ✅ Bambini-Alter: 3 bis 6 Jahre – steht auf der Angebotskarte.
 - [ ] 🟡 **Bambini-Alter bestätigen.** Du warst dir bei „3 bis 6" nicht ganz sicher;
       es steht so auf der Seite.
-- [ ] ⚪ Die Kartenlinks zeigen auf OpenStreetMap – bewusst, weil dabei nichts
-      nachgeladen und nichts mitgeschnitten wird. Soll es stattdessen Google Maps sein?
-- [ ] ⚪ **Parken und Eingang** je Halle in ein bis zwei Sätzen – wo stellt man das Auto
-      ab, welcher Eingang, muss man klingeln? Steht als offener Hinweis unter der Anfahrt.
+- [x] ✅ Kartenlinks zeigen auf Google Maps, mit euren Einträgen für die
+      Mehrzweckhalle und die Halle Am Schloss.
 - [ ] ⚪ Ferienregelung in einem Satz (fällt Training aus oder wird es verlegt?)
 - [ ] ⚪ Termine ab Januar 2027, sobald der neue Plan steht
 
