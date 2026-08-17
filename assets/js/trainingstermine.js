@@ -56,13 +56,13 @@ window.TRAININGSTERMINE = [
 window.TRAININGSORTE = {
   steines: {
     name: 'Halle am Steines',
-    zusatz: 'am Freibad',
-    adresse: 'Am Steinaubach 14, 36396 Steinau an der Straße'
+    zusatz: '',
+    adresse: 'Am Steines 23, 36396 Steinau an der Straße'
   },
   schloss: {
     name: 'Halle am Schloss',
-    zusatz: 'Brüder-Grimm-Schule',
-    adresse: 'Schlossstraße 22, 36396 Steinau an der Straße'
+    zusatz: 'alte Turnhalle',
+    adresse: 'Im Schloß, 36396 Steinau an der Straße'
   },
   frei: { name: 'Kein Training', zusatz: '', adresse: '' }
 };

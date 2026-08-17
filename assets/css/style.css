@@ -648,6 +648,42 @@ p { margin: 0 0 1.1em; }
   margin-top: 2px;
 }
 
+/* Verweis statt eigener Beitragstabelle – die Zahlen pflegt der Hauptverein */
+.hinweis-kasten {
+  margin-top: clamp(38px, 5vw, 56px);
+  padding: clamp(24px, 3vw, 32px);
+  background: #fff;
+  border: 1px solid var(--line);
+  border-left: 3px solid var(--accent);
+}
+.hinweis-kasten h3 { font-size: 1.15rem; }
+.hinweis-kasten p:last-child { margin-bottom: 0; }
+
+/* Trainingsorte mit Anfahrt */
+.orte { list-style: none; margin: 0 0 1.2em; padding: 0; display: grid; gap: 20px; }
+.orte li {
+  display: grid;
+  gap: 6px;
+  justify-items: start;
+  padding-top: 18px;
+  border-top: 1px solid var(--line);
+}
+.orte address {
+  font-style: normal;
+  color: var(--ink-2);
+  line-height: 1.5;
+}
+.ort-wann { font-size: .86rem; color: var(--muted); }
+.ort-route {
+  font-size: .88rem;
+  font-weight: 600;
+  /* Eigenständiger Link auf eigener Zeile – auf dem Telefon ein volles
+     Tippziel, nicht nur die Höhe der Schrift. */
+  display: inline-flex;
+  align-items: center;
+  min-height: 34px;
+}
+
 /* Zwischenüberschrift der Downloadgruppen */
 .dl-gruppe {
   font-family: var(--font-body);
@@ -1359,6 +1395,8 @@ input.has-error, textarea.has-error { border-color: var(--accent); background: v
    wird, bekommt daher mindestens 44 px Höhe – die Größe, die Apple und Google
    in ihren Gestaltungsrichtlinien nennen. Am Zeigergerät bleibt alles wie bisher. */
 @media (pointer: coarse) {
+  .ort-route { min-height: 44px; }
+
   .tool-btn,
   .legal .back-link {
     min-height: 44px;

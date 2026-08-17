@@ -31,7 +31,7 @@ Aus der Vereinsseite und deinen Angaben ist alles Folgende schon drin:
 | Michael Buchhold als Abteilungsleiter, Telefon, taekwondo@tv-steinau.de | tv-steinau.de |
 | Schriftführer der Hessischen Taekwondo Union | h-t-u.de |
 | Alle 37 Trainingstermine bis Dezember mit Halle | dein Trainingsplan-PDF |
-| Halle am Steines und Halle am Schloss mit Adressen | steinau.eu |
+| Halle am Steines (Am Steines 23) und Halle am Schloss (Im Schloß) | Deine Angaben |
 | Drei Gruppen, ca. 60 Mitglieder, acht Namen im Trainerteam | Deine Angaben |
 
 ---
@@ -69,7 +69,13 @@ graue Mattenwand im Rücken.
       (Selbstverteidigung) und samstags (Training und Bambini).
 - [ ] 🟡 **Bambini-Zeit klären.** Du sagtest samstags 10:30 – 11:30; im Plan steht bei den
       Terminen in der Halle am Schloss „Bambini 11.30 Uhr". Ist das die Regel dort?
-- [ ] 🟡 **Altersangabe Bambini** – ab wann bis wann?
+- [x] ✅ Bambini-Alter: 3 bis 6 Jahre – steht auf der Angebotskarte.
+- [ ] 🟡 **Bambini-Alter bestätigen.** Du warst dir bei „3 bis 6" nicht ganz sicher;
+      es steht so auf der Seite.
+- [ ] ⚪ Die Kartenlinks zeigen auf OpenStreetMap – bewusst, weil dabei nichts
+      nachgeladen und nichts mitgeschnitten wird. Soll es stattdessen Google Maps sein?
+- [ ] ⚪ **Parken und Eingang** je Halle in ein bis zwei Sätzen – wo stellt man das Auto
+      ab, welcher Eingang, muss man klingeln? Steht als offener Hinweis unter der Anfahrt.
 - [ ] ⚪ Ferienregelung in einem Satz (fällt Training aus oder wird es verlegt?)
 - [ ] ⚪ Termine ab Januar 2027, sobald der neue Plan steht
 
@@ -80,21 +86,15 @@ Die Termine pflegst du später selbst in einer einzigen Datei:
 
 ## C · Abteilung 🟡
 
-- [ ] 🟡 **Gründungsjahr der Taekwondo-Abteilung**
-- [ ] ⚪ Zwei bis drei Sätze zur Geschichte der Abteilung
-- [x] ✅ Umlage geklärt: Ja, es gibt eine. Die Sätze stehen jetzt auf der Seite
-      (48 € einzeln, 30 € ab drei Familienmitgliedern, 65 € beziehungsweise 150 € für
-      bestehende TV-Mitglieder), dazu 50 € Anmeldegebühr und 30 € Verbandsgebühr im Jahr.
-- [x] ✅ Vereinsbeiträge geklärt: Die Beitrittserklärung (Stand Juli 2024) nennt 48 €
-      für Kinder, Jugendliche und Erwachsene gleichermaßen, 120 € ab drei Mitgliedern in
-      häuslicher Gemeinschaft, dazu 10 € einmalige Verwaltungsgebühr. Die Umlageerklärung
-      passt dazu. Die Zahlen auf tv-steinau.de (40 / 45 / 110 €) sind überholt.
-- [ ] ⚪ **Michael Weber Bescheid geben**, dass auf tv-steinau.de noch die alten Beiträge
-      stehen – das betrifft den ganzen Verein, nicht nur uns.
-- [ ] 🟡 **Umlage für bestehende TV-Mitglieder.** Die Umlageerklärung nennt 65 € pro Person
-      beziehungsweise 150 € ab drei Familienmitgliedern. Kommt das zum Grundbeitrag hinzu,
-      oder ist es der Gesamtbetrag? Auf der Seite steht deshalb nur die Umlage, ohne
-      Gesamtsumme – bei Neueintritten stehen die 96 € und 150 € dagegen ausgerechnet da.
+- [x] ✅ Gründung 2024 mit erfahrenem Trainerstamm – steht im Abteilungstext.
+- [x] ✅ Beiträge: Auf der Seite stehen bewusst **keine Zahlen** mehr. Sie verweist für
+      den Vereinsbeitrag auf tv-steinau.de und für die Umlage auf die Umlageerklärung im
+      Downloadbereich. So gibt es die Zahlen nur an einer Stelle und sie können nicht
+      auseinanderlaufen – genau das war vorher passiert.
+- [ ] 🔴 **Michael Weber Bescheid geben**, dass auf tv-steinau.de noch 40 / 45 / 110 €
+      stehen. Laut Beitrittserklärung (Stand Juli 2024) gelten 48 € und 120 € plus 10 €
+      Verwaltungsgebühr. Weil die Seite jetzt dorthin verweist, müssen die Zahlen dort
+      stimmen.
 - [ ] ⚪ Stimmen die 60 Mitglieder ungefähr, oder soll die Zahl raus?
 - [ ] ⚪ Welchem Verband gehört die Abteilung an – Hessische Taekwondo Union, und darüber
       hinaus DTU?
