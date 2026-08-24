@@ -32,7 +32,7 @@ Aus der Vereinsseite und deinen Angaben ist alles Folgende schon drin:
 | Schriftführer der Hessischen Taekwondo Union | h-t-u.de |
 | Alle 37 Trainingstermine bis Dezember mit Halle | dein Trainingsplan-PDF |
 | Halle am Steines (Am Steines 23) und Halle am Schloss (Im Schloß) | Deine Angaben |
-| Drei Gruppen, ca. 60 Mitglieder, acht Namen im Trainerteam | Deine Angaben |
+| Drei Gruppen, ca. 85 Mitglieder, acht Namen im Trainerteam | Deine Angaben |
 
 ---
 
@@ -51,7 +51,7 @@ grauen Mattenwand.
 | Name | ✅ alle acht |
 | Funktion | ✅ bei vieren; bei Aileen, Justus, Arno und Anna-Karoline steht „Training" |
 | Graduierung | ✅ alle |
-| Kurzvorstellung | offen – 2–3 Sätze je Person: seit wann dabei, Schwerpunkt, Lizenzen |
+| Kurzvorstellung | ✅ Michael; bei den übrigen sieben offen – 2–3 Sätze je Person: seit wann dabei, Schwerpunkt, Lizenzen |
 
 - [x] ✅ Alle acht Namen und Graduierungen stehen. 1. Dan: Michael, Andy, Aileen, Arno
       und Justus. 1. Kup: Maxim und Anna-Karoline. Julia hat keine Graduierung – bei ihr
@@ -93,7 +93,7 @@ Die Termine pflegst du später selbst in einer einzigen Datei:
       stehen. Laut Beitrittserklärung (Stand Juli 2024) gelten 48 € und 120 € plus 10 €
       Verwaltungsgebühr. Weil die Seite jetzt dorthin verweist, müssen die Zahlen dort
       stimmen.
-- [ ] ⚪ Stimmen die 60 Mitglieder ungefähr, oder soll die Zahl raus?
+- [x] ✅ Mitgliederzahl auf ≈ 85 aktualisiert.
 - [ ] ⚪ Welchem Verband gehört die Abteilung an – Hessische Taekwondo Union, und darüber
       hinaus DTU?
 
