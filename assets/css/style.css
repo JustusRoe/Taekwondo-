@@ -889,6 +889,34 @@ p { margin: 0 0 1.1em; }
   margin-bottom: 0;
 }
 
+/* Werdegang als Aufzählung. Der rote Haken passt zur übrigen Seite
+   (dieselbe Marke wie in den Info-Listen). */
+.member-facts {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  gap: 8px;
+}
+.member-facts li {
+  position: relative;
+  padding-left: 22px;
+  font-size: .93rem;
+  color: var(--ink-2);
+  line-height: 1.4;
+}
+.member-facts li::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: .34em;
+  width: 8px;
+  height: 5px;
+  border-left: 2px solid var(--accent);
+  border-bottom: 2px solid var(--accent);
+  transform: rotate(-45deg);
+}
+
 /* Downloads */
 .downloads {
   list-style: none;
@@ -1305,6 +1333,8 @@ input.has-error, textarea.has-error { border-color: var(--accent); background: v
   .member-body h3 { font-size: 1.02rem; }
   .member-role { font-size: .72rem; letter-spacing: .06em; margin-bottom: .7em; }
   .member-body p:last-child { font-size: .88rem; }
+  .member-facts { gap: 6px; }
+  .member-facts li { font-size: .84rem; padding-left: 19px; }
   /* Lange Wörter wie „ABTEILUNGSLEITER" dürfen in der schmalen Textspalte
      umbrechen, statt an den Kartenrand zu stoßen. */
   .member-role, .member-body p { overflow-wrap: break-word; }
