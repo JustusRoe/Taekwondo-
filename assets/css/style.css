@@ -1286,13 +1286,18 @@ input.has-error, textarea.has-error { border-color: var(--accent); background: v
   .team { gap: 14px; }
   .member {
     display: grid;
-    grid-template-columns: 116px minmax(0, 1fr);
-    align-items: start;
+    grid-template-columns: 132px minmax(0, 1fr);
+    align-items: stretch;
   }
   .member img {
-    /* 4:5 beibehalten statt auf Kartenhöhe zu strecken: sonst hängt der
-       Anschnitt an der Textlänge und jedes Porträt wäre anders gerahmt. */
+    /* Das Bild füllt die volle Kartenhöhe. Bei kurzem Text bleibt es im
+       4:5-Format, bei langem Text wächst es mit – so entsteht neben Karten
+       mit viel Text kein leerer Streifen. object-position hält das Gesicht
+       im oberen Drittel, auch wenn unten mehr angeschnitten wird. */
+    height: 100%;
     aspect-ratio: 4 / 5;
+    object-fit: cover;
+    object-position: center 22%;
     border-bottom: 0;
     border-right: 1px solid var(--line);
   }
@@ -1300,6 +1305,16 @@ input.has-error, textarea.has-error { border-color: var(--accent); background: v
   .member-body h3 { font-size: 1.02rem; }
   .member-role { font-size: .72rem; letter-spacing: .06em; margin-bottom: .7em; }
   .member-body p:last-child { font-size: .88rem; }
+  /* Lange Wörter wie „ABTEILUNGSLEITER" dürfen in der schmalen Textspalte
+     umbrechen, statt an den Kartenrand zu stoßen. */
+  .member-role, .member-body p { overflow-wrap: break-word; }
+}
+
+@media (max-width: 360px) {
+  /* Auf sehr schmalen Telefonen die Bildspalte etwas verkleinern, damit der
+     Text nicht in eine 2–3 Zeichen breite Spalte gedrängt wird. */
+  .member { grid-template-columns: 116px minmax(0, 1fr); }
+  .member-body { padding: 14px 13px 16px; }
 }
 
 @media (max-width: 520px) {
