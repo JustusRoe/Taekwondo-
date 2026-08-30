@@ -38,12 +38,11 @@ Aus der Vereinsseite und deinen Angaben ist alles Folgende schon drin:
 
 ## A · Trainerteam 🟡
 
-Sechs Porträts sind da und eingebaut: Michael, Maxim, Julia, Justus, Arno und
+Sieben Porträts sind da und eingebaut: Michael, Maxim, Julia, Aileen, Justus, Arno und
 Anna-Karoline. Alle einheitlich angeschnitten mit gleicher Kopfgröße vor derselben
 grauen Mattenwand.
 
-- [ ] 🟡 **Porträtfotos von Andy und Aileen** – JPG, Originalgröße, unbearbeitet
-      (Zuschnitt mache ich).
+- [ ] 🟡 **Porträtfoto von Andy** – JPG, Originalgröße, unbearbeitet (Zuschnitt mache ich).
 - [ ] 🟡 Für **jede der acht Personen**:
 
 | Feld | Stand |
@@ -51,7 +50,7 @@ grauen Mattenwand.
 | Name | ✅ alle acht |
 | Funktion | ✅ bei vieren; bei Aileen, Justus, Arno und Anna-Karoline steht „Training" |
 | Graduierung | ✅ alle |
-| Kurzvorstellung | ✅ Michael, Justus; bei den übrigen sechs offen – 2–3 Sätze je Person: seit wann dabei, Schwerpunkt, Lizenzen |
+| Kurzvorstellung | ✅ Michael, Andy, Justus; bei den übrigen fünf offen – 2–3 Sätze je Person: seit wann dabei, Schwerpunkt, Lizenzen |
 
 - [x] ✅ Alle acht Namen und Graduierungen stehen. 1. Dan: Michael, Andy, Aileen, Arno
       und Justus. 1. Kup: Maxim und Anna-Karoline. Julia hat keine Graduierung – bei ihr
@@ -130,7 +129,7 @@ Bis auf Weiteres bleiben die Stockfotos – so vereinbart.
 | Abteilung | 1 | hoch 3:4 | 1200 × 1600 px |
 | Gruppenkarten | 3 | quer 4:3 | 1200 × 900 px |
 | Galerie | 6 | 4 × quadratisch, 2 × quer 2:1 | 1200 × 1200 / 1600 × 800 px |
-| Trainerporträts | 2 noch offen (Andy, Aileen) | hoch 4:5 | 1000 × 1250 px |
+| Trainerporträts | 1 noch offen (Andy) | hoch 4:5 | 1000 × 1250 px |
 
 ---
 
