@@ -69,8 +69,13 @@ if ($a['code'] === 0) {
 pruefe('Startseite erreichbar', $a['code'] === 200, 'HTTP ' . $a['code']);
 pruefe('Startseite enthält den Trainingsplan',
     str_contains($a['inhalt'], 'Trainingsplan'));
-pruefe('Startseite enthält den Terminkalender',
-    substr_count($a['inhalt'], 'kal-eintrag') >= 30);
+pruefe('Startseite verlinkt den vollständigen Terminplan',
+    str_contains($a['inhalt'], 'termine.html'));
+
+$a = anfrage($basis . '/termine.html');
+pruefe('Terminplan-Seite listet alle Termine',
+    $a['code'] === 200 && substr_count($a['inhalt'], 'kal-eintrag') >= 30,
+    'HTTP ' . $a['code']);
 
 $a = anfrage($basis . '/downloads/mitgliedsformular.pdf');
 pruefe('Mitgliedsformular wird ausgeliefert',

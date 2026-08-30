@@ -218,62 +218,109 @@
   }
 
   /* ---------- Terminkalender ---------- */
-  /* Vergangene Termine werden ausgeblendet, der nächste hervorgehoben.
-     Ohne JavaScript bleibt schlicht die vollständige Liste stehen. */
   var kalender = document.getElementById('kalender');
   if (kalender) {
-    var eintraege = Array.prototype.slice.call(
-      kalender.querySelectorAll('.kal-eintrag[data-datum]')
-    );
     var heute = new Date();
     heute.setHours(0, 0, 0, 0);
+    var modus = kalender.dataset.modus || 'voll';
 
-    var vergangene = 0;
-    var naechsterGesetzt = false;
+    function alsDatum(iso) {
+      var t = iso.split('-');
+      return new Date(+t[0], t[1] - 1, +t[2]);
+    }
 
-    eintraege.forEach(function (li) {
-      var teile = li.dataset.datum.split('-');
-      var tag = new Date(+teile[0], teile[1] - 1, +teile[2]);
+    if (modus === 'voll') {
+      /* Vollständige Terminseite: vergangene Termine ausgrauen, den nächsten
+         hervorheben, sonst alles zeigen. Ohne JavaScript bleibt die Liste
+         vollständig stehen. */
+      kalender.classList.add('zeigt-alle');
+      var naechsterGesetzt = false;
+      Array.prototype.slice.call(kalender.querySelectorAll('.kal-eintrag[data-datum]'))
+        .forEach(function (li) {
+          if (alsDatum(li.dataset.datum) < heute) {
+            li.classList.add('ist-vergangen');
+          } else if (!naechsterGesetzt && !li.classList.contains('ist-frei')) {
+            li.classList.add('ist-naechster');
+            naechsterGesetzt = true;
+          }
+        });
 
-      if (tag < heute) {
-        li.classList.add('ist-vergangen');
-        vergangene++;
-      } else if (!naechsterGesetzt && !li.classList.contains('ist-frei')) {
-        li.classList.add('ist-naechster');
-        naechsterGesetzt = true;
-      }
-    });
+    } else {
+      /* Startseite: nur die laufende Woche aus trainingstermine.js aufbauen.
+         Ist die Woche schon vorbei, wird das nächste Training gezeigt. */
+      var liste = document.getElementById('kalListe');
+      var titel = document.getElementById('kalTitel');
+      var fuss  = document.getElementById('kalFuss');
+      var termine = window.TRAININGSTERMINE || [];
+      var orte = window.TRAININGSORTE || {};
 
-    /* Zunächst nur die nächsten acht Termine zeigen – der Rest auf Klick */
-    var kommende = eintraege.filter(function (li) {
-      return !li.classList.contains('ist-vergangen');
-    });
-    kommende.slice(8).forEach(function (li) { li.classList.add('ist-spaeter'); });
+      /* Montag der aktuellen Woche (Woche beginnt Montag) */
+      var montag = new Date(heute);
+      montag.setDate(montag.getDate() - ((montag.getDay() + 6) % 7));
+      var naechsterMontag = new Date(montag);
+      naechsterMontag.setDate(naechsterMontag.getDate() + 7);
 
-    /* Monatsüberschriften ohne sichtbare Termine ausblenden */
-    Array.prototype.slice.call(kalender.querySelectorAll('.kal-monat'))
-      .forEach(function (monat) {
-        var sichtbar = false;
-        var el = monat.nextElementSibling;
-        while (el && !el.classList.contains('kal-monat')) {
-          if (!el.classList.contains('ist-vergangen') &&
-              !el.classList.contains('ist-spaeter')) { sichtbar = true; break; }
-          el = el.nextElementSibling;
+      var mitDatum = termine.map(function (t) {
+        return { t: t, d: alsDatum(t.datum) };
+      });
+      var dieseWoche = mitDatum.filter(function (x) {
+        return x.d >= montag && x.d < naechsterMontag;
+      });
+      var offenInWoche = dieseWoche.filter(function (x) { return x.d >= heute; });
+
+      var zeigen, alsWoche;
+      if (offenInWoche.length) {
+        zeigen = dieseWoche;              // ganze Woche, Vergangenes ausgegraut
+        alsWoche = true;
+      } else {
+        /* Nächsten Trainingstag suchen und dessen Einheiten zeigen */
+        var kommend = mitDatum.filter(function (x) { return x.d >= heute; });
+        if (kommend.length) {
+          var erstesDatum = kommend[0].t.datum;
+          zeigen = kommend.filter(function (x) { return x.t.datum === erstesDatum; });
+        } else {
+          zeigen = [];
         }
-        if (!sichtbar) monat.classList.add('ist-vergangen');
-      });
+        alsWoche = false;
+      }
 
-    var versteckt = vergangene + Math.max(0, kommende.length - 8);
-    var schalter = document.getElementById('kalAlle');
-    if (schalter && versteckt > 0) {
-      schalter.hidden = false;
-      schalter.textContent = 'Alle ' + eintraege.length + ' Termine anzeigen';
-      schalter.addEventListener('click', function () {
-        var offen = kalender.classList.toggle('zeigt-alle');
-        schalter.textContent = offen
-          ? 'Nur die nächsten Termine anzeigen'
-          : 'Alle ' + eintraege.length + ' Termine anzeigen';
-      });
+      function eintragEl(t) {
+        var teil = t.datum.split('-');
+        var frei = t.ort === 'frei';
+        var li = document.createElement('li');
+        li.className = 'kal-eintrag' + (frei ? ' ist-frei' : '');
+        li.dataset.datum = t.datum;
+        var name = (orte[t.ort] && orte[t.ort].name) || '';
+        var hinweis = t.hinweis ? ' <span class="kal-hinweis">' + t.hinweis + '</span>' : '';
+        var ort = frei
+          ? '<span class="kal-frei">kein Training</span>'
+          : '<span class="halle ort-' + t.ort + '">' + name + '</span>';
+        li.innerHTML =
+          '<span class="kal-datum"><strong>' + teil[2] + '.' + teil[1] + '.</strong>' +
+            '<span>' + t.tag + '</span></span>' +
+          '<span class="kal-zeit">' + t.zeit + '</span>' +
+          '<span class="kal-gruppe">' + t.gruppe + hinweis + '</span>' +
+          ort;
+        return li;
+      }
+
+      if (liste && zeigen.length) {
+        kalender.classList.add('zeigt-alle');   // Vergangenes ausgegraut statt versteckt
+        var naechsterOk = false;
+        zeigen.forEach(function (x) {
+          var li = eintragEl(x.t);
+          if (x.d < heute) {
+            li.classList.add('ist-vergangen');
+          } else if (!naechsterOk && x.t.ort !== 'frei') {
+            li.classList.add('ist-naechster');
+            naechsterOk = true;
+          }
+          liste.appendChild(li);
+        });
+        if (titel && !alsWoche) titel.textContent = 'Nächstes Training';
+        if (fuss) fuss.hidden = true;
+      }
+      /* Ohne Termine bleibt der Hinweis in #kalFuss samt Link stehen. */
     }
   }
 

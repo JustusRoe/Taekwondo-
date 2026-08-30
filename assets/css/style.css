@@ -711,6 +711,7 @@ p { margin: 0 0 1.1em; }
 .kalender.zeigt-alle .kal-eintrag.ist-vergangen { display: grid; opacity: .5; }
 .kalender.zeigt-alle .kal-monat.ist-vergangen { display: list-item; opacity: .6; }
 
+.kal-zurueck { display: inline-flex; margin-bottom: 26px; }
 .kal-fuss {
   margin: 0;
   padding: 16px 24px;
