@@ -290,11 +290,18 @@
         var li = document.createElement('li');
         li.className = 'kal-eintrag' + (frei ? ' ist-frei' : '');
         li.dataset.datum = t.datum;
-        var name = (orte[t.ort] && orte[t.ort].name) || '';
+        var info = orte[t.ort] || {};
+        var name = info.name || '';
         var hinweis = t.hinweis ? ' <span class="kal-hinweis">' + t.hinweis + '</span>' : '';
-        var ort = frei
-          ? '<span class="kal-frei">kein Training</span>'
-          : '<span class="halle ort-' + t.ort + '">' + name + '</span>';
+        var ort;
+        if (frei) {
+          ort = '<span class="kal-frei">kein Training</span>';
+        } else if (info.karte) {
+          ort = '<a class="halle ort-' + t.ort + '" href="' + info.karte +
+                '" target="_blank" rel="noopener">' + name + '</a>';
+        } else {
+          ort = '<span class="halle ort-' + t.ort + '">' + name + '</span>';
+        }
         li.innerHTML =
           '<span class="kal-datum"><strong>' + teil[2] + '.' + teil[1] + '.</strong>' +
             '<span>' + t.tag + '</span></span>' +

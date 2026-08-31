@@ -553,6 +553,16 @@ p { margin: 0 0 1.1em; }
   background: var(--halle-a);
   flex: none;
 }
+/* Verlinkte Hallen führen auf die Karte – wie ein Chip, nicht wie ein Textlink */
+a.halle {
+  text-decoration: none;
+  cursor: pointer;
+  transition: border-color .15s ease, background-color .15s ease;
+}
+a.halle:hover { border-color: var(--ink); color: var(--ink-2); }
+@media (pointer: coarse) {
+  a.halle { min-height: 40px; }
+}
 .halle-b::before { background: var(--halle-b); }
 
 .plan-legende {

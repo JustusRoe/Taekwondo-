@@ -57,12 +57,14 @@ window.TRAININGSORTE = {
   steines: {
     name: 'Halle am Steines',
     zusatz: '',
-    adresse: 'Am Steines 23, 36396 Steinau an der Straße'
+    adresse: 'Am Steines 23, 36396 Steinau an der Straße',
+    karte: 'https://www.google.com/maps/place/Mehrzweckhalle/@50.31691,9.4579451,625m/data=!3m2!1e3!4b1!4m6!3m5!1s0x47bcd53fa7be3927:0x83ba362dc68596c0!8m2!3d50.31691!4d9.46052!16s%2Fg%2F11fx7r226c'
   },
   schloss: {
     name: 'Halle am Schloss',
     zusatz: 'alte Turnhalle',
-    adresse: 'Im Schloß, 36396 Steinau an der Straße'
+    adresse: 'Im Schloß, 36396 Steinau an der Straße',
+    karte: 'https://www.google.com/maps/place/Halle+Am+Schloss+(alte+Turnhalle)/@50.3111517,9.4577706,625m/data=!3m2!1e3!4b1!4m6!3m5!1s0x47bcd514a4cd01a7:0x10d71b24c5f712c5!8m2!3d50.3111517!4d9.4603455!16s%2Fg%2F11c5fyld_c'
   },
   frei: { name: 'Kein Training', zusatz: '', adresse: '' }
 };
