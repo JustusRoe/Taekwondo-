@@ -50,7 +50,7 @@ grauen Mattenwand.
 | Name | ✅ alle acht |
 | Funktion | ✅ bei vieren; bei Aileen, Justus, Arno und Anna-Karoline steht „Training" |
 | Graduierung | ✅ alle |
-| Kurzvorstellung | ✅ Michael, Andy, Justus, Anna-Karoline; bei den übrigen vier offen – 2–3 Sätze je Person: seit wann dabei, Schwerpunkt, Lizenzen |
+| Kurzvorstellung | ✅ alle acht (als Aufzählung) |
 
 - [x] ✅ Alle acht Namen und Graduierungen stehen. 1. Dan: Michael, Andy, Aileen, Arno
       und Justus. 1. Kup: Maxim und Anna-Karoline. Julia hat keine Graduierung – bei ihr
