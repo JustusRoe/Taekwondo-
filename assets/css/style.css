@@ -731,6 +731,12 @@ a.halle:hover { border-color: var(--ink); color: var(--ink-2); }
 .kalender.zeigt-alle .kal-monat.ist-vergangen { display: list-item; opacity: .6; }
 
 .kal-zurueck { display: inline-flex; margin-bottom: 26px; }
+/* Überschrift über der Terminliste auf der Trainingsseite */
+.kal-ueberschrift {
+  margin: 48px 0 18px;
+  font-size: clamp(1.35rem, 2.2vw, 1.75rem);
+}
+
 .kal-fuss {
   margin: 0;
   padding: 16px 24px;

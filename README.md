@@ -13,9 +13,8 @@ ist nur noch der Einstieg.
 
 | Seite | Inhalt |
 | --- | --- |
-| `index.html` | Einstieg: Hero und die nächsten Trainingstermine |
-| `training.html` | Wochenplan nach Hallen, Terminkalender der laufenden Woche, erstes Training, Ferien |
-| `termine.html` | Vollständiger Terminplan bis Dezember; vergangene Termine werden ausgeblendet |
+| `index.html` | Einstieg: Hero, der feste Wochenrhythmus und das nächste Training mit Halle |
+| `training.html` | Wochenplan nach Hallen, alle kommenden Termine, erstes Training, Ferien |
 | `angebot.html` | Drei Gruppen als Bildkarten (Bambini, Breitensport, Selbstverteidigung) |
 | `abteilung.html` | Die Abteilung unter dem Dach des Turnvereins |
 | `trainerteam.html` | Porträts mit Graduierung und Werdegang |
@@ -34,8 +33,7 @@ nachgezogen werden – dafür kommt die Seite ohne Build-Schritt aus.
 ```
 .
 ├── index.html                   Einstieg: Hero und nächste Trainingstermine
-├── training.html                Trainingszeiten, Hallen und erstes Training
-├── termine.html                 Vollständiger Terminplan
+├── training.html                Trainingszeiten, Hallen und alle kommenden Termine
 ├── angebot.html                 Die drei Trainingsgruppen
 ├── abteilung.html               Die Abteilung im Turnverein
 ├── trainerteam.html             Trainerinnen und Trainer

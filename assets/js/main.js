@@ -247,42 +247,28 @@
       if (leerHinweis && !kalender.querySelector('.kal-eintrag')) leerHinweis.hidden = false;
 
     } else {
-      /* Startseite: nur die laufende Woche aus trainingstermine.js aufbauen.
-         Ist die Woche schon vorbei, wird das nächste Training gezeigt. */
+      /* Startseite: das nächste Training aus trainingstermine.js aufbauen.
+         Gezeigt werden alle Einheiten des nächsten Trainingstages – und davor
+         die Tage, an denen das Training ausfällt, damit niemand umsonst
+         losfährt. */
       var liste = document.getElementById('kalListe');
-      var titel = document.getElementById('kalTitel');
       var fuss  = document.getElementById('kalFuss');
       var termine = window.TRAININGSTERMINE || [];
       var orte = window.TRAININGSORTE || {};
 
-      /* Montag der aktuellen Woche (Woche beginnt Montag) */
-      var montag = new Date(heute);
-      montag.setDate(montag.getDate() - ((montag.getDay() + 6) % 7));
-      var naechsterMontag = new Date(montag);
-      naechsterMontag.setDate(naechsterMontag.getDate() + 7);
+      var kommend = termine
+        .map(function (t) { return { t: t, d: alsDatum(t.datum) }; })
+        .filter(function (x) { return x.d >= heute; });
 
-      var mitDatum = termine.map(function (t) {
-        return { t: t, d: alsDatum(t.datum) };
-      });
-      var dieseWoche = mitDatum.filter(function (x) {
-        return x.d >= montag && x.d < naechsterMontag;
-      });
-      var offenInWoche = dieseWoche.filter(function (x) { return x.d >= heute; });
-
-      var zeigen, alsWoche;
-      if (offenInWoche.length) {
-        zeigen = dieseWoche;              // ganze Woche, Vergangenes ausgegraut
-        alsWoche = true;
-      } else {
-        /* Nächsten Trainingstag suchen und dessen Einheiten zeigen */
-        var kommend = mitDatum.filter(function (x) { return x.d >= heute; });
-        if (kommend.length) {
-          var erstesDatum = kommend[0].t.datum;
-          zeigen = kommend.filter(function (x) { return x.t.datum === erstesDatum; });
-        } else {
-          zeigen = [];
+      /* Der erste Eintrag, an dem tatsächlich trainiert wird. Alles bis
+         einschließlich dieses Tages wird gezeigt. */
+      var zeigen = [];
+      for (var i = 0; i < kommend.length; i++) {
+        if (kommend[i].t.ort !== 'frei') {
+          var zielTag = kommend[i].t.datum;
+          zeigen = kommend.filter(function (x) { return x.t.datum <= zielTag; });
+          break;
         }
-        alsWoche = false;
       }
 
       function eintragEl(t) {
@@ -313,19 +299,15 @@
       }
 
       if (liste && zeigen.length) {
-        kalender.classList.add('zeigt-alle');   // Vergangenes ausgegraut statt versteckt
         var naechsterOk = false;
         zeigen.forEach(function (x) {
           var li = eintragEl(x.t);
-          if (x.d < heute) {
-            li.classList.add('ist-vergangen');
-          } else if (!naechsterOk && x.t.ort !== 'frei') {
+          if (!naechsterOk && x.t.ort !== 'frei') {
             li.classList.add('ist-naechster');
             naechsterOk = true;
           }
           liste.appendChild(li);
         });
-        if (titel && !alsWoche) titel.textContent = 'Nächstes Training';
         if (fuss) fuss.hidden = true;
       }
       /* Ohne Termine bleibt der Hinweis in #kalFuss samt Link stehen. */

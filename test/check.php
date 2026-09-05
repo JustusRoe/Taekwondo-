@@ -70,8 +70,8 @@ pruefe('Startseite erreichbar', $a['code'] === 200, 'HTTP ' . $a['code']);
 
 /* Die Startseite traegt die Inhalte nicht mehr selbst. Jedes Thema hat eine eigene
    Datei, erreichbar ueber die Navigationsleiste, die auf jeder Seite gleich ist. */
-$unterseiten = ['training.html', 'termine.html', 'angebot.html', 'abteilung.html',
-                'trainerteam.html', 'galerie.html', 'downloads.html', 'kontakt.html'];
+$unterseiten = ['training.html', 'angebot.html', 'abteilung.html', 'trainerteam.html',
+                'galerie.html', 'downloads.html', 'kontakt.html'];
 $fehlend = array_values(array_filter($unterseiten,
     static fn (string $seite): bool => !str_contains($a['inhalt'], $seite)));
 pruefe('Startseite verlinkt alle Themenseiten', $fehlend === [],
@@ -82,14 +82,21 @@ foreach ($unterseiten as $seite) {
     pruefe("Themenseite $seite erreichbar", $u['code'] === 200, 'HTTP ' . $u['code']);
 }
 
+/* Trainingsplan und Terminliste stehen zusammen auf einer Seite. */
 $a = anfrage($basis . '/training.html');
 pruefe('Trainingsseite enthält den Trainingsplan',
     str_contains($a['inhalt'], 'Trainingsplan'));
+pruefe('Trainingsseite listet alle Termine',
+    substr_count($a['inhalt'], 'kal-eintrag') >= 30,
+    substr_count($a['inhalt'], 'kal-eintrag') . ' Termine gefunden');
 
-$a = anfrage($basis . '/termine.html');
-pruefe('Terminplan-Seite listet alle Termine',
-    $a['code'] === 200 && substr_count($a['inhalt'], 'kal-eintrag') >= 30,
-    'HTTP ' . $a['code']);
+/* Die Startseite nennt den festen Wochenrhythmus und baut das nächste
+   Training per JavaScript aus assets/js/trainingstermine.js auf. */
+$a = anfrage($basis . '/index.html');
+pruefe('Startseite nennt die beiden Trainingstage',
+    str_contains($a['inhalt'], 'donnerstags und samstags'));
+pruefe('Startseite bereitet das nächste Training vor',
+    str_contains($a['inhalt'], 'data-modus="naechstes"'));
 
 $a = anfrage($basis . '/downloads/mitgliedsformular.pdf');
 pruefe('Mitgliedsformular wird ausgeliefert',

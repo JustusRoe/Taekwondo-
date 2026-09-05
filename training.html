@@ -33,7 +33,6 @@
     <nav class="site-nav" id="siteNav" aria-label="Hauptnavigation">
       <ul>
         <li><a href="training.html">Training</a></li>
-        <li><a href="termine.html">Termine</a></li>
         <li><a href="angebot.html">Angebot</a></li>
         <li><a href="abteilung.html">Abteilung</a></li>
         <li><a href="trainerteam.html">Trainerteam</a></li>
@@ -58,7 +57,7 @@
         <p class="section-intro">
           Wir trainieren in zwei Hallen an zwei Tagen, teilweise in verschiedenen Hallen.
           Achtet bitte auf die Hallenkennzeichnung – die beiden Sporthallen liegen nicht
-          am selben Ort.
+          am selben Ort. Weiter unten stehen alle kommenden Termine mit der jeweiligen Halle.
         </p>
       </header>
 
@@ -107,16 +106,274 @@
         <span>Im Schloß (alte Turnhalle)</span>
       </div>
 
-      <!-- ---- Terminkalender ---- -->
-      <div class="kalender" id="kalender" data-modus="woche">
-        <div class="kal-kopf">
-          <h3 id="kalTitel">Diese Woche</h3>
-          <a class="tool-btn" href="termine.html">Alle Termine ansehen</a>
-        </div>
-        <ol class="kal-liste" id="kalListe"></ol>
-        <p class="kal-fuss" id="kalFuss">
-          Die Termine dieser Woche erscheinen hier automatisch.
-          <a href="termine.html">Zum vollständigen Terminplan bis Dezember</a>.
+      <!-- ---- Alle kommenden Termine ----
+           Die Liste steht fest im HTML, damit sie auch ohne JavaScript
+           vollständig lesbar bleibt. Das Skript entfernt daraus die
+           vergangenen Termine und hebt den nächsten hervor. -->
+      <h2 class="kal-ueberschrift" id="termine">Die nächsten Termine</h2>
+      <div class="kalender" id="kalender" data-modus="voll">
+        <ol class="kal-liste" id="kalListe">
+          <li class="kal-monat"><span>August 2026</span></li>
+          <li class="kal-eintrag" data-datum="2026-08-15">
+            <span class="kal-datum"><strong>15.08.</strong><span>Samstag</span></span>
+            <span class="kal-zeit">09:30 – 11:30</span>
+            <span class="kal-gruppe">Training & Bambini</span>
+            <a class="halle ort-steines" href="https://www.google.com/maps/place/Mehrzweckhalle/@50.31691,9.4579451,625m/data=!3m2!1e3!4b1!4m6!3m5!1s0x47bcd53fa7be3927:0x83ba362dc68596c0!8m2!3d50.31691!4d9.46052!16s%2Fg%2F11fx7r226c" target="_blank" rel="noopener">Halle am Steines</a>
+          </li>
+          <li class="kal-eintrag" data-datum="2026-08-20">
+            <span class="kal-datum"><strong>20.08.</strong><span>Donnerstag</span></span>
+            <span class="kal-zeit">18:00 – 20:00</span>
+            <span class="kal-gruppe">Selbstverteidigung
+              <span class="kal-hinweis">Spiegelraum</span></span>
+            <a class="halle ort-steines" href="https://www.google.com/maps/place/Mehrzweckhalle/@50.31691,9.4579451,625m/data=!3m2!1e3!4b1!4m6!3m5!1s0x47bcd53fa7be3927:0x83ba362dc68596c0!8m2!3d50.31691!4d9.46052!16s%2Fg%2F11fx7r226c" target="_blank" rel="noopener">Halle am Steines</a>
+          </li>
+          <li class="kal-eintrag" data-datum="2026-08-22">
+            <span class="kal-datum"><strong>22.08.</strong><span>Samstag</span></span>
+            <span class="kal-zeit">09:30 – 11:30</span>
+            <span class="kal-gruppe">Training & Bambini</span>
+            <a class="halle ort-steines" href="https://www.google.com/maps/place/Mehrzweckhalle/@50.31691,9.4579451,625m/data=!3m2!1e3!4b1!4m6!3m5!1s0x47bcd53fa7be3927:0x83ba362dc68596c0!8m2!3d50.31691!4d9.46052!16s%2Fg%2F11fx7r226c" target="_blank" rel="noopener">Halle am Steines</a>
+          </li>
+          <li class="kal-eintrag" data-datum="2026-08-27">
+            <span class="kal-datum"><strong>27.08.</strong><span>Donnerstag</span></span>
+            <span class="kal-zeit">18:00 – 20:00</span>
+            <span class="kal-gruppe">Selbstverteidigung
+              <span class="kal-hinweis">Spiegelraum</span></span>
+            <a class="halle ort-steines" href="https://www.google.com/maps/place/Mehrzweckhalle/@50.31691,9.4579451,625m/data=!3m2!1e3!4b1!4m6!3m5!1s0x47bcd53fa7be3927:0x83ba362dc68596c0!8m2!3d50.31691!4d9.46052!16s%2Fg%2F11fx7r226c" target="_blank" rel="noopener">Halle am Steines</a>
+          </li>
+          <li class="kal-eintrag" data-datum="2026-08-29">
+            <span class="kal-datum"><strong>29.08.</strong><span>Samstag</span></span>
+            <span class="kal-zeit">09:30 – 11:30</span>
+            <span class="kal-gruppe">Training & Bambini</span>
+            <a class="halle ort-steines" href="https://www.google.com/maps/place/Mehrzweckhalle/@50.31691,9.4579451,625m/data=!3m2!1e3!4b1!4m6!3m5!1s0x47bcd53fa7be3927:0x83ba362dc68596c0!8m2!3d50.31691!4d9.46052!16s%2Fg%2F11fx7r226c" target="_blank" rel="noopener">Halle am Steines</a>
+          </li>
+          <li class="kal-monat"><span>September 2026</span></li>
+          <li class="kal-eintrag" data-datum="2026-09-03">
+            <span class="kal-datum"><strong>03.09.</strong><span>Donnerstag</span></span>
+            <span class="kal-zeit">18:00 – 20:00</span>
+            <span class="kal-gruppe">Selbstverteidigung
+              <span class="kal-hinweis">Spiegelraum</span></span>
+            <a class="halle ort-steines" href="https://www.google.com/maps/place/Mehrzweckhalle/@50.31691,9.4579451,625m/data=!3m2!1e3!4b1!4m6!3m5!1s0x47bcd53fa7be3927:0x83ba362dc68596c0!8m2!3d50.31691!4d9.46052!16s%2Fg%2F11fx7r226c" target="_blank" rel="noopener">Halle am Steines</a>
+          </li>
+          <li class="kal-eintrag" data-datum="2026-09-05">
+            <span class="kal-datum"><strong>05.09.</strong><span>Samstag</span></span>
+            <span class="kal-zeit">09:30 – 11:30</span>
+            <span class="kal-gruppe">Training & Bambini</span>
+            <a class="halle ort-steines" href="https://www.google.com/maps/place/Mehrzweckhalle/@50.31691,9.4579451,625m/data=!3m2!1e3!4b1!4m6!3m5!1s0x47bcd53fa7be3927:0x83ba362dc68596c0!8m2!3d50.31691!4d9.46052!16s%2Fg%2F11fx7r226c" target="_blank" rel="noopener">Halle am Steines</a>
+          </li>
+          <li class="kal-eintrag" data-datum="2026-09-10">
+            <span class="kal-datum"><strong>10.09.</strong><span>Donnerstag</span></span>
+            <span class="kal-zeit">18:00 – 20:00</span>
+            <span class="kal-gruppe">Selbstverteidigung
+              <span class="kal-hinweis">Spiegelraum</span></span>
+            <a class="halle ort-steines" href="https://www.google.com/maps/place/Mehrzweckhalle/@50.31691,9.4579451,625m/data=!3m2!1e3!4b1!4m6!3m5!1s0x47bcd53fa7be3927:0x83ba362dc68596c0!8m2!3d50.31691!4d9.46052!16s%2Fg%2F11fx7r226c" target="_blank" rel="noopener">Halle am Steines</a>
+          </li>
+          <li class="kal-eintrag" data-datum="2026-09-12">
+            <span class="kal-datum"><strong>12.09.</strong><span>Samstag</span></span>
+            <span class="kal-zeit">09:30 – 11:30</span>
+            <span class="kal-gruppe">Training & Bambini</span>
+            <a class="halle ort-steines" href="https://www.google.com/maps/place/Mehrzweckhalle/@50.31691,9.4579451,625m/data=!3m2!1e3!4b1!4m6!3m5!1s0x47bcd53fa7be3927:0x83ba362dc68596c0!8m2!3d50.31691!4d9.46052!16s%2Fg%2F11fx7r226c" target="_blank" rel="noopener">Halle am Steines</a>
+          </li>
+          <li class="kal-eintrag" data-datum="2026-09-17">
+            <span class="kal-datum"><strong>17.09.</strong><span>Donnerstag</span></span>
+            <span class="kal-zeit">18:00 – 20:00</span>
+            <span class="kal-gruppe">Selbstverteidigung
+              <span class="kal-hinweis">Spiegelraum</span></span>
+            <a class="halle ort-steines" href="https://www.google.com/maps/place/Mehrzweckhalle/@50.31691,9.4579451,625m/data=!3m2!1e3!4b1!4m6!3m5!1s0x47bcd53fa7be3927:0x83ba362dc68596c0!8m2!3d50.31691!4d9.46052!16s%2Fg%2F11fx7r226c" target="_blank" rel="noopener">Halle am Steines</a>
+          </li>
+          <li class="kal-eintrag" data-datum="2026-09-19">
+            <span class="kal-datum"><strong>19.09.</strong><span>Samstag</span></span>
+            <span class="kal-zeit">09:30 – 11:30</span>
+            <span class="kal-gruppe">Training & Bambini</span>
+            <a class="halle ort-steines" href="https://www.google.com/maps/place/Mehrzweckhalle/@50.31691,9.4579451,625m/data=!3m2!1e3!4b1!4m6!3m5!1s0x47bcd53fa7be3927:0x83ba362dc68596c0!8m2!3d50.31691!4d9.46052!16s%2Fg%2F11fx7r226c" target="_blank" rel="noopener">Halle am Steines</a>
+          </li>
+          <li class="kal-eintrag" data-datum="2026-09-24">
+            <span class="kal-datum"><strong>24.09.</strong><span>Donnerstag</span></span>
+            <span class="kal-zeit">18:00 – 20:00</span>
+            <span class="kal-gruppe">Selbstverteidigung
+              <span class="kal-hinweis">Spiegelraum</span></span>
+            <a class="halle ort-steines" href="https://www.google.com/maps/place/Mehrzweckhalle/@50.31691,9.4579451,625m/data=!3m2!1e3!4b1!4m6!3m5!1s0x47bcd53fa7be3927:0x83ba362dc68596c0!8m2!3d50.31691!4d9.46052!16s%2Fg%2F11fx7r226c" target="_blank" rel="noopener">Halle am Steines</a>
+          </li>
+          <li class="kal-eintrag" data-datum="2026-09-26">
+            <span class="kal-datum"><strong>26.09.</strong><span>Samstag</span></span>
+            <span class="kal-zeit">09:30 – 11:30</span>
+            <span class="kal-gruppe">Training & Bambini</span>
+            <a class="halle ort-steines" href="https://www.google.com/maps/place/Mehrzweckhalle/@50.31691,9.4579451,625m/data=!3m2!1e3!4b1!4m6!3m5!1s0x47bcd53fa7be3927:0x83ba362dc68596c0!8m2!3d50.31691!4d9.46052!16s%2Fg%2F11fx7r226c" target="_blank" rel="noopener">Halle am Steines</a>
+          </li>
+          <li class="kal-monat"><span>Oktober 2026</span></li>
+          <li class="kal-eintrag" data-datum="2026-10-01">
+            <span class="kal-datum"><strong>01.10.</strong><span>Donnerstag</span></span>
+            <span class="kal-zeit">18:00 – 20:00</span>
+            <span class="kal-gruppe">Selbstverteidigung
+              <span class="kal-hinweis">Spiegelraum</span></span>
+            <a class="halle ort-steines" href="https://www.google.com/maps/place/Mehrzweckhalle/@50.31691,9.4579451,625m/data=!3m2!1e3!4b1!4m6!3m5!1s0x47bcd53fa7be3927:0x83ba362dc68596c0!8m2!3d50.31691!4d9.46052!16s%2Fg%2F11fx7r226c" target="_blank" rel="noopener">Halle am Steines</a>
+          </li>
+          <li class="kal-eintrag ist-frei" data-datum="2026-10-03">
+            <span class="kal-datum"><strong>03.10.</strong><span>Samstag</span></span>
+            <span class="kal-zeit">—</span>
+            <span class="kal-gruppe">Kein Training
+              <span class="kal-hinweis">Feiertag</span></span>
+            <span class="kal-frei">kein Training</span>
+          </li>
+          <li class="kal-eintrag ist-frei" data-datum="2026-10-08">
+            <span class="kal-datum"><strong>08.10.</strong><span>Donnerstag</span></span>
+            <span class="kal-zeit">—</span>
+            <span class="kal-gruppe">Kein Training
+              <span class="kal-hinweis">Herbstferien</span></span>
+            <span class="kal-frei">kein Training</span>
+          </li>
+          <li class="kal-eintrag ist-frei" data-datum="2026-10-10">
+            <span class="kal-datum"><strong>10.10.</strong><span>Samstag</span></span>
+            <span class="kal-zeit">—</span>
+            <span class="kal-gruppe">Kein Training
+              <span class="kal-hinweis">Herbstferien</span></span>
+            <span class="kal-frei">kein Training</span>
+          </li>
+          <li class="kal-eintrag ist-frei" data-datum="2026-10-15">
+            <span class="kal-datum"><strong>15.10.</strong><span>Donnerstag</span></span>
+            <span class="kal-zeit">—</span>
+            <span class="kal-gruppe">Kein Training
+              <span class="kal-hinweis">Herbstferien</span></span>
+            <span class="kal-frei">kein Training</span>
+          </li>
+          <li class="kal-eintrag ist-frei" data-datum="2026-10-17">
+            <span class="kal-datum"><strong>17.10.</strong><span>Samstag</span></span>
+            <span class="kal-zeit">—</span>
+            <span class="kal-gruppe">Kein Training
+              <span class="kal-hinweis">Herbstferien</span></span>
+            <span class="kal-frei">kein Training</span>
+          </li>
+          <li class="kal-eintrag" data-datum="2026-10-22">
+            <span class="kal-datum"><strong>22.10.</strong><span>Donnerstag</span></span>
+            <span class="kal-zeit">18:00 – 20:00</span>
+            <span class="kal-gruppe">Selbstverteidigung
+              <span class="kal-hinweis">Spiegelraum</span></span>
+            <a class="halle ort-steines" href="https://www.google.com/maps/place/Mehrzweckhalle/@50.31691,9.4579451,625m/data=!3m2!1e3!4b1!4m6!3m5!1s0x47bcd53fa7be3927:0x83ba362dc68596c0!8m2!3d50.31691!4d9.46052!16s%2Fg%2F11fx7r226c" target="_blank" rel="noopener">Halle am Steines</a>
+          </li>
+          <li class="kal-eintrag" data-datum="2026-10-24">
+            <span class="kal-datum"><strong>24.10.</strong><span>Samstag</span></span>
+            <span class="kal-zeit">09:30 – 11:30</span>
+            <span class="kal-gruppe">Training & Bambini</span>
+            <a class="halle ort-steines" href="https://www.google.com/maps/place/Mehrzweckhalle/@50.31691,9.4579451,625m/data=!3m2!1e3!4b1!4m6!3m5!1s0x47bcd53fa7be3927:0x83ba362dc68596c0!8m2!3d50.31691!4d9.46052!16s%2Fg%2F11fx7r226c" target="_blank" rel="noopener">Halle am Steines</a>
+          </li>
+          <li class="kal-eintrag" data-datum="2026-10-29">
+            <span class="kal-datum"><strong>29.10.</strong><span>Donnerstag</span></span>
+            <span class="kal-zeit">18:00 – 20:00</span>
+            <span class="kal-gruppe">Selbstverteidigung
+              <span class="kal-hinweis">Spiegelraum</span></span>
+            <a class="halle ort-steines" href="https://www.google.com/maps/place/Mehrzweckhalle/@50.31691,9.4579451,625m/data=!3m2!1e3!4b1!4m6!3m5!1s0x47bcd53fa7be3927:0x83ba362dc68596c0!8m2!3d50.31691!4d9.46052!16s%2Fg%2F11fx7r226c" target="_blank" rel="noopener">Halle am Steines</a>
+          </li>
+          <li class="kal-eintrag" data-datum="2026-10-31">
+            <span class="kal-datum"><strong>31.10.</strong><span>Samstag</span></span>
+            <span class="kal-zeit">09:30 – 11:30</span>
+            <span class="kal-gruppe">Training & Bambini</span>
+            <a class="halle ort-steines" href="https://www.google.com/maps/place/Mehrzweckhalle/@50.31691,9.4579451,625m/data=!3m2!1e3!4b1!4m6!3m5!1s0x47bcd53fa7be3927:0x83ba362dc68596c0!8m2!3d50.31691!4d9.46052!16s%2Fg%2F11fx7r226c" target="_blank" rel="noopener">Halle am Steines</a>
+          </li>
+          <li class="kal-monat"><span>November 2026</span></li>
+          <li class="kal-eintrag" data-datum="2026-11-05">
+            <span class="kal-datum"><strong>05.11.</strong><span>Donnerstag</span></span>
+            <span class="kal-zeit">18:00 – 20:00</span>
+            <span class="kal-gruppe">Selbstverteidigung
+              <span class="kal-hinweis">Spiegelraum</span></span>
+            <a class="halle ort-steines" href="https://www.google.com/maps/place/Mehrzweckhalle/@50.31691,9.4579451,625m/data=!3m2!1e3!4b1!4m6!3m5!1s0x47bcd53fa7be3927:0x83ba362dc68596c0!8m2!3d50.31691!4d9.46052!16s%2Fg%2F11fx7r226c" target="_blank" rel="noopener">Halle am Steines</a>
+          </li>
+          <li class="kal-eintrag" data-datum="2026-11-07">
+            <span class="kal-datum"><strong>07.11.</strong><span>Samstag</span></span>
+            <span class="kal-zeit">09:30 – 11:30</span>
+            <span class="kal-gruppe">Training & Bambini</span>
+            <a class="halle ort-steines" href="https://www.google.com/maps/place/Mehrzweckhalle/@50.31691,9.4579451,625m/data=!3m2!1e3!4b1!4m6!3m5!1s0x47bcd53fa7be3927:0x83ba362dc68596c0!8m2!3d50.31691!4d9.46052!16s%2Fg%2F11fx7r226c" target="_blank" rel="noopener">Halle am Steines</a>
+          </li>
+          <li class="kal-eintrag" data-datum="2026-11-12">
+            <span class="kal-datum"><strong>12.11.</strong><span>Donnerstag</span></span>
+            <span class="kal-zeit">18:00 – 20:00</span>
+            <span class="kal-gruppe">Selbstverteidigung
+              <span class="kal-hinweis">Spiegelraum</span></span>
+            <a class="halle ort-steines" href="https://www.google.com/maps/place/Mehrzweckhalle/@50.31691,9.4579451,625m/data=!3m2!1e3!4b1!4m6!3m5!1s0x47bcd53fa7be3927:0x83ba362dc68596c0!8m2!3d50.31691!4d9.46052!16s%2Fg%2F11fx7r226c" target="_blank" rel="noopener">Halle am Steines</a>
+          </li>
+          <li class="kal-eintrag" data-datum="2026-11-14">
+            <span class="kal-datum"><strong>14.11.</strong><span>Samstag</span></span>
+            <span class="kal-zeit">09:30 – 11:30</span>
+            <span class="kal-gruppe">Training & Bambini
+              <span class="kal-hinweis">Bambini erst ab 11:30 Uhr</span></span>
+            <a class="halle ort-schloss" href="https://www.google.com/maps/place/Halle+Am+Schloss+(alte+Turnhalle)/@50.3111517,9.4577706,625m/data=!3m2!1e3!4b1!4m6!3m5!1s0x47bcd514a4cd01a7:0x10d71b24c5f712c5!8m2!3d50.3111517!4d9.4603455!16s%2Fg%2F11c5fyld_c" target="_blank" rel="noopener">Halle am Schloss</a>
+          </li>
+          <li class="kal-eintrag" data-datum="2026-11-19">
+            <span class="kal-datum"><strong>19.11.</strong><span>Donnerstag</span></span>
+            <span class="kal-zeit">18:00 – 20:00</span>
+            <span class="kal-gruppe">Selbstverteidigung
+              <span class="kal-hinweis">Spiegelraum</span></span>
+            <a class="halle ort-steines" href="https://www.google.com/maps/place/Mehrzweckhalle/@50.31691,9.4579451,625m/data=!3m2!1e3!4b1!4m6!3m5!1s0x47bcd53fa7be3927:0x83ba362dc68596c0!8m2!3d50.31691!4d9.46052!16s%2Fg%2F11fx7r226c" target="_blank" rel="noopener">Halle am Steines</a>
+          </li>
+          <li class="kal-eintrag" data-datum="2026-11-21">
+            <span class="kal-datum"><strong>21.11.</strong><span>Samstag</span></span>
+            <span class="kal-zeit">09:30 – 11:30</span>
+            <span class="kal-gruppe">Training & Bambini
+              <span class="kal-hinweis">Bambini erst ab 11:30 Uhr</span></span>
+            <a class="halle ort-schloss" href="https://www.google.com/maps/place/Halle+Am+Schloss+(alte+Turnhalle)/@50.3111517,9.4577706,625m/data=!3m2!1e3!4b1!4m6!3m5!1s0x47bcd514a4cd01a7:0x10d71b24c5f712c5!8m2!3d50.3111517!4d9.4603455!16s%2Fg%2F11c5fyld_c" target="_blank" rel="noopener">Halle am Schloss</a>
+          </li>
+          <li class="kal-eintrag" data-datum="2026-11-26">
+            <span class="kal-datum"><strong>26.11.</strong><span>Donnerstag</span></span>
+            <span class="kal-zeit">18:00 – 20:00</span>
+            <span class="kal-gruppe">Selbstverteidigung
+              <span class="kal-hinweis">Spiegelraum</span></span>
+            <a class="halle ort-steines" href="https://www.google.com/maps/place/Mehrzweckhalle/@50.31691,9.4579451,625m/data=!3m2!1e3!4b1!4m6!3m5!1s0x47bcd53fa7be3927:0x83ba362dc68596c0!8m2!3d50.31691!4d9.46052!16s%2Fg%2F11fx7r226c" target="_blank" rel="noopener">Halle am Steines</a>
+          </li>
+          <li class="kal-eintrag" data-datum="2026-11-28">
+            <span class="kal-datum"><strong>28.11.</strong><span>Samstag</span></span>
+            <span class="kal-zeit">09:30 – 11:30</span>
+            <span class="kal-gruppe">Training & Bambini</span>
+            <a class="halle ort-steines" href="https://www.google.com/maps/place/Mehrzweckhalle/@50.31691,9.4579451,625m/data=!3m2!1e3!4b1!4m6!3m5!1s0x47bcd53fa7be3927:0x83ba362dc68596c0!8m2!3d50.31691!4d9.46052!16s%2Fg%2F11fx7r226c" target="_blank" rel="noopener">Halle am Steines</a>
+          </li>
+          <li class="kal-monat"><span>Dezember 2026</span></li>
+          <li class="kal-eintrag" data-datum="2026-12-03">
+            <span class="kal-datum"><strong>03.12.</strong><span>Donnerstag</span></span>
+            <span class="kal-zeit">18:00 – 20:00</span>
+            <span class="kal-gruppe">Selbstverteidigung
+              <span class="kal-hinweis">Spiegelraum</span></span>
+            <a class="halle ort-steines" href="https://www.google.com/maps/place/Mehrzweckhalle/@50.31691,9.4579451,625m/data=!3m2!1e3!4b1!4m6!3m5!1s0x47bcd53fa7be3927:0x83ba362dc68596c0!8m2!3d50.31691!4d9.46052!16s%2Fg%2F11fx7r226c" target="_blank" rel="noopener">Halle am Steines</a>
+          </li>
+          <li class="kal-eintrag" data-datum="2026-12-05">
+            <span class="kal-datum"><strong>05.12.</strong><span>Samstag</span></span>
+            <span class="kal-zeit">09:30 – 11:30</span>
+            <span class="kal-gruppe">Training & Bambini
+              <span class="kal-hinweis">Bambini erst ab 11:30 Uhr</span></span>
+            <a class="halle ort-schloss" href="https://www.google.com/maps/place/Halle+Am+Schloss+(alte+Turnhalle)/@50.3111517,9.4577706,625m/data=!3m2!1e3!4b1!4m6!3m5!1s0x47bcd514a4cd01a7:0x10d71b24c5f712c5!8m2!3d50.3111517!4d9.4603455!16s%2Fg%2F11c5fyld_c" target="_blank" rel="noopener">Halle am Schloss</a>
+          </li>
+          <li class="kal-eintrag" data-datum="2026-12-10">
+            <span class="kal-datum"><strong>10.12.</strong><span>Donnerstag</span></span>
+            <span class="kal-zeit">18:00 – 20:00</span>
+            <span class="kal-gruppe">Selbstverteidigung
+              <span class="kal-hinweis">Spiegelraum</span></span>
+            <a class="halle ort-steines" href="https://www.google.com/maps/place/Mehrzweckhalle/@50.31691,9.4579451,625m/data=!3m2!1e3!4b1!4m6!3m5!1s0x47bcd53fa7be3927:0x83ba362dc68596c0!8m2!3d50.31691!4d9.46052!16s%2Fg%2F11fx7r226c" target="_blank" rel="noopener">Halle am Steines</a>
+          </li>
+          <li class="kal-eintrag" data-datum="2026-12-12">
+            <span class="kal-datum"><strong>12.12.</strong><span>Samstag</span></span>
+            <span class="kal-zeit">09:30 – 11:30</span>
+            <span class="kal-gruppe">Training & Bambini
+              <span class="kal-hinweis">Bambini erst ab 11:30 Uhr</span></span>
+            <a class="halle ort-schloss" href="https://www.google.com/maps/place/Halle+Am+Schloss+(alte+Turnhalle)/@50.3111517,9.4577706,625m/data=!3m2!1e3!4b1!4m6!3m5!1s0x47bcd514a4cd01a7:0x10d71b24c5f712c5!8m2!3d50.3111517!4d9.4603455!16s%2Fg%2F11c5fyld_c" target="_blank" rel="noopener">Halle am Schloss</a>
+          </li>
+          <li class="kal-eintrag" data-datum="2026-12-17">
+            <span class="kal-datum"><strong>17.12.</strong><span>Donnerstag</span></span>
+            <span class="kal-zeit">18:00 – 20:00</span>
+            <span class="kal-gruppe">Selbstverteidigung
+              <span class="kal-hinweis">Spiegelraum</span></span>
+            <a class="halle ort-steines" href="https://www.google.com/maps/place/Mehrzweckhalle/@50.31691,9.4579451,625m/data=!3m2!1e3!4b1!4m6!3m5!1s0x47bcd53fa7be3927:0x83ba362dc68596c0!8m2!3d50.31691!4d9.46052!16s%2Fg%2F11fx7r226c" target="_blank" rel="noopener">Halle am Steines</a>
+          </li>
+          <li class="kal-eintrag" data-datum="2026-12-19">
+            <span class="kal-datum"><strong>19.12.</strong><span>Samstag</span></span>
+            <span class="kal-zeit">09:30 – 11:30</span>
+            <span class="kal-gruppe">Training & Bambini
+              <span class="kal-hinweis">Bambini erst ab 11:30 Uhr</span></span>
+            <a class="halle ort-schloss" href="https://www.google.com/maps/place/Halle+Am+Schloss+(alte+Turnhalle)/@50.3111517,9.4577706,625m/data=!3m2!1e3!4b1!4m6!3m5!1s0x47bcd514a4cd01a7:0x10d71b24c5f712c5!8m2!3d50.3111517!4d9.4603455!16s%2Fg%2F11c5fyld_c" target="_blank" rel="noopener">Halle am Schloss</a>
+          </li>
+        </ol>
+        <p class="kal-fuss">
+          Stand des Plans: bis Dezember 2026. In den Ferien und an Feiertagen findet kein
+          Training statt.
+        </p>
+        <p class="kal-leer" id="kalLeer" hidden>
+          Für dieses Jahr stehen keine Termine mehr an. Der neue Plan wird im Training
+          bekannt gegeben.
         </p>
       </div>
 
@@ -155,8 +412,8 @@
       </div>
 
       <p class="seiten-weiter">
-        Weiter zu <a href="angebot.html">unserem Angebot</a> oder direkt zum
-        <a href="termine.html">vollständigen Terminplan</a>.
+        Weiter zu <a href="angebot.html">unserem Angebot</a> oder zum
+        <a href="kontakt.html">Probetraining</a>.
       </p>
     </div>
   </section>
@@ -185,8 +442,7 @@
     <nav class="footer-col" aria-label="Service">
       <h2>Service</h2>
       <ul>
-        <li><a href="training.html">Trainingszeiten</a></li>
-        <li><a href="termine.html">Alle Termine</a></li>
+        <li><a href="training.html">Trainingszeiten und Termine</a></li>
         <li><a href="downloads.html">Downloads und Beiträge</a></li>
         <li><a href="mitglieder.html">Mitgliederbereich</a></li>
       </ul>
