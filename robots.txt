@@ -1,9 +1,4 @@
-# Entwurfsfassung – noch nicht für Suchmaschinen bestimmt.
-# Vor dem Livegang durch die folgende Fassung ersetzen:
-#
-#   User-agent: *
-#   Allow: /
-#   Disallow: /backend/
-#
 User-agent: *
-Disallow: /
+Allow: /
+Disallow: /backend/
+Disallow: /werkzeuge/
