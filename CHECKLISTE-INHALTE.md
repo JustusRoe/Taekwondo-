@@ -40,7 +40,8 @@ Aus der Vereinsseite und deinen Angaben ist alles Folgende schon drin:
 
 Alle sieben Porträts sind da und eingebaut: Michael, Andy, Maxim, Aileen, Justus,
 Arno und Anna-Karoline. Alle einheitlich angeschnitten mit gleicher Kopfgröße vor derselben
-grauen Mattenwand. Die Karte von Julia ist auf Wunsch wieder entfernt worden; das Foto
+grauen Mattenwand; deren Fugen sind weichgezeichnet, damit die sieben Karten
+nebeneinander ruhig wirken (`werkzeuge/hintergrund-weichzeichnen.py`). Die Karte von Julia ist auf Wunsch wieder entfernt worden; das Foto
 `assets/img/trainer-julia.jpg` liegt weiterhin im Ordner, falls sie zurückkommen soll.
 
 - [x] ✅ **Porträtfoto von Andy** ist da und eingebaut – gedreht, auf 4:5 zugeschnitten

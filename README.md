@@ -55,6 +55,7 @@ nachgezogen werden – dafür kommt die Seite ohne Build-Schritt aus.
 │   ├── js/trainingstermine.js   Trainingstermine – hier werden sie gepflegt
 │   ├── img/                     Stockfotos (JPG) und Favicon (SVG)
 │   └── video/                   Platzhaltervideos (MP4 + WebM) und Vorschaubilder
+├── werkzeuge/                   Hilfsskripte, nicht Teil der Website
 ├── downloads/                   PDF-Dokumente des Download-Bereichs
 └── backend/                     Serverfassung des Mitgliederbereichs (PHP + MySQL)
 ```
@@ -123,6 +124,24 @@ In `assets/video/` liegen sechs kurze, selbst erzeugte Platzhalterclips mit sich
 Abschnitten – so lässt sich das Springen und Spulen ausprobieren, ohne echte Aufnahmen zu
 veröffentlichen. Sie liegen als MP4 (H.264, das Format für den Echtbetrieb) und
 zusätzlich als WebM vor, damit sie auch in Browsern ohne H.264 abspielen.
+
+## Trainerporträts
+
+Alle Porträts sind 800 × 1000 (4:5), einheitlich angeschnitten mit gleicher
+Kopfgröße. Der Hintergrund ist weichgezeichnet: Die Mattenwand der Halle hat
+Fugen und Flecken, die nebeneinander unruhig wirken. Die Person bleibt dabei
+unverändert und scharf – bearbeitet wird nur der Hintergrund.
+
+Für ein neues Porträt:
+
+```bash
+pip install numpy opencv-python-headless "rembg[cpu]" onnxruntime
+python3 werkzeuge/hintergrund-weichzeichnen.py assets/img/trainer-name.jpg
+```
+
+Beim ersten Lauf lädt das Freistellungsmodell (176 MB) selbst herunter. Die
+Website braucht davon nichts – sie bleibt reines HTML, CSS und JavaScript ohne
+Bauschritt. Die unbearbeiteten Fassungen stehen in der Git-Historie.
 
 ## Alles auf einmal starten
 
