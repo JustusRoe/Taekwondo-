@@ -2,10 +2,18 @@
 /**
  * Verwaltung, Teil 3: Trainingstermine.
  *
- * Hier pflegt das Trainerteam den Terminplan – einzeln oder als CSV-Datei
- * für eine ganze Saison. Beim Speichern schreibt die Seite die Termine in
- * die öffentliche Website zurück (siehe lib/termine.php), sodass niemand
- * dafür an den Quelltext muss.
+ * Der Plan wird nicht eingetippt, sondern erzeugt: Trainiert wird immer
+ * donnerstags und samstags zu denselben Zeiten. Für einen Zeitraum legt
+ * die Seite alle Termine auf einmal an; danach bleibt nur noch zweierlei
+ * zu tun – einzelne Termine streichen (Ferien, Feiertage) und die Halle
+ * umstellen. Beides geht in der Liste direkt, mit einem Speichern für
+ * alle Änderungen zusammen.
+ *
+ * Für Sonderfälle bleiben der einzelne Termin und der CSV-Import.
+ *
+ * Beim Speichern schreibt die Seite die Termine in die öffentliche
+ * Website zurück (siehe lib/termine.php), sodass niemand dafür an den
+ * Quelltext muss.
  */
 declare(strict_types=1);
 require_once __DIR__ . '/lib/verwaltung.php';
@@ -29,6 +37,108 @@ if (($_GET['export'] ?? '') === 'csv') {
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     csrf_pruefen();
     $aktion = (string) ($_POST['aktion'] ?? '');
+
+    /* ---------- Termine für einen Zeitraum erzeugen ---------- */
+    if ($aktion === 'erzeugen') {
+        $von = (string) ($_POST['von'] ?? '');
+        $bis = (string) ($_POST['bis'] ?? '');
+
+        if (!strtotime($von) || !strtotime($bis)) {
+            $fehler = 'Bitte Anfang und Ende des Zeitraums angeben.';
+        } elseif (strtotime($bis) < strtotime($von)) {
+            $fehler = 'Das Ende liegt vor dem Anfang.';
+        } else {
+            $neue = termine_erzeugen($von, $bis, (string) ($_POST['ort'] ?? 'steines'));
+            if (!$neue) {
+                $fehler = 'In diesem Zeitraum liegt kein Trainingstag.';
+            } else {
+                // Vorhandene Termine bleiben unangetastet: Wer den Zeitraum
+                // versehentlich zweimal erzeugt, verliert keine Anpassung.
+                $vorhanden = [];
+                foreach (termine_lesen() as $t) {
+                    $vorhanden[$t['datum'] . '|' . $t['zeit']] = true;
+                }
+
+                $stmt = db()->prepare(
+                    'INSERT INTO trainingstermine (datum, zeit, gruppe, ort, hinweis)
+                     VALUES (?, ?, ?, ?, ?)'
+                );
+                $angelegt = 0;
+                foreach ($neue as $t) {
+                    if (isset($vorhanden[$t['datum'] . '|' . $t['zeit']])) {
+                        continue;
+                    }
+                    $stmt->execute([$t['datum'], $t['zeit'], $t['gruppe'], $t['ort'], $t['hinweis']]);
+                    $angelegt++;
+                }
+                $uebersprungen = count($neue) - $angelegt;
+                $meldung = $angelegt . ' Termine angelegt'
+                         . ($uebersprungen > 0
+                             ? ', ' . $uebersprungen . ' waren schon da und blieben unverändert.'
+                             : '.');
+            }
+        }
+    }
+
+    /* ---------- Alle Änderungen der Liste auf einmal ---------- */
+    if ($aktion === 'sammel') {
+        $zeilen = $_POST['termin'] ?? [];
+        $bestand = [];
+        foreach (termine_lesen() as $t) {
+            $bestand[(int) $t['id']] = $t;
+        }
+
+        $rhythmus = [];
+        foreach (trainingsrhythmus() as $r) {
+            $rhythmus[$r['wochentag']] = $r;
+        }
+
+        $stmt = db()->prepare(
+            'UPDATE trainingstermine SET zeit = ?, gruppe = ?, ort = ?, hinweis = ? WHERE id = ?'
+        );
+        $geaendert = 0;
+
+        foreach ($zeilen as $id => $werte) {
+            $id = (int) $id;
+            if (!isset($bestand[$id])) {
+                continue;
+            }
+            $alt  = $bestand[$id];
+            $frei = !empty($werte['frei']);
+
+            if ($frei) {
+                // Ausfall: fester Text, der Grund kommt aus dem Hinweisfeld.
+                $zeit = '—';
+                $gruppe = 'Kein Training';
+                $ort = 'frei';
+            } elseif ($alt['ort'] === 'frei') {
+                // Zurück in den Normalfall: Zeit und Gruppe aus dem Rhythmus,
+                // sonst bliebe "Kein Training" stehen.
+                $tag = (int) date('w', (int) strtotime($alt['datum']));
+                $zeit   = $rhythmus[$tag]['zeit']   ?? '09:30 – 11:30';
+                $gruppe = $rhythmus[$tag]['gruppe'] ?? 'Training';
+                $ort = ($werte['ort'] ?? 'steines') === 'schloss' ? 'schloss' : 'steines';
+            } else {
+                // Normalfall bleibt Normalfall: Zeit und Gruppe unangetastet,
+                // damit von Hand gesetzte Sonderfälle nicht verloren gehen.
+                $zeit = $alt['zeit'];
+                $gruppe = $alt['gruppe'];
+                $ort = ($werte['ort'] ?? 'steines') === 'schloss' ? 'schloss' : 'steines';
+            }
+
+            $hinweis = mb_substr(trim((string) ($werte['hinweis'] ?? '')), 0, 190);
+
+            if ([$zeit, $gruppe, $ort, $hinweis]
+                !== [$alt['zeit'], $alt['gruppe'], $alt['ort'], $alt['hinweis']]) {
+                $stmt->execute([$zeit, $gruppe, $ort, $hinweis, $id]);
+                $geaendert++;
+            }
+        }
+
+        $meldung = $geaendert === 0
+            ? 'Es gab nichts zu ändern.'
+            : $geaendert . ' Termine geändert.';
+    }
 
     /* ---------- Einzelnen Termin anlegen oder ändern ---------- */
     if ($aktion === 'speichern') {
@@ -185,165 +295,227 @@ kopf('Termine', $mitglied);
       </div>
     <?php endif; ?>
 
-    <div class="verwaltung-layout">
-      <div>
-        <h2 class="abschnitt-titel">Terminplan hochladen</h2>
-        <form method="post" action="" enctype="multipart/form-data" class="contact-form">
+    <!-- ---------- Schritt 1: Termine erzeugen ---------- -->
+    <section class="termin-block">
+      <h2 class="abschnitt-titel">Termine erzeugen</h2>
+      <p class="termin-erklaerung">
+        Trainiert wird immer donnerstags von 18:00 bis 20:00 Uhr und samstags von
+        09:30 bis 11:30 Uhr. Gib einen Zeitraum an – die Termine dazwischen legt die
+        Seite selbst an. Was danach abweicht, stellst du unten in der Liste um.
+        Schon vorhandene Termine bleiben dabei unangetastet.
+      </p>
+
+      <form method="post" action="" class="termin-erzeugen">
+        <input type="hidden" name="csrf" value="<?= h(csrf_token()) ?>">
+        <input type="hidden" name="aktion" value="erzeugen">
+        <p class="field">
+          <label for="von">Von</label>
+          <input type="date" id="von" name="von" required
+                 value="<?= h(date('Y-m-d')) ?>">
+        </p>
+        <p class="field">
+          <label for="bis">Bis</label>
+          <input type="date" id="bis" name="bis" required
+                 value="<?= h(date('Y-m-d', strtotime('+6 months'))) ?>">
+        </p>
+        <p class="field">
+          <label for="standardort">Halle</label>
+          <select id="standardort" name="ort">
+            <option value="steines">Halle am Steines</option>
+            <option value="schloss">Halle am Schloss</option>
+          </select>
+        </p>
+        <button type="submit" class="btn btn-primary">Termine anlegen</button>
+      </form>
+    </section>
+
+    <!-- ---------- Schritt 2: streichen und Halle umstellen ---------- -->
+    <section class="termin-block">
+      <h2 class="abschnitt-titel">Kommende Termine anpassen</h2>
+
+      <?php if (!$kommende): ?>
+        <p class="listen-leer">
+          Noch keine kommenden Termine. Lege oben welche für einen Zeitraum an.
+        </p>
+      <?php else: ?>
+        <p class="termin-erklaerung">
+          Halle umstellen, Ausfälle ankreuzen, Grund dazuschreiben – dann einmal
+          speichern. Zeiten und Gruppen bleiben dabei wie sie sind.
+        </p>
+
+        <form method="post" action="">
           <input type="hidden" name="csrf" value="<?= h(csrf_token()) ?>">
-          <input type="hidden" name="aktion" value="import">
+          <input type="hidden" name="aktion" value="sammel">
 
-          <p class="field">
-            <label for="csv">CSV-Datei</label>
-            <input type="file" id="csv" name="csv" accept=".csv,text/csv" required>
-            <span class="feld-hinweis">
-              Eine Zeile je Termin, in der ersten Zeile die Spaltennamen:
-              <code>datum;zeit;gruppe;ort;hinweis</code>. Datum als
-              <code>2026-09-05</code> oder <code>05.09.2026</code>, Ort
-              <code>steines</code>, <code>schloss</code> oder <code>frei</code>
-              für „kein Training". Der Wochentag wird selbst berechnet.
-              <a href="?export=csv">Aktuelle Termine als CSV herunterladen</a> –
-              das ist zugleich die Vorlage.
+          <div class="table-wrap">
+            <table class="termin-tabelle">
+              <thead>
+                <tr>
+                  <th scope="col">Datum</th>
+                  <th scope="col">Training</th>
+                  <th scope="col">Halle</th>
+                  <th scope="col">fällt aus</th>
+                  <th scope="col">Hinweis / Grund</th>
+                </tr>
+              </thead>
+              <tbody>
+                <?php
+                  $letzterMonat = '';
+                  foreach ($kommende as $t):
+                    $zeit  = (int) strtotime($t['datum']);
+                    $monat = termin_monat($t['datum']);
+                    $frei  = $t['ort'] === 'frei';
+                ?>
+                  <?php if ($monat !== $letzterMonat): $letzterMonat = $monat; ?>
+                    <tr class="termin-monat"><th colspan="5" scope="colgroup"><?= h($monat) ?></th></tr>
+                  <?php endif; ?>
+                  <tr<?= $frei ? ' class="ist-frei"' : '' ?>>
+                    <th scope="row">
+                      <strong><?= h(date('d.m.', $zeit)) ?></strong>
+                      <span><?= h(termin_wochentag($t['datum'])) ?></span>
+                    </th>
+                    <td class="spalte-training">
+                      <?= h($t['zeit']) ?><br>
+                      <span><?= h($t['gruppe']) ?></span>
+                    </td>
+                    <td>
+                      <select name="termin[<?= (int) $t['id'] ?>][ort]"
+                              aria-label="Halle am <?= h(date('d.m.Y', $zeit)) ?>">
+                        <option value="steines" <?= $t['ort'] === 'schloss' ? '' : 'selected' ?>>am Steines</option>
+                        <option value="schloss" <?= $t['ort'] === 'schloss' ? 'selected' : '' ?>>am Schloss</option>
+                      </select>
+                    </td>
+                    <td class="spalte-frei">
+                      <input type="checkbox" name="termin[<?= (int) $t['id'] ?>][frei]" value="1"
+                             <?= $frei ? 'checked' : '' ?>
+                             aria-label="Training am <?= h(date('d.m.Y', $zeit)) ?> fällt aus">
+                    </td>
+                    <td>
+                      <input type="text" name="termin[<?= (int) $t['id'] ?>][hinweis]"
+                             value="<?= h($t['hinweis']) ?>"
+                             placeholder="<?= $frei ? 'Ferien, Feiertag …' : 'z. B. Spiegelraum' ?>"
+                             aria-label="Hinweis zum <?= h(date('d.m.Y', $zeit)) ?>">
+                    </td>
+                  </tr>
+                <?php endforeach; ?>
+              </tbody>
+            </table>
+          </div>
+
+          <div class="termin-speichern">
+            <button type="submit" class="btn btn-primary">Änderungen speichern</button>
+            <span class="form-note">
+              Danach steht der Plan sofort auf der Website.
             </span>
-          </p>
-
-          <p class="field">
-            <label for="modus">Was soll mit dem bisherigen Plan passieren?</label>
-            <select id="modus" name="modus">
-              <option value="ersetzen">Ersetzen – die Datei ist der neue Plan</option>
-              <option value="ergaenzen">Ergänzen – vorhandene Termine bleiben stehen</option>
-            </select>
-          </p>
-
-          <p class="field field-check">
-            <input type="checkbox" id="trotzdem" name="trotzdem" value="1">
-            <label for="trotzdem">Fehlerhafte Zeilen überspringen und den Rest übernehmen</label>
-          </p>
-
-          <div class="form-actions">
-            <button type="submit" class="btn btn-primary">Datei einlesen</button>
           </div>
         </form>
+      <?php endif; ?>
+    </section>
 
-        <h2 class="abschnitt-titel">Einzelnen Termin hinzufügen</h2>
-        <form method="post" action="" class="contact-form">
-          <input type="hidden" name="csrf" value="<?= h(csrf_token()) ?>">
-          <input type="hidden" name="aktion" value="speichern">
+    <!-- ---------- Sonderfälle ---------- -->
+    <details class="termin-block termin-sonderfall">
+      <summary class="tool-btn">Sonderfälle: einzelner Termin, CSV, aufräumen</summary>
 
-          <div class="field-row">
+      <div class="verwaltung-layout">
+        <div>
+          <h3 class="abschnitt-titel">Einzelnen Termin hinzufügen</h3>
+          <p class="termin-erklaerung">
+            Für alles, was nicht in den Wochenrhythmus passt – einen Lehrgang etwa
+            oder eine Gürtelprüfung.
+          </p>
+          <form method="post" action="" class="contact-form">
+            <input type="hidden" name="csrf" value="<?= h(csrf_token()) ?>">
+            <input type="hidden" name="aktion" value="speichern">
+
+            <div class="field-row">
+              <p class="field">
+                <label for="datum">Datum</label>
+                <input type="date" id="datum" name="datum" required>
+              </p>
+              <p class="field">
+                <label for="ort">Ort</label>
+                <select id="ort" name="ort">
+                  <option value="steines">Halle am Steines</option>
+                  <option value="schloss">Halle am Schloss</option>
+                  <option value="frei">Kein Training</option>
+                </select>
+              </p>
+            </div>
+
+            <div class="field-row">
+              <p class="field">
+                <label for="zeit">Uhrzeit</label>
+                <input type="text" id="zeit" name="zeit" placeholder="09:30 – 11:30">
+              </p>
+              <p class="field">
+                <label for="gruppe">Gruppe</label>
+                <input type="text" id="gruppe" name="gruppe" placeholder="Lehrgang">
+              </p>
+            </div>
+
             <p class="field">
-              <label for="datum">Datum</label>
-              <input type="date" id="datum" name="datum" required>
+              <label for="hinweis">Hinweis <span class="optional">(optional)</span></label>
+              <input type="text" id="hinweis" name="hinweis" placeholder="Spiegelraum">
             </p>
+
+            <div class="form-actions">
+              <button type="submit" class="btn btn-primary">Termin anlegen</button>
+            </div>
+          </form>
+        </div>
+
+        <div>
+          <h3 class="abschnitt-titel">Ganzen Plan als Datei</h3>
+          <form method="post" action="" enctype="multipart/form-data" class="contact-form">
+            <input type="hidden" name="csrf" value="<?= h(csrf_token()) ?>">
+            <input type="hidden" name="aktion" value="import">
+
             <p class="field">
-              <label for="ort">Ort</label>
-              <select id="ort" name="ort">
-                <option value="steines">Halle am Steines</option>
-                <option value="schloss">Halle am Schloss</option>
-                <option value="frei">Kein Training</option>
+              <label for="csv">CSV-Datei</label>
+              <input type="file" id="csv" name="csv" accept=".csv,text/csv">
+              <span class="feld-hinweis">
+                Eine Zeile je Termin, in der ersten Zeile die Spaltennamen:
+                <code>datum;zeit;gruppe;ort;hinweis</code>. Ort <code>steines</code>,
+                <code>schloss</code> oder <code>frei</code>.
+                <a href="?export=csv">Aktuelle Termine herunterladen</a> – das ist
+                zugleich die Vorlage.
+              </span>
+            </p>
+
+            <p class="field">
+              <label for="modus">Bisheriger Plan</label>
+              <select id="modus" name="modus">
+                <option value="ersetzen">Ersetzen – die Datei ist der neue Plan</option>
+                <option value="ergaenzen">Ergänzen – Vorhandenes bleibt stehen</option>
               </select>
             </p>
-          </div>
 
-          <div class="field-row">
-            <p class="field">
-              <label for="zeit">Uhrzeit</label>
-              <input type="text" id="zeit" name="zeit" placeholder="09:30 – 11:30">
+            <p class="field field-check">
+              <input type="checkbox" id="trotzdem" name="trotzdem" value="1">
+              <label for="trotzdem">Fehlerhafte Zeilen überspringen</label>
             </p>
-            <p class="field">
-              <label for="gruppe">Gruppe</label>
-              <input type="text" id="gruppe" name="gruppe" placeholder="Training &amp; Bambini">
-            </p>
-          </div>
 
-          <p class="field">
-            <label for="hinweis">Hinweis <span class="optional">(optional)</span></label>
-            <input type="text" id="hinweis" name="hinweis" placeholder="Spiegelraum">
-          </p>
-
-          <div class="form-actions">
-            <button type="submit" class="btn btn-primary">Termin anlegen</button>
-          </div>
-        </form>
-
-        <?php if ($vergangene > 0): ?>
-          <form method="post" action="" class="konto-form"
-                onsubmit="return confirm('<?= (int) $vergangene ?> vergangene Termine löschen?')">
-            <input type="hidden" name="csrf" value="<?= h(csrf_token()) ?>">
-            <input type="hidden" name="aktion" value="aufraeumen">
-            <button type="submit" class="tool-btn">
-              <?= (int) $vergangene ?> vergangene Termine aufräumen
-            </button>
+            <div class="form-actions">
+              <button type="submit" class="btn btn-ghost">Datei einlesen</button>
+            </div>
           </form>
-        <?php endif; ?>
+
+          <?php if ($vergangene > 0): ?>
+            <h3 class="abschnitt-titel">Aufräumen</h3>
+            <form method="post" action=""
+                  onsubmit="return confirm('<?= (int) $vergangene ?> vergangene Termine löschen?')">
+              <input type="hidden" name="csrf" value="<?= h(csrf_token()) ?>">
+              <input type="hidden" name="aktion" value="aufraeumen">
+              <p class="termin-erklaerung">
+                Vergangene Termine stehen nicht mehr auf der Website, bleiben aber in
+                der Datenbank. <?= (int) $vergangene ?> Stück sind es derzeit.
+              </p>
+              <button type="submit" class="tool-btn">Vergangene Termine löschen</button>
+            </form>
+          <?php endif; ?>
+        </div>
       </div>
-
-      <aside class="verwaltung-liste">
-        <h2>Kommende Termine</h2>
-        <?php if (!$kommende): ?>
-          <p class="listen-leer">
-            Noch keine kommenden Termine. Lade links eine CSV-Datei hoch oder lege
-            einen einzelnen Termin an.
-          </p>
-        <?php endif; ?>
-        <ul>
-          <?php foreach ($kommende as $t): ?>
-            <li>
-              <strong>
-                <?= h(date('d.m.Y', (int) strtotime($t['datum']))) ?> ·
-                <?= h(termin_wochentag($t['datum'])) ?>
-              </strong>
-              <span class="listen-zeile">
-                <?= h($t['zeit']) ?> · <?= h($t['gruppe']) ?>
-              </span>
-              <span class="listen-zeile">
-                <?= h(termin_orte()[$t['ort']]['name']) ?>
-                <?= $t['hinweis'] !== '' ? ' · ' . h($t['hinweis']) : '' ?>
-              </span>
-
-              <details>
-                <summary class="tool-btn tool-btn-klein">Bearbeiten</summary>
-
-                <form method="post" action="" class="konto-form">
-                  <input type="hidden" name="csrf" value="<?= h(csrf_token()) ?>">
-                  <input type="hidden" name="aktion" value="speichern">
-                  <input type="hidden" name="id" value="<?= (int) $t['id'] ?>">
-                  <label>Datum
-                    <input type="date" name="datum" value="<?= h($t['datum']) ?>" required>
-                  </label>
-                  <label>Uhrzeit
-                    <input type="text" name="zeit" value="<?= h($t['zeit']) ?>">
-                  </label>
-                  <label>Gruppe
-                    <input type="text" name="gruppe" value="<?= h($t['gruppe']) ?>">
-                  </label>
-                  <label>Ort
-                    <select name="ort">
-                      <?php foreach (termin_orte() as $schluessel => $o): ?>
-                        <option value="<?= h($schluessel) ?>" <?= $t['ort'] === $schluessel ? 'selected' : '' ?>>
-                          <?= h($o['name']) ?>
-                        </option>
-                      <?php endforeach; ?>
-                    </select>
-                  </label>
-                  <label>Hinweis
-                    <input type="text" name="hinweis" value="<?= h($t['hinweis']) ?>">
-                  </label>
-                  <button type="submit" class="tool-btn">Speichern</button>
-                </form>
-
-                <form method="post" action="" class="konto-form"
-                      onsubmit="return confirm('Termin am <?= h(date('d.m.Y', (int) strtotime($t['datum']))) ?> löschen?')">
-                  <input type="hidden" name="csrf" value="<?= h(csrf_token()) ?>">
-                  <input type="hidden" name="aktion" value="loeschen">
-                  <input type="hidden" name="id" value="<?= (int) $t['id'] ?>">
-                  <button type="submit" class="tool-btn">Termin löschen</button>
-                </form>
-              </details>
-            </li>
-          <?php endforeach; ?>
-        </ul>
-      </aside>
-    </div>
+    </details>
   </div>
 </main>
 

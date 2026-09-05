@@ -1128,6 +1128,17 @@ input.has-error, textarea.has-error { border-color: var(--accent); background: v
 .error:empty { display: none; }
 .field-check .error { flex-basis: 100%; }
 
+/* Der Honigtopf des Kontaktformulars. Nicht display:none – manche Bots
+   erkennen das und lassen das Feld dann in Ruhe. Stattdessen aus dem
+   Sichtfeld geschoben, für Tastatur und Vorlesesoftware unerreichbar. */
+.honigtopf {
+  position: absolute;
+  left: -9999px;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+}
+
 .form-actions {
   display: flex;
   align-items: center;
@@ -1145,6 +1156,11 @@ input.has-error, textarea.has-error { border-color: var(--accent); background: v
   background: var(--accent-soft);
   font-size: .92rem;
   color: var(--ink-2);
+}
+
+.form-status.ist-fehler {
+  border-left-color: var(--accent);
+  color: var(--accent-dark);
 }
 
 .contact-side { display: grid; gap: 20px; }

@@ -60,7 +60,7 @@
       </header>
 
       <div class="contact-layout">
-        <form class="contact-form" id="contactForm" novalidate>
+        <form class="contact-form" id="contactForm" method="post" action="backend/kontakt.php" novalidate>
           <div class="field-row">
             <p class="field">
               <label for="name">Name <span aria-hidden="true">*</span></label>
@@ -107,6 +107,15 @@
             </label>
             <span class="error" data-error-for="privacy"></span>
           </p>
+
+          <!-- Spamschutz ohne Captcha: Das Feld ist für Menschen unsichtbar,
+               Bots füllen es aus. Der Zeitstempel verrät Einsendungen, die
+               schneller kommen als jemand tippen kann. -->
+          <p class="honigtopf" aria-hidden="true">
+            <label for="website">Dieses Feld bitte leer lassen</label>
+            <input type="text" id="website" name="website" tabindex="-1" autocomplete="off">
+          </p>
+          <input type="hidden" name="geladen" id="geladen" value="">
 
           <div class="form-actions">
             <button type="submit" class="btn btn-primary">Nachricht senden</button>

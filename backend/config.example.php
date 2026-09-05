@@ -39,6 +39,16 @@ return [
     // upload_max_filesize der PHP-Einstellungen möglich.
     'max_video_mb'  => 800,
 
+    // --- Kontaktformular ------------------------------------------------
+    // An diese Adresse gehen die Anfragen von kontakt.html.
+    'kontakt_empfaenger' => 'taekwondo@tv-steinau.de',
+
+    // Absenderadresse der verschickten Mail. Sie muss zur Domain gehören,
+    // von der aus verschickt wird – sonst stufen viele Postfächer die
+    // Nachricht als gefälscht ein und sie landet im Spam. Die Adresse des
+    // Absenders steht in Reply-To, Antworten gehen also an ihn.
+    'kontakt_absender'   => 'noreply@taekwondo-steinau.de',
+
     // --- Sicherheit -----------------------------------------------------
     // Nach so vielen Fehlversuchen innerhalb des Zeitfensters wird der
     // Benutzername vorübergehend gesperrt.

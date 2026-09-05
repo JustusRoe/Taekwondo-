@@ -787,3 +787,114 @@
   .konten-tabelle tbody td:nth-child(5) { display: none; }
   .konten-tabelle th, .konten-tabelle td { padding: 11px 10px; }
 }
+
+/* =========================================================
+   Terminverwaltung
+   ========================================================= */
+
+.termin-block { margin-bottom: 40px; }
+.termin-erklaerung {
+  max-width: 68ch;
+  margin: 0 0 18px;
+  color: var(--muted);
+  font-size: .93rem;
+}
+
+/* Zeitraum erzeugen – eine Zeile, damit der Schritt klein wirkt */
+.termin-erzeugen {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-end;
+  gap: 14px;
+  background: #fff;
+  border: 1px solid var(--line);
+  border-top: 3px solid var(--accent);
+  border-radius: var(--radius);
+  padding: 20px 22px;
+}
+.termin-erzeugen .field { margin: 0; }
+.termin-erzeugen .btn { margin-left: auto; }
+
+/* Liste zum Anpassen */
+.termin-tabelle {
+  width: 100%;
+  border-collapse: collapse;
+  background: #fff;
+  font-size: .92rem;
+}
+.termin-tabelle th,
+.termin-tabelle td {
+  text-align: left;
+  padding: 9px 12px;
+  border-bottom: 1px solid var(--line);
+  vertical-align: middle;
+}
+.termin-tabelle thead th {
+  font-size: .72rem;
+  font-weight: 700;
+  letter-spacing: .1em;
+  text-transform: uppercase;
+  color: var(--muted);
+  background: var(--bg-soft);
+  white-space: nowrap;
+}
+.termin-tabelle tbody th { font-weight: 600; white-space: nowrap; }
+.termin-tabelle tbody th strong { display: block; }
+.termin-tabelle tbody th span { font-size: .78rem; color: var(--muted); font-weight: 400; }
+
+.termin-tabelle .termin-monat th {
+  background: var(--bg-soft);
+  font-family: var(--font-head);
+  font-size: .9rem;
+  letter-spacing: 0;
+  text-transform: none;
+  color: var(--ink);
+}
+.termin-tabelle .spalte-training { white-space: nowrap; color: var(--ink-2); }
+.termin-tabelle .spalte-training span { font-size: .82rem; color: var(--muted); }
+.termin-tabelle .spalte-frei { text-align: center; }
+.termin-tabelle .spalte-frei input { width: 18px; height: 18px; accent-color: var(--accent); }
+
+.termin-tabelle select,
+.termin-tabelle input[type="text"] {
+  font: inherit;
+  font-size: .88rem;
+  padding: 6px 8px;
+  border: 1px solid var(--line-strong);
+  border-radius: var(--radius);
+  background: #fff;
+  width: 100%;
+  min-width: 120px;
+}
+
+/* Gestrichene Termine sind auf einen Blick zu erkennen */
+.termin-tabelle tr.ist-frei th,
+.termin-tabelle tr.ist-frei td { background: var(--bg-soft); }
+.termin-tabelle tr.ist-frei .spalte-training { color: var(--muted); text-decoration: line-through; }
+.termin-tabelle tr.ist-frei select { opacity: .5; }
+
+.termin-speichern {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  flex-wrap: wrap;
+  margin-top: 18px;
+}
+
+.termin-sonderfall > summary {
+  display: inline-flex;
+  align-items: center;
+  cursor: pointer;
+  list-style: none;
+}
+.termin-sonderfall > summary::-webkit-details-marker { display: none; }
+.termin-sonderfall[open] > summary { margin-bottom: 22px; }
+
+@media (max-width: 700px) {
+  /* Auf dem Telefon fällt die Trainingsspalte weg – Datum, Halle und
+     Ausfall reichen zum Anpassen, die Zeiten sind ohnehin immer gleich. */
+  .termin-tabelle thead th:nth-child(2),
+  .termin-tabelle tbody td.spalte-training { display: none; }
+  .termin-tabelle th, .termin-tabelle td { padding: 8px 7px; }
+  .termin-erzeugen .btn { margin-left: 0; width: 100%; }
+}

@@ -241,9 +241,66 @@ if ($keks === '') {
     }
 }
 
+/* ---------- 6. Kontaktformular ---------- */
+echo "\nKontaktformular\n";
+$ziel = $basis . '/backend/kontakt.php';
+$alt  = time() - 60;
+
+// Das Formular lässt fünf Nachrichten je Stunde und Adresse zu. Die
+// Prüfungen darunter schicken mehr – deshalb den Zähler vorher leeren.
+foreach (glob(sys_get_temp_dir() . '/tkd-kontakt-*.txt') ?: [] as $z) {
+    @unlink($z);
+}
+
+$a = anfrage($ziel, ['name' => 'Bot', 'email' => 'bot@example.de',
+    'message' => 'Nachricht eines Bots, lang genug fuer die Pruefung.',
+    'privacy' => '1', 'geladen' => $alt, 'website' => 'http://spam.example']);
+pruefe('Wer den Honigtopf ausfüllt, bekommt keine Fehlermeldung zu sehen',
+    $a['code'] === 200);
+
+$a = anfrage($ziel, ['name' => 'Erika', 'email' => 'erika@example.de',
+    'message' => 'Ich haette gern einen Termin zum Probetraining.',
+    'privacy' => '1', 'geladen' => time()]);
+pruefe('Zu schnell abgeschickte Formulare werden abgewiesen',
+    $a['code'] === 400 && str_contains($a['inhalt'], 'sehr schnell'));
+
+$a = anfrage($ziel, ['name' => 'Erika', 'email' => 'keine-adresse',
+    'message' => 'Ich haette gern einen Termin zum Probetraining.',
+    'privacy' => '1', 'geladen' => $alt]);
+pruefe('Eine unvollständige E-Mail-Adresse wird abgewiesen', $a['code'] === 400);
+
+$a = anfrage($ziel, ['name' => 'Erika', 'email' => 'erika@example.de',
+    'message' => 'Ich haette gern einen Termin zum Probetraining.',
+    'geladen' => $alt]);
+pruefe('Ohne Datenschutz-Zustimmung wird abgewiesen',
+    $a['code'] === 400 && str_contains($a['inhalt'], 'Datenschutz'));
+
+$a = anfrage($ziel, ['name' => "Erika\nBcc: opfer@example.com",
+    'email' => 'erika@example.de',
+    'message' => 'Ich haette gern einen Termin zum Probetraining.',
+    'privacy' => '1', 'geladen' => $alt]);
+$ablage = konfiguration()['kontakt_ablage'] ?? '';
+$zuletzt = '';
+if ($ablage && is_dir($ablage)) {
+    $dateien = glob(rtrim($ablage, '/') . '/*.txt') ?: [];
+    if ($dateien) {
+        usort($dateien, static fn ($x, $y) => filemtime($y) <=> filemtime($x));
+        $zuletzt = (string) file_get_contents($dateien[0]);
+    }
+}
+pruefe('Eingeschleuste Kopfzeilen landen nicht als eigene Kopfzeile',
+    $zuletzt !== '' && !preg_match('/^Bcc:/mi', $zuletzt));
+
+$a = anfrage($ziel);
+pruefe('Ein Aufruf ohne abgeschicktes Formular wird abgewiesen',
+    $a['code'] === 400 && str_contains($a['inhalt'], 'nur abgeschickte Formulare'));
+
 /* ---------- Aufräumen ---------- */
 db()->prepare('DELETE FROM mitglieder WHERE benutzername = ?')->execute(['pruefziel']);
 sperren_aufheben();
+foreach (glob(sys_get_temp_dir() . '/tkd-kontakt-*.txt') ?: [] as $z) {
+    @unlink($z);
+}
 
 echo "\n", str_repeat('-', 62), "\n";
 printf("%d Prüfungen bestanden, %d fehlgeschlagen\n", $bestanden, $fehler);

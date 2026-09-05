@@ -53,7 +53,7 @@ nachgezogen werden – dafür kommt die Seite ohne Build-Schritt aus.
 │   ├── js/mitglieder.js         Demo-Anmeldung, Filter, Player-Steuerung
 │   ├── js/videodaten.js         Daten der Videothek
 │   ├── js/trainingstermine.js   Trainingstermine – hier werden sie gepflegt
-│   ├── img/                     Stockfotos (JPG) und Favicon (SVG)
+│   ├── img/                     Eigene Fotos, Platzhalter und Favicon (SVG)
 │   └── video/                   Platzhaltervideos (MP4 + WebM) und Vorschaubilder
 ├── LIVEGANG.md                  Anleitung: von IONOS bis zur erreichbaren Seite
 ├── .htaccess                    Servereinstellungen (HTTPS, Zwischenspeicher)
@@ -240,21 +240,23 @@ was die Veröffentlichung blockiert und was später nachgereicht werden kann.
 
 ## Hinweise zur Anpassung
 
-- **Kontaktformular:** rein clientseitig. `assets/js/main.js` prüft die Eingaben und zeigt
-  eine Bestätigung an; es werden keine Daten übertragen oder gespeichert. Für den
-  Produktivbetrieb ist ein Formular-Endpunkt (z. B. PHP-Skript oder Formulardienst) im
-  `submit`-Handler zu ergänzen.
+- **Kontaktformular:** schickt echte Nachrichten über `backend/kontakt.php`. Die
+  Empfängeradresse steht in `backend/config.php`. Gegen Spam wirken ein für Menschen
+  unsichtbares Feld, eine Mindestzeit zwischen Aufruf und Absenden und eine Obergrenze
+  je IP-Adresse – kein Captcha. Ohne JavaScript wird dasselbe Formular abgeschickt und
+  mit einer schlichten Seite beantwortet.
 - **Mitgliederbereich:** Vor dem Echtbetrieb die Serverfassung aus `backend/` einrichten
-  und die Beispielkonten ersetzen. Für Aufnahmen mit erkennbaren Personen – besonders
-  Kindern – sind schriftliche Einwilligungen nötig, auch im geschützten Bereich.
-- **Vereinsdaten:** Name, Anschrift, Telefon, E-Mail, Registerangaben und Beiträge sind
-  Platzhalter (`Musterstadt`, `12345`, `info@tkd-musterstadt.de`) und müssen vor einer
-  Veröffentlichung ersetzt werden – auch in den PDFs im Ordner `downloads/`.
-- **Rechtstexte:** Impressum und Datenschutzhinweise sind Muster und ersetzen keine
-  Rechtsberatung.
+  und das mitgelieferte Trainerkonto ersetzen. Für Aufnahmen mit erkennbaren Personen –
+  besonders Kindern – sind schriftliche Einwilligungen nötig, auch im geschützten Bereich.
+- **Vereinsdaten:** Name, Anschrift, Telefon, E-Mail und Registerangaben sind die echten
+  Daten des TV 1897 Steinau e.V. Was noch fehlt, steht in `CHECKLISTE-INHALTE.md`.
+- **Rechtstexte:** Impressum und Datenschutzhinweise sind erstellt, aber weder vom
+  Vorstand freigegeben noch anwaltlich geprüft. Sie ersetzen keine Rechtsberatung.
 
 ## Bildnachweis
 
-Alle Fotos stammen von [Unsplash](https://unsplash.com) und werden unter der
-Unsplash-Lizenz verwendet. Es handelt sich um Stockfotos, nicht um Aufnahmen eines realen
-Vereins.
+Die Trainerporträts und das Wettkampffoto sind eigene Aufnahmen der Abteilung. Wo noch
+kein eigenes Bild vorliegt, steht eine Platzhalterfläche – erzeugt mit
+`werkzeuge/platzhalterbild.py`, in der Farbwelt der Website und als Platzhalter
+erkennbar. Ein echtes Foto ersetzt einfach die Datei; die Größen im HTML passen dann
+schon. Das Vereinswappen ist Eigentum des TV 1897 Steinau e.V.

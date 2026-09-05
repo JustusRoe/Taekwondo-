@@ -170,6 +170,13 @@
       });
     }
 
+    /* Zeitstempel setzen: Das Formular verrät damit dem Server, wie lange
+       es offen war. Einsendungen in unter drei Sekunden sind keine
+       getippten. Ohne JavaScript bleibt das Feld leer und die Prüfung
+       entfällt – dann greifen Honigtopf und IP-Grenze allein. */
+    const geladen = document.getElementById('geladen');
+    if (geladen) geladen.value = String(Math.floor(Date.now() / 1000));
+
     form.addEventListener('submit', function (event) {
       event.preventDefault();
       let firstInvalid = null;
@@ -197,14 +204,41 @@
         return;
       }
 
-      const name = form.elements.name.value.trim().split(' ')[0];
+      /* Absenden an backend/kontakt.php. Ohne JavaScript schickt der
+         Browser dasselbe Formular auf demselben Weg ab und bekommt eine
+         schlichte Antwortseite – deshalb steht action im HTML. */
+      const knopf = form.querySelector('button[type="submit"]');
+      const beschriftung = knopf ? knopf.textContent : '';
+      if (knopf) { knopf.disabled = true; knopf.textContent = 'Wird gesendet …'; }
+
       status.hidden = false;
-      status.textContent =
-        'Vielen Dank, ' + name + '. Dieser Entwurf versendet noch keine Nachrichten – ' +
-        'sobald die Seite freigeschaltet ist, geht deine Anfrage an ' +
-        'taekwondo@tv-steinau.de. Bis dahin erreichst du uns direkt unter dieser Adresse.';
-      status.scrollIntoView({ block: 'nearest', behavior: 'smooth' });
-      form.reset();
+      status.classList.remove('ist-fehler');
+      status.textContent = 'Deine Nachricht wird verschickt …';
+
+      fetch(form.action, {
+        method: 'POST',
+        body: new FormData(form),
+        headers: { 'Accept': 'application/json', 'X-Requested-With': 'fetch' }
+      })
+        .then(function (antwort) { return antwort.json(); })
+        .then(function (daten) {
+          status.textContent = daten.text;
+          status.classList.toggle('ist-fehler', !daten.ok);
+          if (daten.ok) {
+            form.reset();
+            if (geladen) geladen.value = String(Math.floor(Date.now() / 1000));
+          }
+        })
+        .catch(function () {
+          status.classList.add('ist-fehler');
+          status.textContent =
+            'Die Nachricht konnte nicht verschickt werden. Bitte schreib uns direkt ' +
+            'an taekwondo@tv-steinau.de oder ruf an: 0152 343 528 31.';
+        })
+        .then(function () {
+          if (knopf) { knopf.disabled = false; knopf.textContent = beschriftung; }
+          status.scrollIntoView({ block: 'nearest', behavior: 'smooth' });
+        });
     });
   }
 

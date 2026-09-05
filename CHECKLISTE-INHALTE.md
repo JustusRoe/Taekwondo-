@@ -106,7 +106,6 @@ Impressum steht jetzt mit den echten Vereinsdaten. Die Datenschutzhinweise sind
 ausführlicher als die des Hauptvereins, weil Kontaktformular und Mitgliederbereich
 dazukommen.
 
-- [ ] 🔴 **Datum des Freistellungsbescheids** (Finanzamt Gelnhausen)
 - [ ] 🔴 Beide Texte vom Vorstand freigeben lassen; der Landessportbund Hessen prüft so
       etwas für Mitgliedsvereine
 - [ ] 🔴 Auftragsverarbeitungsvertrag mit dem Hoster
@@ -117,7 +116,10 @@ dazukommen.
 
 ## E · Bilder ⚪
 
-Bis auf Weiteres bleiben die Stockfotos – so vereinbart.
+Die Stockfotos sind raus. An ihrer Stelle stehen Platzhalterflächen, die als solche
+erkennbar sind – ein Stockfoto vom Strand weckt eine falsche Erwartung, eine Fläche
+mit „Foto folgt" nicht. Eigene Aufnahmen ersetzen einfach die Dateien; die Größen
+stimmen dann schon.
 
 - [ ] ⚪ Eigene Aufnahmen aus dem Training (Formate stehen unten)
 - [ ] 🔴 Sobald eigene Bilder kommen: **Einwilligungen** aller erkennbaren Personen,
@@ -185,10 +187,8 @@ Auftritte entstehen.
       `robots.txt` alles aus, und jede Seite trägt ein `noindex`. Bleibt das stehen,
       taucht die Seite bei Google nie auf. Erledigt das in einem Rutsch:
       `php werkzeuge/livegang.php --live`
-- [ ] 🔴 **Das Kontaktformular verschickt nichts.** Es zeigt nach dem Absenden nur den
-      Hinweis, dass die Seite ein Entwurf ist. Vor dem Livegang entweder den Versand
-      bauen oder das Formular durch Telefonnummer und E-Mail ersetzen – sonst laufen
-      Probetrainingsanfragen ins Leere.
+- [x] ✅ **Das Kontaktformular verschickt echte Nachrichten** über `backend/kontakt.php`.
+      Vor dem Livegang nur noch die Empfängeradresse in `backend/config.php` eintragen.
 
 Der ganze Weg von IONOS bis zur erreichbaren Seite steht in `LIVEGANG.md`.
 - [ ] 🟡 Wer bekommt die FTP-Zugangsdaten?

@@ -35,11 +35,85 @@ function termin_orte(): array
     ];
 }
 
+/**
+ * Der feste Wochenrhythmus.
+ *
+ * Trainiert wird immer donnerstags und samstags, immer zu denselben
+ * Zeiten. Nur zweierlei weicht ab: An einzelnen Terminen fällt das
+ * Training aus (Ferien, Feiertage), und die Halle wechselt.
+ *
+ * Deshalb werden Termine nicht einzeln eingetippt, sondern für einen
+ * Zeitraum erzeugt; nachträglich wird nur noch gestrichen und die Halle
+ * umgestellt (backend/termine.php).
+ *
+ * wochentag: 0 = Sonntag … 6 = Samstag, wie bei date('w')
+ */
+function trainingsrhythmus(): array
+{
+    return [
+        [
+            'wochentag' => 4,                      // Donnerstag
+            'zeit'      => '18:00 – 20:00',
+            'gruppe'    => 'Selbstverteidigung',
+            'hinweis'   => 'Spiegelraum',
+        ],
+        [
+            'wochentag' => 6,                      // Samstag
+            'zeit'      => '09:30 – 11:30',
+            'gruppe'    => 'Training & Bambini',
+            'hinweis'   => '',
+        ],
+    ];
+}
+
+/**
+ * Erzeugt alle Termine des Rhythmus zwischen zwei Daten.
+ *
+ * Die Halle steht überall auf "steines" – das ist der Normalfall. Was
+ * davon abweicht, wird hinterher in der Liste umgestellt; das sind ein
+ * paar Klicks statt einer kompletten Eingabe.
+ */
+function termine_erzeugen(string $von, string $bis, string $ort = 'steines'): array
+{
+    $rhythmus = trainingsrhythmus();
+    $tag  = (int) strtotime($von);
+    $ende = (int) strtotime($bis);
+    $termine = [];
+
+    // Obergrenze gegen Vertipper wie "2099" – ein Jahr reicht für jeden Plan.
+    $hoechstens = 400;
+
+    while ($tag <= $ende && count($termine) < $hoechstens) {
+        foreach ($rhythmus as $r) {
+            if ((int) date('w', $tag) === $r['wochentag']) {
+                $termine[] = [
+                    'datum'   => date('Y-m-d', $tag),
+                    'zeit'    => $r['zeit'],
+                    'gruppe'  => $r['gruppe'],
+                    'ort'     => $ort,
+                    'hinweis' => $r['hinweis'],
+                ];
+            }
+        }
+        $tag = (int) strtotime('+1 day', $tag);
+    }
+    return $termine;
+}
+
 /** Deutscher Wochentag zu einem Datum – die Website zeigt ihn ausgeschrieben. */
 function termin_wochentag(string $datum): string
 {
     $tage = ['Sonntag', 'Montag', 'Dienstag', 'Mittwoch', 'Donnerstag', 'Freitag', 'Samstag'];
     return $tage[(int) date('w', (int) strtotime($datum))];
+}
+
+/** Monat und Jahr ausgeschrieben, etwa „September 2026". */
+function termin_monat(string $datum): string
+{
+    $monate = [1 => 'Januar', 'Februar', 'März', 'April', 'Mai', 'Juni', 'Juli',
+                    'August', 'September', 'Oktober', 'November', 'Dezember'];
+    $zeit = (int) strtotime($datum);
+    return $monate[(int) date('n', $zeit)] . ' ' . date('Y', $zeit);
 }
 
 /**
@@ -270,15 +344,13 @@ function js_block(array $termine): string
 /** Listeneinträge für training.html. */
 function html_block(array $termine): string
 {
-    $orte  = termin_orte();
-    $monate = [1 => 'Januar', 'Februar', 'März', 'April', 'Mai', 'Juni', 'Juli',
-                    'August', 'September', 'Oktober', 'November', 'Dezember'];
+    $orte = termin_orte();
     $aus = '';
     $letzterMonat = '';
 
     foreach ($termine as $t) {
         $zeit = (int) strtotime($t['datum']);
-        $monat = $monate[(int) date('n', $zeit)] . ' ' . date('Y', $zeit);
+        $monat = termin_monat($t['datum']);
         if ($monat !== $letzterMonat) {
             $aus .= '          <li class="kal-monat"><span>' . h($monat) . "</span></li>\n";
             $letzterMonat = $monat;

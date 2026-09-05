@@ -9,24 +9,21 @@ Kundenmenü dann sinngemäß so.
 
 ---
 
-## Vorher: die drei Sachen, die noch offen sind
+## Vorher: die zwei Sachen, die noch offen sind
 
-Bevor die Seite öffentlich erreichbar ist, sollten diese Punkte geklärt sein.
-Der erste ist der einzige, der Arbeit am Code bedeutet.
+Bevor die Seite öffentlich erreichbar ist, sollten diese beiden Punkte geklärt
+sein. Beide brauchen keine Arbeit am Code.
 
-1. **Das Kontaktformular verschickt nichts.** Es prüft die Eingaben und zeigt
-   danach einen Hinweis an, dass die Seite noch ein Entwurf ist. Wer ein
-   Probetraining anfragt, erreicht damit niemanden. Entweder wird der Versand
-   gebaut, oder das Formular wird vor dem Livegang durch Telefonnummer und
-   E-Mail-Adresse ersetzt.
-2. **Rechtstexte freigeben lassen.** Impressum und Datenschutzhinweise stehen
-   mit echten Vereinsdaten, sind aber vom Vorstand nicht freigegeben. Im
-   Impressum fehlt noch das Datum des Freistellungsbescheids.
-3. **Auftragsverarbeitungsvertrag mit IONOS.** Steht im Kundenmenü unter
+1. **Rechtstexte freigeben lassen.** Impressum und Datenschutzhinweise stehen
+   mit echten Vereinsdaten, sind aber vom Vorstand nicht freigegeben.
+2. **Auftragsverarbeitungsvertrag mit IONOS.** Steht im Kundenmenü unter
    Datenschutz zum Abschließen bereit. Nötig, weil auf dem Server
    personenbezogene Daten liegen (Mitgliederkonten, Kontaktanfragen).
 
 Einzelheiten dazu in `CHECKLISTE-INHALTE.md`, Abschnitte D und G.
+
+Das Kontaktformular verschickt seit dem letzten Stand echte Nachrichten – die
+Empfängeradresse wird in Schritt 6 eingetragen.
 
 ---
 
@@ -137,7 +134,22 @@ angelegt.
 
 // Zeigt eine Ebene über den öffentlichen Ordner
 'video_ordner'  => __DIR__ . '/../../videos-privat',
+
+// Wohin die Anfragen aus dem Kontaktformular gehen
+'kontakt_empfaenger' => 'taekwondo@tv-steinau.de',
+
+// Absenderadresse der verschickten Mail. Sie muss zu der Domain gehören,
+// von der aus verschickt wird – sonst stufen viele Postfächer die Nachricht
+// als gefälscht ein und sie landet im Spam. Die Adresse des Absenders steht
+// in Reply-To, Antworten gehen also an ihn.
+'kontakt_absender'   => 'noreply@deine-domain.de',
 ```
+
+Lege die Absenderadresse im Kundenmenü unter *E-Mail* als Postfach oder
+Weiterleitung an – manche Hoster verschicken sonst nichts.
+
+`kontakt_ablage` bleibt weg: Der Eintrag legt Nachrichten als Datei ab, statt
+sie zu verschicken, und ist nur für die Testumgebung gedacht.
 
 Der Pfad hängt davon ab, wie tief `backend/` liegt. Liegt die Website direkt in
 `www/`, dann steht `backend/` in `www/backend/`, und `__DIR__ . '/../../videos-privat'`
@@ -199,6 +211,9 @@ Der Reihe nach im Browser aufrufen:
 - [ ] `deine-domain.de` – lädt, springt von selbst auf `https://`
 - [ ] Trainingszeiten, Angebot, Trainerteam, Galerie, Downloads, Kontakt
 - [ ] Ein PDF aus dem Download-Bereich lässt sich öffnen
+- [ ] Kontaktformular ausfüllen und abschicken – die Nachricht muss im
+      Postfach der Abteilung landen. Kommt nichts an, stimmt meist die
+      Absenderadresse nicht (Schritt 6)
 - [ ] `deine-domain.de/backend/login.php` – Anmeldung geht
 - [ ] Als Trainer: *Termine* – ein Termin ändern und speichern. Danach muss die
       Änderung auf `training.html` und der Startseite stehen. Kommt hier
@@ -240,6 +255,8 @@ einstellbar.
 | Termine speichern, aber die Website ändert sich nicht | Schreibrechte (Schritt 11) |
 | Video lädt, lässt sich aber nicht spulen | Ausführungszeit im Hosting-Menü hochsetzen |
 | Seite erscheint nicht bei Google | Schritt 8 vergessen; danach dauert es Wochen |
+| Kontaktformular meldet einen Fehler | Absenderadresse gehört nicht zur Domain (Schritt 6) |
+| Nachrichten kommen an, aber im Spam | dasselbe – Absenderadresse muss zur Domain passen |
 
 Ausführlicher zum Mitgliederbereich: `backend/README.md`.
 

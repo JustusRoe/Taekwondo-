@@ -296,6 +296,11 @@ return [
     'poster_ordner'   => __DIR__ . '/../assets/video',
     'poster_url'      => '/assets/video/',
     'max_video_mb'    => 800,
+    'kontakt_empfaenger' => 'taekwondo@tv-steinau.de',
+    'kontakt_absender'   => 'noreply@example.de',
+    // Nur im Test: Nachrichten landen als Datei statt im Postausgang.
+    // Im Betrieb diese Zeile weglassen, dann wird wirklich verschickt.
+    'kontakt_ablage'     => __DIR__ . '/../test/daten/postausgang',
     'max_versuche'    => 5,
     'max_versuche_ip' => 20,
     'sperrminuten'    => 15,
