@@ -31,6 +31,48 @@ Danach im Ordner des Projekts:
 Das Skript prüft PHP-Version und Erweiterungen selbst und sagt, wenn etwas fehlt.
 Beendet wird mit `Strg+C`. Bleibt einmal ein Server hängen: `./test/testmain.sh --stop`.
 
+## Was sich hier prüfen lässt
+
+### Übersichtlichkeit der Verwaltung
+
+Die Testdatenbank enthält neben den beiden festen Zugängen **24 Beispielkonten**.
+Eine Liste mit zwei Einträgen sagt nichts darüber, ob eine Verwaltung
+übersichtlich ist – deshalb sind Umlaute in den Namen, stillgelegte Zugänge,
+Konten mit offenem Startpasswort und solche ohne jede Anmeldung dabei.
+
+Als `testtrainer` anmelden und unter `backend/konten.php` ausprobieren:
+
+- Suchfeld: `kämpf`, `roe`, `example` – gesucht wird in Name, Benutzername
+  und E-Mail.
+- Filter *Rolle* und *Status*, auch kombiniert mit der Suche.
+- Der Filter *noch mit Startpasswort* zeigt, wer sein Konto noch nicht
+  übernommen hat.
+- Die Kennzahlen oben zählen immer alle Konten, nicht die gefilterte Auswahl.
+- Suche und Filter stehen in der Adresszeile und lassen sich als Lesezeichen
+  ablegen; sie funktionieren auch ohne JavaScript.
+
+### Sicherheit
+
+```bash
+php test/sicherheit.php
+```
+
+Das Skript versucht der Reihe nach das, wogegen geschützt werden soll, und
+erwartet, dass es scheitert: Passwortraten für ein Konto, Durchprobieren
+vieler Benutzernamen von derselben Adresse, zu kurze und zu offensichtliche
+Passwörter, das Löschen und Abstufen von Trainerzugängen und der erzwungene
+Wechsel des Startpassworts. Danach räumt es Sperren und Testkonten wieder
+weg und lässt sich beliebig oft wiederholen. `./test/testmain.sh` ruft es
+automatisch mit auf.
+
+Von Hand nachstellen lässt sich das auch:
+
+| Was | Wie |
+| --- | --- |
+| Kontosperre | Fünfmal mit falschem Passwort anmelden, dann mit dem richtigen |
+| Erzwungener Wechsel | Als `ai.kaempf` mit `Kiesel-Wolke-4711` anmelden |
+| Schutz der Trainer | Bei einem Trainerzugang „Bearbeiten" öffnen |
+
 ## Testzugänge
 
 | Benutzername | Passwort | Rolle | Sieht |

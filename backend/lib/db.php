@@ -29,6 +29,15 @@ function db(): PDO
                 PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC,
                 PDO::ATTR_EMULATE_PREPARES   => false,
             ]);
+
+            // SQLite (Testumgebung) lässt nur einen Schreiber zu und bricht
+            // sonst sofort mit "database is locked" ab. Zehn Sekunden warten
+            // statt aufzugeben – dann stören sich Webserver und Prüfskripte
+            // nicht gegenseitig. MySQL im Betrieb kennt das Problem nicht und
+            // die Anweisung dort auch nicht, deshalb nur für SQLite.
+            if ($pdo->getAttribute(PDO::ATTR_DRIVER_NAME) === 'sqlite') {
+                $pdo->exec('PRAGMA busy_timeout = 10000');
+            }
         } catch (PDOException $e) {
             // Fehlermeldung nicht an den Besucher durchreichen
             error_log('DB-Verbindung fehlgeschlagen: ' . $e->getMessage());

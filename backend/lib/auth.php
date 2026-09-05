@@ -113,24 +113,59 @@ function eigenes_passwort_stimmt(int $mitgliedId, string $passwort): bool
     return true;
 }
 
-/** Zählt Fehlversuche, um Passwortraten auszubremsen. */
+/** Die IP des Aufrufers in der Form, in der sie in der Tabelle steht. */
+function aktuelle_ip(): string
+{
+    return inet_pton($_SERVER['REMOTE_ADDR'] ?? '0.0.0.0') ?: inet_pton('0.0.0.0');
+}
+
+/**
+ * Zählt Fehlversuche, um Passwortraten auszubremsen.
+ *
+ * Gezählt wird auf zwei Wegen:
+ *
+ *  1. je Benutzername – gegen das Durchprobieren von Passwörtern für ein
+ *     bestimmtes Konto (max_versuche, standardmäßig 5),
+ *  2. je IP-Adresse – gegen das Durchprobieren vieler Benutzernamen von
+ *     derselben Stelle aus (max_versuche_ip, standardmäßig 20).
+ *
+ * Ohne den zweiten Weg bremst die Sperre nur, wer ein Konto angreift:
+ * Wer stattdessen ein Passwort gegen viele Benutzernamen probiert, käme
+ * pro Name nie an die Grenze. Die IP-Grenze liegt deutlich höher, weil
+ * sich in der Halle alle dasselbe WLAN teilen und dann auch dieselbe
+ * Adresse nach außen tragen.
+ */
 function gesperrt(string $benutzername): bool
 {
     $c = konfiguration();
+    $grenze = date('Y-m-d H:i:s', time() - (int) $c['sperrminuten'] * 60);
+
     $stmt = db()->prepare(
         'SELECT COUNT(*) FROM login_versuche
           WHERE benutzername = ? AND zeitpunkt > ?'
     );
-    $grenze = date('Y-m-d H:i:s', time() - (int) $c['sperrminuten'] * 60);
     $stmt->execute([$benutzername, $grenze]);
-    return (int) $stmt->fetchColumn() >= (int) $c['max_versuche'];
+    if ((int) $stmt->fetchColumn() >= (int) $c['max_versuche']) {
+        return true;
+    }
+
+    $stmt = db()->prepare(
+        'SELECT COUNT(*) FROM login_versuche
+          WHERE ip = ? AND zeitpunkt > ?'
+    );
+    $stmt->execute([aktuelle_ip(), $grenze]);
+    return (int) $stmt->fetchColumn() >= (int) ($c['max_versuche_ip'] ?? 20);
 }
 
 function versuch_vermerken(string $benutzername): void
 {
-    $ip = inet_pton($_SERVER['REMOTE_ADDR'] ?? '0.0.0.0') ?: inet_pton('0.0.0.0');
     db()->prepare('INSERT INTO login_versuche (benutzername, ip) VALUES (?, ?)')
-        ->execute([$benutzername, $ip]);
+        ->execute([$benutzername, aktuelle_ip()]);
+
+    // Alte Einträge wegräumen. Sie zählen für keine Sperre mehr und die
+    // Tabelle soll nicht endlos wachsen.
+    db()->prepare('DELETE FROM login_versuche WHERE zeitpunkt < ?')
+        ->execute([date('Y-m-d H:i:s', time() - 86400)]);
 }
 
 /**

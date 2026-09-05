@@ -14,6 +14,11 @@ require_once __DIR__ . '/lib/verwaltung.php';
 $mitglied = anmeldung_verlangen();
 $erstmalig = $mitglied['passwort_wechseln'];
 
+// Für die Passwortprüfung: Der Benutzername darf nicht im Passwort stehen.
+$stmt = db()->prepare('SELECT benutzername FROM mitglieder WHERE id = ?');
+$stmt->execute([$mitglied['id']]);
+$eigenerBenutzername = (string) ($stmt->fetchColumn() ?: '');
+
 $meldung = '';
 $fehler  = '';
 
@@ -30,7 +35,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     } elseif ($neu === $alt) {
         $fehler = 'Bitte ein anderes als das bisherige Passwort wählen.';
     } else {
-        $fehler = passwort_pruefen($neu);
+        $fehler = passwort_pruefen($neu, $mitglied['rolle'], $eigenerBenutzername);
     }
 
     if ($fehler === '') {
@@ -87,7 +92,13 @@ kopf('Passwort ändern', $mitglied, !$erstmalig);
           <label for="neu">Neues Passwort</label>
           <input type="password" id="neu" name="neu" autocomplete="new-password"
                  required minlength="8">
-          <span class="feld-hinweis">Mindestens 8 Zeichen.</span>
+          <span class="feld-hinweis">
+            <?= $mitglied['rolle'] === 'trainer'
+                  ? 'Mindestens 12 Zeichen – dein Zugang darf in die Verwaltung.'
+                  : 'Mindestens 8 Zeichen.' ?>
+            Am besten drei, vier Wörter hintereinander: leichter zu merken
+            und schwerer zu raten als ein kurzes mit Sonderzeichen.
+          </span>
         </p>
         <p class="field">
           <label for="wiederholen">Neues Passwort wiederholen</label>

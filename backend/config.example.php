@@ -43,6 +43,13 @@ return [
     // Nach so vielen Fehlversuchen innerhalb des Zeitfensters wird der
     // Benutzername vorübergehend gesperrt.
     'max_versuche'  => 5,
+
+    // Dasselbe je IP-Adresse – gegen das Durchprobieren vieler
+    // Benutzernamen von derselben Stelle aus. Der Wert liegt bewusst
+    // höher: In der Halle teilen sich alle dasselbe WLAN und tragen
+    // damit dieselbe Adresse nach außen.
+    'max_versuche_ip' => 20,
+
     'sperrminuten'  => 15,
 
     // Sitzungsdauer in Minuten ohne Aktivität

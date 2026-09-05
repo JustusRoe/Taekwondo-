@@ -50,7 +50,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $rolle    = $_POST['rolle'] === 'trainer' ? 'trainer' : 'mitglied';
         $passwort = (string) $_POST['passwort'];
 
-        $fehler = benutzername_pruefen($benutzer) ?: passwort_pruefen($passwort);
+        $fehler = benutzername_pruefen($benutzer)
+               ?: passwort_pruefen($passwort, $rolle, $benutzer);
 
         if ($fehler === '' && $name === '') {
             $fehler = 'Bitte den Namen angeben.';
@@ -114,7 +115,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     /* ---------- Passwort neu setzen ---------- */
     if ($aktion === 'passwort') {
         $passwort = (string) $_POST['passwort'];
-        $fehler = passwort_pruefen($passwort);
+        // Rolle und Benutzername des Ziels bestimmen die Vorgaben.
+        $fehler = passwort_pruefen(
+            $passwort,
+            $ziel['rolle'] ?? 'mitglied',
+            (string) ($ziel['benutzername'] ?? '')
+        );
 
         if ($fehler === '' && !$ziel) {
             $fehler = 'Diesen Zugang gibt es nicht mehr.';

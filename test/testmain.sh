@@ -96,7 +96,10 @@ fi
 # ---------------------------------------------------------------
 if [ "$NUR_PRUEFEN" -eq 1 ]; then
   php "$WURZEL/test/check.php" "$BASIS"
-  exit $?
+  ERGEBNIS=$?
+  echo
+  php "$WURZEL/test/sicherheit.php" "$BASIS" || ERGEBNIS=1
+  exit $ERGEBNIS
 fi
 
 # ---------------------------------------------------------------
@@ -176,6 +179,10 @@ php "$WURZEL/test/check.php" "$BASIS"
 ERGEBNIS=$?
 
 echo
+php "$WURZEL/test/sicherheit.php" "$BASIS"
+if [ $? -ne 0 ]; then ERGEBNIS=1; fi
+
+echo
 echo "========================================================"
 if [ "$ERGEBNIS" -eq 0 ]; then
   gruen "Alle Dienste laufen."
@@ -190,9 +197,19 @@ Im Browser öffnen
   Mitglieder (Entwurf)  ${BASIS}/mitglieder.html
   Mitglieder (Server)   ${BASIS}/backend/login.php
 
+Verwaltung (als testtrainer anmelden)
+  Zugänge               ${BASIS}/backend/konten.php
+  Termine               ${BASIS}/backend/termine.php
+  Eigenes Passwort      ${BASIS}/backend/passwort.php
+
 Testzugänge (Passwort jeweils: test1234)
   testuser       Mitglied – sieht die Videothek
   testtrainer    Trainer  – sieht zusätzlich die Verwaltung
+
+Beispielkonten (Passwort: Kiesel-Wolke-4711)
+  24 weitere Zugänge füllen die Kontenliste, damit sich Suche, Filter und
+  Kennzahlen beurteilen lassen. Den erzwungenen Passwortwechsel zeigen:
+  ai.kaempf (Trainerin) oder t.brandt (Mitglied).
 
 Der Entwurf akzeptiert dieselben Zugänge, prüft sie aber nur im Browser.
 

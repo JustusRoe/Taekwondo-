@@ -16,11 +16,54 @@ declare(strict_types=1);
 
 const WURZEL = __DIR__ . '/..';
 
-/* ---------- Testkonten ---------- */
+/* ---------- Testkonten ----------
+   Die beiden festen Zugänge zum Anmelden. Ihr Passwort gilt als selbst
+   gesetzt (passwort_wechseln = 0), sonst landet jeder Testlauf zuerst auf
+   der Passwortseite. */
 const KONTEN = [
     ['testuser',    'Test Nutzer',   'testuser@example.de',    'test1234', 'mitglied'],
     ['testtrainer', 'Test Trainer',  'testtrainer@example.de', 'test1234', 'trainer'],
 ];
+
+/* ---------- Beispielkonten für die Übersicht ----------
+   Eine Kontenliste mit zwei Einträgen sagt nichts darüber, ob die
+   Verwaltung übersichtlich ist. Diese Konten füllen die Tabelle so weit,
+   dass sich Suche, Filter und Kennzahlen beurteilen lassen: Umlaute in
+   den Namen, stillgelegte Zugänge, Konten mit Startpasswort und solche,
+   die sich noch nie angemeldet haben.
+
+   [Benutzername, Name, Rolle, aktiv, Startpasswort offen, Tage seit letzter Anmeldung]
+   Tage = null bedeutet: noch nie angemeldet. */
+const DEMO = [
+    ['m.buchhold',   'Michael Buchhold',     'trainer',  1, 0,   1],
+    ['a.kaempf',     'Andy Kämpf',           'trainer',  1, 0,   3],
+    ['ai.kaempf',    'Aileen Kämpf',         'trainer',  1, 1,   null],
+    ['m.frost',      'Maxim Frost',          'mitglied', 1, 0,   2],
+    ['j.roeder',     'Justus Röder',         'mitglied', 1, 0,   9],
+    ['a.meyer',      'Arno Meyer',           'mitglied', 1, 0,  14],
+    ['ak.kaiser',    'Anna-Karoline Kaiser', 'mitglied', 1, 0,   5],
+    ['l.schaefer',   'Lena Schäfer',         'mitglied', 1, 0,  21],
+    ['t.brandt',     'Tobias Brandt',        'mitglied', 1, 1,   null],
+    ['s.hofmann',    'Sarah Hofmann',        'mitglied', 1, 0,  33],
+    ['n.wagner',     'Nico Wagner',          'mitglied', 1, 0,   7],
+    ['k.gruber',     'Katrin Gruber',        'mitglied', 1, 1,   null],
+    ['p.lorenz',     'Paul Lorenz',          'mitglied', 1, 0,  62],
+    ['e.stein',      'Emma Stein',           'mitglied', 1, 0,   4],
+    ['f.koehler',    'Felix Köhler',         'mitglied', 1, 0,  11],
+    ['h.baumann',    'Hannah Baumann',       'mitglied', 1, 0,  18],
+    ['d.krause',     'David Krause',         'mitglied', 0, 0, 140],
+    ['v.wolf',       'Vera Wolf',            'mitglied', 0, 0, 210],
+    ['j.seidel',     'Jonas Seidel',         'mitglied', 1, 0,   6],
+    ['m.engel',      'Marie Engel',          'mitglied', 1, 0,  27],
+    ['r.hartmann',   'Robin Hartmann',       'mitglied', 1, 0,  45],
+    ['c.vogel',      'Clara Vogel',          'mitglied', 1, 0,   8],
+    ['b.zimmer',     'Ben Zimmer',           'mitglied', 0, 1,   null],
+    ['l.friedrich',  'Luis Friedrich',       'mitglied', 1, 0,  16],
+];
+
+/* Startpasswort der Demokonten – überall dasselbe, damit sich der
+   erzwungene Wechsel ausprobieren lässt. */
+const DEMO_PASSWORT = 'Kiesel-Wolke-4711';
 
 $neu = in_array('--neu', $argv ?? [], true);
 
@@ -59,6 +102,9 @@ $pdo = new PDO('sqlite:' . $dbDatei, null, null, [
     PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC,
 ]);
 $pdo->exec('PRAGMA foreign_keys = ON');
+// WAL: Lesen und Schreiben gleichzeitig. Ohne das sperren sich Webserver
+// und Prüfskripte gegenseitig aus.
+$pdo->exec('PRAGMA journal_mode = WAL');
 
 /* Dieselben Tabellen wie backend/schema.sql, in SQLite-Schreibweise. */
 $pdo->exec('CREATE TABLE IF NOT EXISTS mitglieder (
@@ -144,6 +190,29 @@ foreach (KONTEN as [$benutzer, $name, $mail, $passwort, $rolle]) {
     }
 }
 
+/* ---------- 4b. Beispielkonten für die Übersicht ---------- */
+$pdo->prepare('DELETE FROM mitglieder WHERE benutzername NOT IN (?, ?)')
+    ->execute([KONTEN[0][0], KONTEN[1][0]]);
+
+$demo = $pdo->prepare(
+    'INSERT INTO mitglieder (benutzername, name, email, passwort_hash, rolle,
+                             aktiv, passwort_wechseln, letzter_login)
+     VALUES (?, ?, ?, ?, ?, ?, ?, ?)'
+);
+$hash = password_hash(DEMO_PASSWORT, PASSWORD_DEFAULT);
+foreach (DEMO as [$benutzer, $name, $rolle, $aktiv, $offen, $tage]) {
+    $demo->execute([
+        $benutzer, $name, $benutzer . '@example.de', $hash, $rolle,
+        $aktiv, $offen,
+        $tage === null ? null : date('Y-m-d H:i:s', time() - $tage * 86400),
+    ]);
+}
+printf("  Beispielkonten   %d Zugänge (%d Trainer, %d stillgelegt, %d mit Startpasswort)\n",
+    count(DEMO),
+    count(array_filter(DEMO, fn ($k) => $k[2] === 'trainer')),
+    count(array_filter(DEMO, fn ($k) => $k[3] === 0)),
+    count(array_filter(DEMO, fn ($k) => $k[4] === 1)));
+
 /* ---------- 5. Videos aus assets/js/videodaten.js ---------- */
 $js = file_get_contents(WURZEL . '/assets/js/videodaten.js');
 $von = strpos($js, '[');
@@ -228,6 +297,7 @@ return [
     'poster_url'      => '/assets/video/',
     'max_video_mb'    => 800,
     'max_versuche'    => 5,
+    'max_versuche_ip' => 20,
     'sperrminuten'    => 15,
     'sitzung_minuten' => 180,
 ];
@@ -240,5 +310,16 @@ echo str_repeat('-', 52), "\n";
 echo "Fertig.\n\n";
 echo "Testzugänge (Passwort jeweils: test1234)\n";
 foreach (KONTEN as [$benutzer, $name, , , $rolle]) {
-    printf("  %-12s %-14s %s\n", $benutzer, $rolle, $name);
+    printf("  %-14s %-10s %s\n", $benutzer, $rolle, $name);
 }
+
+echo "\nBeispielkonten (Passwort: " . DEMO_PASSWORT . ")\n";
+echo "  Füllen die Kontenliste, damit sich Suche und Filter beurteilen lassen.\n";
+echo "  Erzwungenen Passwortwechsel ausprobieren mit:  ai.kaempf  (Trainerin)\n";
+echo "                                          oder:  t.brandt   (Mitglied)\n";
+
+echo "\nWas sich wo ansehen lässt\n";
+echo "  backend/konten.php    Übersicht, Suche, Filter, Kennzahlen\n";
+echo "  backend/termine.php   Terminplan pflegen und CSV hochladen\n";
+echo "  backend/passwort.php  eigenes Passwort ändern\n";
+echo "\nSicherheit prüfen:  php test/sicherheit.php\n";

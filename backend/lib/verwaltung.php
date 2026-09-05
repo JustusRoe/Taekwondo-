@@ -23,10 +23,12 @@ function max_video_bytes(): int
 }
 
 /**
- * Erzeugt ein Passwort, das sich am Telefon durchgeben und auf einen Zettel
- * schreiben lässt. Zwei Wörter und drei Ziffern ergeben rund 30 Millionen
- * Möglichkeiten – zusammen mit der Sperre nach fünf Fehlversuchen reicht das
- * für Vereinszugänge. Ähnlich aussehende Wörter sind bewusst nicht dabei.
+ * Erzeugt ein Startpasswort, das sich am Telefon durchgeben und auf einen
+ * Zettel schreiben lässt. Zwei Wörter aus 56 und vier Ziffern ergeben
+ * 56 × 56 × 9000, also rund 28 Millionen Möglichkeiten. Zusammen mit der
+ * Sperre nach fünf Fehlversuchen reicht das für ein Passwort, das ohnehin
+ * beim ersten Anmelden gegen ein eigenes getauscht wird. Ähnlich
+ * aussehende Wörter sind bewusst nicht dabei.
  */
 function passwort_vorschlag(): string
 {
@@ -41,7 +43,7 @@ function passwort_vorschlag(): string
     ];
     $a = $woerter[random_int(0, count($woerter) - 1)];
     $b = $woerter[random_int(0, count($woerter) - 1)];
-    return $a . '-' . $b . '-' . random_int(100, 999);
+    return $a . '-' . $b . '-' . random_int(1000, 9999);
 }
 
 /** Prüft einen Benutzernamen; gibt eine Fehlermeldung zurück oder ''. */
@@ -54,12 +56,45 @@ function benutzername_pruefen(string $name): string
     return '';
 }
 
-/** Prüft ein Passwort; gibt eine Fehlermeldung zurück oder ''. */
-function passwort_pruefen(string $passwort): string
+/**
+ * Prüft ein Passwort; gibt eine Fehlermeldung zurück oder ''.
+ *
+ * Trainerkonten dürfen in die Verwaltung und bekommen deshalb die
+ * strengere Vorgabe. Länge wirkt gegen Raten mehr als Sonderzeichen:
+ * Zwölf Zeichen aus einem Satz gemerkter Wörter sind schwerer zu treffen
+ * als acht mit Ziffer und Ausrufezeichen – und leichter zu merken.
+ */
+function passwort_pruefen(string $passwort, string $rolle = 'mitglied',
+                          string $benutzername = ''): string
 {
-    if (mb_strlen($passwort) < 8) {
-        return 'Das Passwort muss mindestens 8 Zeichen haben.';
+    $mindestens = $rolle === 'trainer' ? 12 : 8;
+    if (mb_strlen($passwort) < $mindestens) {
+        return $rolle === 'trainer'
+            ? 'Trainerpasswörter müssen mindestens 12 Zeichen haben.'
+            : 'Das Passwort muss mindestens 8 Zeichen haben.';
     }
+
+    $klein = mb_strtolower($passwort);
+
+    // Der Benutzername im Passwort ist das Erste, was jemand ausprobiert.
+    if ($benutzername !== '' && mb_strlen($benutzername) >= 4
+        && str_contains($klein, mb_strtolower($benutzername))) {
+        return 'Das Passwort darf den Benutzernamen nicht enthalten.';
+    }
+
+    // Kurze Liste dessen, was auf jeder Rateliste ganz oben steht.
+    $verbreitet = [
+        'passwort', 'password', 'taekwondo', 'steinau', 'tvsteinau',
+        'qwertz', 'qwerty', '12345678', '123456789', 'geheim',
+        'willkommen', 'training', 'abcdefgh', 'letmein',
+    ];
+    foreach ($verbreitet as $wort) {
+        if (str_contains($klein, $wort)) {
+            return 'Dieses Passwort ist zu leicht zu erraten – „' . $wort
+                 . '" steht auf jeder Liste, die durchprobiert wird.';
+        }
+    }
+
     return '';
 }
 
