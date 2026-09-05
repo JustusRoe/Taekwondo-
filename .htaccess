@@ -1,0 +1,86 @@
+# =========================================================
+# Taekwondo im TV 1897 Steinau e.V.
+# Einstellungen für den öffentlichen Ordner (Apache, z. B. IONOS)
+#
+# Diese Datei gehört in denselben Ordner wie index.html.
+# =========================================================
+
+# ---------------------------------------------------------
+# 1. HTTPS erzwingen
+#
+# Ohne Verschlüsselung wandern die Passwörter des
+# Mitgliederbereichs im Klartext durchs Netz. Erst
+# aktivieren, wenn das Zertifikat im Kundenmenü eingerichtet
+# ist – sonst läuft die Seite in eine Endlosschleife.
+#
+# Die zweite Bedingung ist für Hoster nötig, bei denen die
+# Verschlüsselung vorgelagert endet: Dort steht %{HTTPS} auf
+# "off", obwohl der Besucher über HTTPS kam.
+# ---------------------------------------------------------
+<IfModule mod_rewrite.c>
+  RewriteEngine On
+
+  RewriteCond %{HTTPS} !=on
+  RewriteCond %{HTTP:X-Forwarded-Proto} !https
+  RewriteRule ^(.*)$ https://%{HTTP_HOST}/$1 [R=301,L]
+
+  # Falls die Seite unter www und ohne www erreichbar sein soll,
+  # eine der beiden Zeilen einkommentieren – sonst zählt Google
+  # zwei Adressen mit demselben Inhalt.
+  #
+  # RewriteCond %{HTTP_HOST} ^www\.(.+)$ [NC]
+  # RewriteRule ^(.*)$ https://%1/$1 [R=301,L]
+</IfModule>
+
+# ---------------------------------------------------------
+# 2. Nichts ausliefern, was niemanden angeht
+# ---------------------------------------------------------
+Options -Indexes
+
+<FilesMatch "^(.*\.md|.*\.sql|\.gitignore|composer\.(json|lock))$">
+  Require all denied
+</FilesMatch>
+
+# Der Ordner werkzeuge/ enthält Hilfsskripte für die Pflege,
+# nicht für Besucher.
+RedirectMatch 404 ^/werkzeuge/
+
+# ---------------------------------------------------------
+# 3. Kleinigkeiten für Sicherheit und Anzeige
+# ---------------------------------------------------------
+<IfModule mod_headers.c>
+  # Browser sollen den Dateityp nicht raten
+  Header set X-Content-Type-Options "nosniff"
+  # Beim Klick auf einen Link nach außen nur die Domain mitgeben
+  Header set Referrer-Policy "strict-origin-when-cross-origin"
+  # Die Seite nicht in fremde Rahmen einbetten lassen
+  Header always set X-Frame-Options "SAMEORIGIN"
+</IfModule>
+
+<IfModule mod_mime.c>
+  AddDefaultCharset UTF-8
+</IfModule>
+
+# ---------------------------------------------------------
+# 4. Zwischenspeicher im Browser
+#
+# Bilder und Videos ändern sich selten. HTML dagegen schon –
+# es wird deshalb nicht zwischengespeichert, sonst sähen
+# Besucher nach einer Terminänderung tagelang den alten Plan.
+# ---------------------------------------------------------
+<IfModule mod_expires.c>
+  ExpiresActive On
+  ExpiresByType image/jpeg          "access plus 1 month"
+  ExpiresByType image/png           "access plus 1 month"
+  ExpiresByType image/svg+xml       "access plus 1 month"
+  ExpiresByType video/mp4           "access plus 1 month"
+  ExpiresByType video/webm          "access plus 1 month"
+  ExpiresByType text/css            "access plus 7 days"
+  ExpiresByType application/javascript "access plus 7 days"
+  ExpiresByType text/html           "access plus 0 seconds"
+</IfModule>
+
+# ---------------------------------------------------------
+# 5. Fehlerseiten
+# ---------------------------------------------------------
+ErrorDocument 404 /index.html

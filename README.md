@@ -55,6 +55,8 @@ nachgezogen werden – dafür kommt die Seite ohne Build-Schritt aus.
 │   ├── js/trainingstermine.js   Trainingstermine – hier werden sie gepflegt
 │   ├── img/                     Stockfotos (JPG) und Favicon (SVG)
 │   └── video/                   Platzhaltervideos (MP4 + WebM) und Vorschaubilder
+├── LIVEGANG.md                  Anleitung: von IONOS bis zur erreichbaren Seite
+├── .htaccess                    Servereinstellungen (HTTPS, Zwischenspeicher)
 ├── werkzeuge/                   Hilfsskripte, nicht Teil der Website
 ├── downloads/                   PDF-Dokumente des Download-Bereichs
 └── backend/                     Serverfassung des Mitgliederbereichs (PHP + MySQL)
@@ -169,6 +171,24 @@ python3 -m http.server 8000
 Hinweis: `python3 -m http.server` und `php -S` beantworten keine Range-Requests. Das
 Springen im Video funktioniert damit nur eingeschränkt – auf echten Servern (Apache,
 Nginx, IONOS) und über `backend/stream.php` dagegen vollständig.
+
+## Online stellen
+
+Die vollständige Anleitung steht in **[`LIVEGANG.md`](LIVEGANG.md)**: Domain
+zuordnen, PHP-Version, Zertifikat, Datenbank, Dateien hochladen, erstes
+Trainerkonto und eine Liste zum Durchprüfen.
+
+Ein Punkt daraus ist leicht zu übersehen: Für die Vorschau ist die Seite für
+Suchmaschinen gesperrt – `robots.txt` verbietet alles, und jede Seite trägt ein
+`noindex`. Das steckt in einem Dutzend Dateien und wird zusammen umgeschaltet:
+
+```bash
+php werkzeuge/livegang.php --status     # wie steht es gerade?
+php werkzeuge/livegang.php --live       # Sperre lösen
+php werkzeuge/livegang.php --entwurf    # wieder sperren
+```
+
+Die Seiten des Mitgliederbereichs behalten ihr `noindex` in jedem Fall.
 
 ## Vorschau im Netz (GitHub Pages)
 

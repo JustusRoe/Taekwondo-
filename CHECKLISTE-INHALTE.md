@@ -182,8 +182,15 @@ Auftritte entstehen.
 - [ ] 🔴 Entscheidung für eine Adresse
 - [ ] 🔴 Wer ist Vertragspartner? Der Verein sollte es sein, keine Privatperson
 - [ ] 🔴 **Beim Livegang die Suchmaschinensperre lösen.** Für die Vorschau sperrt
-      `robots.txt` alles aus, und `index.html` trägt ein `noindex`. Bleibt das stehen,
-      taucht die Seite bei Google nie auf. Beide Stellen sind im Quelltext kommentiert.
+      `robots.txt` alles aus, und jede Seite trägt ein `noindex`. Bleibt das stehen,
+      taucht die Seite bei Google nie auf. Erledigt das in einem Rutsch:
+      `php werkzeuge/livegang.php --live`
+- [ ] 🔴 **Das Kontaktformular verschickt nichts.** Es zeigt nach dem Absenden nur den
+      Hinweis, dass die Seite ein Entwurf ist. Vor dem Livegang entweder den Versand
+      bauen oder das Formular durch Telefonnummer und E-Mail ersetzen – sonst laufen
+      Probetrainingsanfragen ins Leere.
+
+Der ganze Weg von IONOS bis zur erreichbaren Seite steht in `LIVEGANG.md`.
 - [ ] 🟡 Wer bekommt die FTP-Zugangsdaten?
 - [ ] 🟡 Soll die Seite von tv-steinau.de aus verlinkt werden?
 
