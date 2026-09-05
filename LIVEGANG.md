@@ -27,6 +27,46 @@ Empfängeradresse wird in Schritt 6 eingetragen.
 
 ---
 
+## Was braucht was
+
+PHP und die Datenbank sind **nichts, was du installieren musst** - beides gehoert
+schon zum Webhosting-Paket. PHP muss nur auf die richtige Version gestellt
+werden (ein Auswahlfeld), und die Datenbank wird einmal angelegt (ein
+Formular). Beides dauert zusammen keine zehn Minuten.
+
+Wichtiger ist zu wissen, welcher Teil der Website was davon ueberhaupt braucht:
+
+| Teil der Website | PHP | Datenbank | `config.php` |
+| --- | :---: | :---: | :---: |
+| Die oeffentliche Website - alle Seiten, Bilder, PDFs, Terminplan | - | - | - |
+| Kontaktformular | ja | - | ja |
+| Mitgliederbereich, Videothek, Zugaenge, Terminverwaltung | ja | ja | ja |
+
+**Das heisst:** Sobald die Dateien oben liegen, ist die oeffentliche Website
+fertig und erreichbar. Sie ist reines HTML, CSS und JavaScript - auch der
+Terminplan steht fest in den Dateien. Wenn beim Rest noch etwas fehlt, merken
+Besucher davon nichts.
+
+PHP und Datenbank betreffen nur den Ordner `backend/`. Und selbst dort gilt:
+Das Kontaktformular kommt ohne Datenbank aus - absichtlich, damit
+Probetrainingsanfragen auch dann ankommen, wenn die Datenbank streikt.
+
+## Reihenfolge
+
+Einrichten im Kundenmenue und Hochladen sind zwei getrennte Vorgaenge, die sich
+nicht ins Gehege kommen. Am wenigsten Warterei gibt es so:
+
+1. **Zuerst im Kundenmenue** (Schritte 1 bis 4): Domain zuordnen, PHP-Version,
+   Zertifikat anfordern, Datenbank anlegen. Das Zertifikat braucht danach
+   ohnehin ein paar Minuten - die nutzt du fuers Hochladen.
+2. **Dann hochladen** (Schritt 5).
+3. **Zum Schluss** `config.php` anlegen und `schema.sql` einspielen - dafuer
+   brauchst du die Datenbankangaben aus Schritt 4.
+
+Du kannst auch zuerst hochladen. Dann steht die oeffentliche Website sofort, und
+`/backend/...` meldet "config.php fehlt", bis du Schritt 6 nachholst. Kaputt geht
+dabei nichts.
+
 ## 1. Domain auf das Hosting zeigen lassen
 
 Domain und Webhosting sind bei IONOS zwei getrennte Produkte, auch wenn sie
