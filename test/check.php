@@ -67,10 +67,24 @@ if ($a['code'] === 0) {
     exit(1);
 }
 pruefe('Startseite erreichbar', $a['code'] === 200, 'HTTP ' . $a['code']);
-pruefe('Startseite enthält den Trainingsplan',
+
+/* Die Startseite ist eine Landing Page: Sie trägt die Inhalte nicht mehr selbst,
+   sondern verweist auf die Themenseiten. */
+$unterseiten = ['training.html', 'termine.html', 'angebot.html', 'abteilung.html',
+                'trainerteam.html', 'galerie.html', 'downloads.html', 'kontakt.html'];
+$fehlend = array_values(array_filter($unterseiten,
+    static fn (string $seite): bool => !str_contains($a['inhalt'], $seite)));
+pruefe('Startseite verlinkt alle Themenseiten', $fehlend === [],
+    'fehlt: ' . implode(', ', $fehlend));
+
+foreach ($unterseiten as $seite) {
+    $u = anfrage($basis . '/' . $seite);
+    pruefe("Themenseite $seite erreichbar", $u['code'] === 200, 'HTTP ' . $u['code']);
+}
+
+$a = anfrage($basis . '/training.html');
+pruefe('Trainingsseite enthält den Trainingsplan',
     str_contains($a['inhalt'], 'Trainingsplan'));
-pruefe('Startseite verlinkt den vollständigen Terminplan',
-    str_contains($a['inhalt'], 'termine.html'));
 
 $a = anfrage($basis . '/termine.html');
 pruefe('Terminplan-Seite listet alle Termine',

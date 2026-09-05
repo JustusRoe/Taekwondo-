@@ -474,6 +474,56 @@ p { margin: 0 0 1.1em; }
   color: var(--ink-2);
 }
 
+/* ---------- Seitenübersicht auf der Startseite ----------
+   Die Startseite verweist nur noch auf die Unterseiten. Jede Kachel ist als
+   Ganzes ein Link, damit auch der Text darin anklickbar bleibt. */
+
+.hub {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(258px, 1fr));
+  gap: 20px;
+}
+.hub-card {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  padding: 26px 26px 24px;
+  background: #fff;
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  color: var(--ink);
+  text-decoration: none;
+  transition: transform .22s ease, border-color .22s ease, box-shadow .22s ease;
+}
+.hub-card:hover {
+  transform: translateY(-3px);
+  border-color: var(--line-strong);
+  box-shadow: 0 14px 32px rgba(20, 23, 28, .08);
+  color: var(--ink);
+}
+.hub-card h3 { margin: 0; }
+.hub-card p { margin: 0; font-size: .93rem; color: var(--muted); }
+.hub-mehr {
+  margin-top: auto;
+  padding-top: 14px;
+  border-top: 1px solid var(--line);
+  font-size: .78rem;
+  font-weight: 700;
+  letter-spacing: .1em;
+  text-transform: uppercase;
+  color: var(--accent);
+}
+.hub-mehr::after { content: " \2192"; }
+
+/* Querverweis am Fuß einer Unterseite */
+.seiten-weiter {
+  margin: 40px 0 0;
+  padding-top: 24px;
+  border-top: 1px solid var(--line);
+  font-size: .95rem;
+  color: var(--muted);
+}
+
 /* ---------- Wochenplan mit Hallen ---------- */
 
 .plan {
@@ -729,6 +779,12 @@ a.halle:hover { border-color: var(--ink); color: var(--ink-2); }
   font-size: .85rem;
   color: var(--muted);
   background: var(--bg-soft);
+}
+.kal-leer {
+  margin: 0;
+  padding: 22px 24px;
+  border-top: 1px solid var(--line);
+  color: var(--ink-2);
 }
 
 /* Trainingszeiten */

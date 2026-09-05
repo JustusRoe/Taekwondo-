@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<!-- ENTWURF: Sperre gegen Suchmaschinen. Vor dem Livegang diese Zeile und
+     robots.txt anpassen, sonst findet Google die Seite nie. -->
+<meta name="robots" content="noindex, nofollow">
+<title>Galerie – Taekwondo im TV 1897 Steinau e.V.</title>
+<meta name="description" content="Bilder aus dem Training, von Lehrgängen und aus dem Wettkampf der Taekwondo-Abteilung des TV 1897 Steinau e.V.">
+<link rel="stylesheet" href="assets/css/style.css">
+<link rel="icon" href="assets/img/favicon.svg" type="image/svg+xml">
+</head>
+<body>
+
+<a class="skip-link" href="#main">Zum Inhalt springen</a>
+
+<header class="site-header" id="top">
+  <div class="container header-inner">
+    <a class="brand" href="index.html" aria-label="Startseite Taekwondo im TV 1897 Steinau">
+      <img class="brand-logo" src="assets/img/tv-steinau-logo.png" alt="Wappen des TV 1897 Steinau" width="440" height="299">
+      <span class="brand-text">
+        <strong>Taekwondo</strong>
+        <span>TV 1897 Steinau e.V.</span>
+      </span>
+    </a>
+
+    <button class="nav-toggle" id="navToggle" aria-expanded="false" aria-controls="siteNav">
+      <span class="nav-toggle-bars" aria-hidden="true"><span></span><span></span><span></span></span>
+      <span class="visually-hidden">Menü öffnen</span>
+    </button>
+
+    <nav class="site-nav" id="siteNav" aria-label="Hauptnavigation">
+      <ul>
+        <li><a href="training.html">Training</a></li>
+        <li><a href="angebot.html">Angebot</a></li>
+        <li><a href="abteilung.html">Abteilung</a></li>
+        <li><a href="trainerteam.html">Trainerteam</a></li>
+        <li><a href="galerie.html">Galerie</a></li>
+        <li><a href="downloads.html">Downloads</a></li>
+        <li><a href="mitglieder.html">Mitglieder</a></li>
+        <li><a href="kontakt.html" class="nav-cta">Probetraining</a></li>
+      </ul>
+    </nav>
+  </div>
+</header>
+
+<main id="main">
+  <section class="section" id="galerie">
+    <div class="container">
+      <a class="tool-btn kal-zurueck" href="index.html">← Zurück zur Startseite</a>
+
+      <header class="section-head">
+        <p class="eyebrow">Galerie</p>
+        <h1>Einblicke ins Training</h1>
+        <p class="section-intro">
+          Erste eigene Aufnahmen aus dem Steinauer Training – die übrigen Bilder aus freien
+          Bildarchiven werden nach und nach durch weitere eigene Fotos ersetzt.
+        </p>
+      </header>
+
+      <div class="gallery" id="gallery">
+        <button class="shot shot-wide" type="button"
+                data-caption="Sprungkick im Techniktraining">
+          <img src="assets/img/hero.jpg" loading="lazy" width="1700" height="947"
+               alt="Taekwondoin springt zu einem Kick vor einer hellen Wand">
+        </button>
+        <button class="shot" type="button" data-caption="Gemeinsames Training in der Halle">
+          <img src="assets/img/lehrgang.jpg" loading="lazy" width="1200" height="801"
+               alt="Große Gruppe in weißen Anzügen trainiert gemeinsam in einer Sporthalle">
+        </button>
+        <button class="shot" type="button" data-caption="Abendtraining">
+          <img src="assets/img/dojang-abend.jpg" loading="lazy" width="1200" height="900"
+               alt="Trainingsgruppe in Bewegung auf roten Mattenflächen">
+        </button>
+        <button class="shot" type="button" data-caption="Partnerübung">
+          <img src="assets/img/partnertraining.jpg" loading="lazy" width="1200" height="798"
+               alt="Zwei Taekwondoin beim Partnertraining unter Bäumen">
+        </button>
+        <button class="shot" type="button" data-caption="Wettkampf">
+          <img src="assets/img/wettkampf-steinau.jpg" loading="lazy" width="1080" height="1920"
+               alt="Taekwondoin trifft im Wettkampf mit einem hohen Kick zum Kopf">
+        </button>
+        <button class="shot shot-wide" type="button" data-caption="Formenlauf am frühen Morgen">
+          <img src="assets/img/formenlauf-poomsae.jpg" loading="lazy" width="1200" height="798"
+               alt="Person läuft eine Poomsae-Form am Strand bei Sonnenaufgang">
+        </button>
+      </div>
+    </div>
+  </section>
+</main>
+
+<!-- Lightbox -->
+<div class="lightbox" id="lightbox" hidden>
+  <div class="lightbox-inner" role="dialog" aria-modal="true" aria-label="Bildansicht">
+    <button class="lightbox-close" id="lightboxClose" aria-label="Schließen">&times;</button>
+    <img id="lightboxImg" src="" alt="">
+    <p class="lightbox-caption" id="lightboxCaption"></p>
+  </div>
+</div>
+
+<footer class="site-footer">
+  <div class="container footer-grid">
+    <div class="footer-brand">
+      <img src="assets/img/tv-steinau-logo.png" alt="" width="440" height="299"
+           style="width:96px;height:auto;border-radius:3px;margin-bottom:18px">
+      <p><strong>Taekwondo im TV 1897 Steinau e.V.</strong></p>
+      <p>Bellinger Tor 16 · 36396 Steinau an der Straße</p>
+      <p>Abteilung des Turnvereins 1897 Steinau, Mitglied in der Hessischen Taekwondo Union.</p>
+    </div>
+
+    <nav class="footer-col" aria-label="Abteilung">
+      <h2>Abteilung</h2>
+      <ul>
+        <li><a href="abteilung.html">Über uns</a></li>
+        <li><a href="trainerteam.html">Trainerteam</a></li>
+        <li><a href="angebot.html">Angebot</a></li>
+        <li><a href="galerie.html">Galerie</a></li>
+      </ul>
+    </nav>
+
+    <nav class="footer-col" aria-label="Service">
+      <h2>Service</h2>
+      <ul>
+        <li><a href="training.html">Trainingszeiten</a></li>
+        <li><a href="termine.html">Alle Termine</a></li>
+        <li><a href="downloads.html">Downloads und Beiträge</a></li>
+        <li><a href="mitglieder.html">Mitgliederbereich</a></li>
+      </ul>
+    </nav>
+
+    <div class="footer-col">
+      <h2>Kontakt</h2>
+      <ul>
+        <li><a href="kontakt.html">Probetraining anfragen</a></li>
+        <li><a href="tel:+4915234352831">0152 343 528 31</a></li>
+        <li><a href="mailto:taekwondo@tv-steinau.de">taekwondo@tv-steinau.de</a></li>
+        <li><a href="https://tv-steinau.de" rel="noopener">tv-steinau.de</a></li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="container footer-bottom">
+    <p>© <span id="year">2026</span> TV 1897 Steinau e.V. · Taekwondo-Abteilung</p>
+    <ul>
+      <li><a href="impressum.html">Impressum</a></li>
+      <li><a href="datenschutz.html">Datenschutz</a></li>
+      <li><a href="#top">Nach oben</a></li>
+    </ul>
+  </div>
+</footer>
+
+<script src="assets/js/trainingstermine.js"></script>
+<script src="assets/js/main.js"></script>
+</body>
+</html>

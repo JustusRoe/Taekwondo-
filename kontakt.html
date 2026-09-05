@@ -1,0 +1,238 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<!-- ENTWURF: Sperre gegen Suchmaschinen. Vor dem Livegang diese Zeile und
+     robots.txt anpassen, sonst findet Google die Seite nie. -->
+<meta name="robots" content="noindex, nofollow">
+<title>Kontakt und Probetraining – Taekwondo im TV 1897 Steinau e.V.</title>
+<meta name="description" content="Probetraining vereinbaren oder Fragen stellen – Kontakt zur Taekwondo-Abteilung des TV 1897 Steinau e.V.">
+<link rel="stylesheet" href="assets/css/style.css">
+<link rel="icon" href="assets/img/favicon.svg" type="image/svg+xml">
+</head>
+<body>
+
+<a class="skip-link" href="#main">Zum Inhalt springen</a>
+
+<header class="site-header" id="top">
+  <div class="container header-inner">
+    <a class="brand" href="index.html" aria-label="Startseite Taekwondo im TV 1897 Steinau">
+      <img class="brand-logo" src="assets/img/tv-steinau-logo.png" alt="Wappen des TV 1897 Steinau" width="440" height="299">
+      <span class="brand-text">
+        <strong>Taekwondo</strong>
+        <span>TV 1897 Steinau e.V.</span>
+      </span>
+    </a>
+
+    <button class="nav-toggle" id="navToggle" aria-expanded="false" aria-controls="siteNav">
+      <span class="nav-toggle-bars" aria-hidden="true"><span></span><span></span><span></span></span>
+      <span class="visually-hidden">Menü öffnen</span>
+    </button>
+
+    <nav class="site-nav" id="siteNav" aria-label="Hauptnavigation">
+      <ul>
+        <li><a href="training.html">Training</a></li>
+        <li><a href="angebot.html">Angebot</a></li>
+        <li><a href="abteilung.html">Abteilung</a></li>
+        <li><a href="trainerteam.html">Trainerteam</a></li>
+        <li><a href="galerie.html">Galerie</a></li>
+        <li><a href="downloads.html">Downloads</a></li>
+        <li><a href="mitglieder.html">Mitglieder</a></li>
+        <li><a href="kontakt.html" class="nav-cta">Probetraining</a></li>
+      </ul>
+    </nav>
+  </div>
+</header>
+
+<main id="main">
+  <section class="section" id="kontakt">
+    <div class="container">
+      <a class="tool-btn kal-zurueck" href="index.html">← Zurück zur Startseite</a>
+
+      <header class="section-head">
+        <p class="eyebrow">Kontakt</p>
+        <h1>Schreib uns – oder komm einfach vorbei</h1>
+        <p class="section-intro">
+          Für ein Probetraining genügt eine kurze Nachricht. Du kannst aber auch ohne
+          Anmeldung einfach zu einer der <a href="training.html">Trainingszeiten</a> kommen.
+        </p>
+      </header>
+
+      <div class="contact-layout">
+        <form class="contact-form" id="contactForm" novalidate>
+          <div class="field-row">
+            <p class="field">
+              <label for="name">Name <span aria-hidden="true">*</span></label>
+              <input type="text" id="name" name="name" autocomplete="name" required>
+              <span class="error" data-error-for="name"></span>
+            </p>
+            <p class="field">
+              <label for="email">E-Mail <span aria-hidden="true">*</span></label>
+              <input type="email" id="email" name="email" autocomplete="email" required>
+              <span class="error" data-error-for="email"></span>
+            </p>
+          </div>
+
+          <div class="field-row">
+            <p class="field">
+              <label for="phone">Telefon <span class="optional">(optional)</span></label>
+              <input type="tel" id="phone" name="phone" autocomplete="tel">
+            </p>
+            <p class="field">
+              <label for="topic">Anliegen</label>
+              <select id="topic" name="topic">
+                <option>Probetraining vereinbaren</option>
+                <option>Frage zur Mitgliedschaft</option>
+                <option>Bambini-Training</option>
+                <option>Selbstverteidigung</option>
+                <option>Sonstiges</option>
+              </select>
+            </p>
+          </div>
+
+          <p class="field">
+            <label for="message">Nachricht <span aria-hidden="true">*</span></label>
+            <textarea id="message" name="message" rows="6" required
+              placeholder="Alter, gewünschte Gruppe, Vorerfahrung – alles hilft uns weiter."></textarea>
+            <span class="error" data-error-for="message"></span>
+          </p>
+
+          <p class="field field-check">
+            <input type="checkbox" id="privacy" name="privacy" required>
+            <label for="privacy">
+              Ich habe die <a href="datenschutz.html">Datenschutzhinweise</a> gelesen und bin mit der
+              Verarbeitung meiner Angaben zur Bearbeitung der Anfrage einverstanden.
+              <span aria-hidden="true">*</span>
+            </label>
+            <span class="error" data-error-for="privacy"></span>
+          </p>
+
+          <div class="form-actions">
+            <button type="submit" class="btn btn-primary">Nachricht senden</button>
+            <span class="form-note">Pflichtfelder sind mit * gekennzeichnet.</span>
+          </div>
+
+          <p class="form-status" id="formStatus" role="status" hidden></p>
+        </form>
+
+        <aside class="contact-side">
+          <div class="panel panel-accent">
+            <h3>Taekwondo-Abteilung</h3>
+            <p class="contact-lines">
+              Michael Buchhold<br>
+              Abteilungsleiter und Cheftrainer
+            </p>
+            <p class="contact-lines">
+              <a href="tel:+4915234352831">0152 343 528 31</a><br>
+              <a href="mailto:taekwondo@tv-steinau.de">taekwondo@tv-steinau.de</a>
+            </p>
+          </div>
+
+          <div class="panel">
+            <h3>Geschäftsstelle des Vereins</h3>
+            <p class="contact-lines">
+              TV 1897 Steinau e.V.<br>
+              Bellinger Tor 16<br>
+              36396 Steinau an der Straße
+            </p>
+            <p class="contact-lines">
+              <a href="tel:+4966638122">06663 8122</a><br>
+              <a href="mailto:info@tv-steinau.de">info@tv-steinau.de</a>
+            </p>
+          </div>
+
+          <div class="panel">
+            <h3>Trainingsorte und Anfahrt</h3>
+            <p>
+              Wir trainieren in zwei Hallen an verschiedenen Enden von Steinau. Prüfe vor
+              dem Losfahren im <a href="termine.html">Terminplan</a>, welche Halle
+              an dem Tag dran ist.
+            </p>
+
+            <ul class="orte">
+              <li>
+                <a class="halle ort-steines" href="https://www.google.com/maps/place/Mehrzweckhalle/@50.31691,9.4579451,625m/data=!3m2!1e3!4b1!4m6!3m5!1s0x47bcd53fa7be3927:0x83ba362dc68596c0!8m2!3d50.31691!4d9.46052!16s%2Fg%2F11fx7r226c" target="_blank" rel="noopener">Halle am Steines</a>
+                <address>
+                  Am Steines 23<br>
+                  36396 Steinau an der Straße
+                </address>
+                <span class="ort-wann">Donnerstag und die meisten Samstage</span>
+                <a class="ort-route"
+                   href="https://www.google.com/maps/place/Mehrzweckhalle/@50.31691,9.4579451,625m/data=!3m2!1e3!4b1!4m6!3m5!1s0x47bcd53fa7be3927:0x83ba362dc68596c0!8m2!3d50.31691!4d9.46052!16s%2Fg%2F11fx7r226c"
+                   rel="noopener">Auf der Karte ansehen</a>
+              </li>
+              <li>
+                <a class="halle ort-schloss" href="https://www.google.com/maps/place/Halle+Am+Schloss+(alte+Turnhalle)/@50.3111517,9.4577706,625m/data=!3m2!1e3!4b1!4m6!3m5!1s0x47bcd514a4cd01a7:0x10d71b24c5f712c5!8m2!3d50.3111517!4d9.4603455!16s%2Fg%2F11c5fyld_c" target="_blank" rel="noopener">Halle am Schloss</a>
+                <address>
+                  Im Schloß (alte Turnhalle)<br>
+                  36396 Steinau an der Straße
+                </address>
+                <span class="ort-wann">An einzelnen Samstagen, Bambini dort erst ab 11:30 Uhr</span>
+                <a class="ort-route"
+                   href="https://www.google.com/maps/place/Halle+Am+Schloss+(alte+Turnhalle)/@50.3111517,9.4577706,625m/data=!3m2!1e3!4b1!4m6!3m5!1s0x47bcd514a4cd01a7:0x10d71b24c5f712c5!8m2!3d50.3111517!4d9.4603455!16s%2Fg%2F11c5fyld_c"
+                   rel="noopener">Auf der Karte ansehen</a>
+              </li>
+            </ul>
+          </div>
+        </aside>
+      </div>
+    </div>
+  </section>
+</main>
+
+<footer class="site-footer">
+  <div class="container footer-grid">
+    <div class="footer-brand">
+      <img src="assets/img/tv-steinau-logo.png" alt="" width="440" height="299"
+           style="width:96px;height:auto;border-radius:3px;margin-bottom:18px">
+      <p><strong>Taekwondo im TV 1897 Steinau e.V.</strong></p>
+      <p>Bellinger Tor 16 · 36396 Steinau an der Straße</p>
+      <p>Abteilung des Turnvereins 1897 Steinau, Mitglied in der Hessischen Taekwondo Union.</p>
+    </div>
+
+    <nav class="footer-col" aria-label="Abteilung">
+      <h2>Abteilung</h2>
+      <ul>
+        <li><a href="abteilung.html">Über uns</a></li>
+        <li><a href="trainerteam.html">Trainerteam</a></li>
+        <li><a href="angebot.html">Angebot</a></li>
+        <li><a href="galerie.html">Galerie</a></li>
+      </ul>
+    </nav>
+
+    <nav class="footer-col" aria-label="Service">
+      <h2>Service</h2>
+      <ul>
+        <li><a href="training.html">Trainingszeiten</a></li>
+        <li><a href="termine.html">Alle Termine</a></li>
+        <li><a href="downloads.html">Downloads und Beiträge</a></li>
+        <li><a href="mitglieder.html">Mitgliederbereich</a></li>
+      </ul>
+    </nav>
+
+    <div class="footer-col">
+      <h2>Kontakt</h2>
+      <ul>
+        <li><a href="kontakt.html">Probetraining anfragen</a></li>
+        <li><a href="tel:+4915234352831">0152 343 528 31</a></li>
+        <li><a href="mailto:taekwondo@tv-steinau.de">taekwondo@tv-steinau.de</a></li>
+        <li><a href="https://tv-steinau.de" rel="noopener">tv-steinau.de</a></li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="container footer-bottom">
+    <p>© <span id="year">2026</span> TV 1897 Steinau e.V. · Taekwondo-Abteilung</p>
+    <ul>
+      <li><a href="impressum.html">Impressum</a></li>
+      <li><a href="datenschutz.html">Datenschutz</a></li>
+      <li><a href="#top">Nach oben</a></li>
+    </ul>
+  </div>
+</footer>
+
+<script src="assets/js/trainingstermine.js"></script>
+<script src="assets/js/main.js"></script>
+</body>
+</html>

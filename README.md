@@ -5,26 +5,42 @@ Framework, ohne Build-Schritt und ohne externe Abhängigkeiten. Vereinsdaten, Re
 und Trainingstermine sind echt; Fotos und Trainerprofile noch Platzhalter – siehe
 `CHECKLISTE-INHALTE.md`.
 
-## Inhalt der Seite
+## Aufbau der Seite
 
-| Bereich | Beschreibung |
+Die Website ist keine lange Einzelseite mehr: `index.html` ist eine Landing Page, die
+auf die Themenseiten verweist. Jedes Thema hat eine eigene Datei.
+
+| Seite | Inhalt |
 | --- | --- |
-| Hero + Kennzahlen | Einstieg mit Foto, zwei Handlungsaufrufen und Kennzahlen |
-| Trainingsplan | Wochenübersicht und Terminkalender bis Dezember, nach Hallen farbig getrennt |
-| Angebot | Drei Gruppen als Bildkarten (Bambini, Breitensport, Selbstverteidigung) |
-| Abteilung | Die Abteilung im Turnverein und die fünf Prinzipien des Taekwondo |
-| Galerie | Sechs Bilder mit Lightbox (Klick, Schließen per ✕, Klick daneben oder `Esc`) |
-| Trainerteam | Drei Porträts mit Graduierung und Aufgabenbereich |
-| Downloads | Mitgliedsformular und Änderungsmitteilung des Vereins, dazu die Beiträge |
-| Kontakt | Formular mit Validierung, Geschäftsstelle, Bürozeiten, Anfahrt |
-| Mitgliederbereich | Anmeldung, Videothek mit Filter und Player mit Abschnitten |
-| Impressum / Datenschutz | Eigene Unterseiten mit Mustertexten |
+| `index.html` | Landing Page: Hero, Kachelübersicht aller Seiten, nächste Trainingstermine |
+| `training.html` | Wochenplan nach Hallen, Terminkalender der laufenden Woche, erstes Training, Ferien |
+| `termine.html` | Vollständiger Terminplan bis Dezember; vergangene Termine werden ausgeblendet |
+| `angebot.html` | Drei Gruppen als Bildkarten (Bambini, Breitensport, Selbstverteidigung) |
+| `abteilung.html` | Die Abteilung unter dem Dach des Turnvereins |
+| `trainerteam.html` | Porträts mit Graduierung und Werdegang |
+| `galerie.html` | Sechs Bilder mit Lightbox (Klick, Schließen per ✕, Klick daneben oder `Esc`) |
+| `downloads.html` | Formulare des Vereins und der Abteilung als PDF |
+| `kontakt.html` | Formular mit Validierung, Geschäftsstelle, Anfahrt zu beiden Hallen |
+| `mitglieder*.html` | Anmeldung, Videothek mit Filter und Player mit Abschnitten |
+| `impressum.html` / `datenschutz.html` | Rechtstexte (Mustertexte) |
+
+Kopf- und Fußbereich sind auf allen Seiten gleich aufgebaut. Wird ein Menüpunkt
+ergänzt, muss er in jeder HTML-Datei nachgezogen werden – dafür kommt die Seite ohne
+Build-Schritt aus.
 
 ## Projektstruktur
 
 ```
 .
-├── index.html                   Startseite mit allen Abschnitten
+├── index.html                   Landing Page mit Verweisen auf die Themenseiten
+├── training.html                Trainingszeiten, Hallen und erstes Training
+├── termine.html                 Vollständiger Terminplan
+├── angebot.html                 Die drei Trainingsgruppen
+├── abteilung.html               Die Abteilung im Turnverein
+├── trainerteam.html             Trainerinnen und Trainer
+├── galerie.html                 Bildergalerie mit Lightbox
+├── downloads.html               Formulare als PDF
+├── kontakt.html                 Kontaktformular und Anfahrt
 ├── impressum.html               Impressum (Mustertext)
 ├── datenschutz.html             Datenschutzhinweise (Mustertext)
 ├── mitglieder.html              Mitgliederbereich: Anmeldung (Entwurf)

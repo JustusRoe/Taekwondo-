@@ -34,33 +34,24 @@
     window.addEventListener('scroll', setStuck, { passive: true });
   }
 
-  /* ---------- Aktiver Navigationspunkt ---------- */
-  const navLinks = Array.prototype.slice.call(
-    document.querySelectorAll('.site-nav a[href^="#"]')
-  );
-  const sections = navLinks
-    .map(function (link) { return document.querySelector(link.getAttribute('href')); })
-    .filter(Boolean);
+  /* ---------- Aktiver Navigationspunkt ----------
+     Seit der Aufteilung in Einzelseiten führt jeder Menüpunkt auf eine eigene
+     Datei. Der aktive Punkt ergibt sich damit aus dem Dateinamen und nicht mehr
+     aus dem gerade sichtbaren Abschnitt. */
+  const seite = (window.location.pathname.split('/').pop() || 'index.html').toLowerCase();
 
-  if (sections.length && 'IntersectionObserver' in window) {
-    const spy = new IntersectionObserver(function (entries) {
-      entries.forEach(function (entry) {
-        if (!entry.isIntersecting) return;
-        navLinks.forEach(function (link) {
-          link.classList.toggle(
-            'is-active',
-            link.getAttribute('href') === '#' + entry.target.id
-          );
-        });
-      });
-    }, { rootMargin: '-45% 0px -50% 0px' });
-
-    sections.forEach(function (section) { spy.observe(section); });
-  }
+  Array.prototype.slice.call(document.querySelectorAll('.site-nav a[href]'))
+    .forEach(function (link) {
+      const ziel = link.getAttribute('href').split('#')[0].split('/').pop().toLowerCase();
+      if (ziel && ziel === seite) {
+        link.classList.add('is-active');
+        link.setAttribute('aria-current', 'page');
+      }
+    });
 
   /* ---------- Einblenden beim Scrollen ---------- */
   const revealTargets = document.querySelectorAll(
-    '.section-head, .card, .member, .panel, .split-media, .split-copy, .downloads, .contact-form, .stats'
+    '.section-head, .card, .member, .panel, .hub-card, .split-media, .split-copy, .downloads, .contact-form, .stats'
   );
 
   if ('IntersectionObserver' in window) {
@@ -230,20 +221,30 @@
     }
 
     if (modus === 'voll') {
-      /* Vollständige Terminseite: vergangene Termine ausgrauen, den nächsten
-         hervorheben, sonst alles zeigen. Ohne JavaScript bleibt die Liste
-         vollständig stehen. */
-      kalender.classList.add('zeigt-alle');
+      /* Vollständige Terminseite: vergangene Termine ganz entfernen, den
+         nächsten hervorheben. Monatsüberschriften ohne Termine fallen mit weg.
+         Ohne JavaScript bleibt die Liste vollständig stehen. */
       var naechsterGesetzt = false;
       Array.prototype.slice.call(kalender.querySelectorAll('.kal-eintrag[data-datum]'))
         .forEach(function (li) {
           if (alsDatum(li.dataset.datum) < heute) {
-            li.classList.add('ist-vergangen');
+            li.remove();
           } else if (!naechsterGesetzt && !li.classList.contains('ist-frei')) {
             li.classList.add('ist-naechster');
             naechsterGesetzt = true;
           }
         });
+
+      /* Ein Monatsband ohne folgenden Termin gehört zu einem Monat, der
+         komplett vorbei ist. */
+      Array.prototype.slice.call(kalender.querySelectorAll('.kal-monat'))
+        .forEach(function (band) {
+          var naechstes = band.nextElementSibling;
+          if (!naechstes || naechstes.classList.contains('kal-monat')) band.remove();
+        });
+
+      var leerHinweis = document.getElementById('kalLeer');
+      if (leerHinweis && !kalender.querySelector('.kal-eintrag')) leerHinweis.hidden = false;
 
     } else {
       /* Startseite: nur die laufende Woche aus trainingstermine.js aufbauen.

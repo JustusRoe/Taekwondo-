@@ -32,29 +32,29 @@ Aus der Vereinsseite und deinen Angaben ist alles Folgende schon drin:
 | Schriftführer der Hessischen Taekwondo Union | h-t-u.de |
 | Alle 37 Trainingstermine bis Dezember mit Halle | dein Trainingsplan-PDF |
 | Halle am Steines (Am Steines 23) und Halle am Schloss (Im Schloß) | Deine Angaben |
-| Drei Gruppen, ca. 85 Mitglieder, acht Namen im Trainerteam | Deine Angaben |
+| Drei Gruppen, ca. 85 Mitglieder, sieben Namen im Trainerteam | Deine Angaben |
 
 ---
 
 ## A · Trainerteam 🟡
 
-Sieben Porträts sind da und eingebaut: Michael, Maxim, Julia, Aileen, Justus, Arno und
+Sechs Porträts sind da und eingebaut: Michael, Maxim, Aileen, Justus, Arno und
 Anna-Karoline. Alle einheitlich angeschnitten mit gleicher Kopfgröße vor derselben
-grauen Mattenwand.
+grauen Mattenwand. Die Karte von Julia ist auf Wunsch wieder entfernt worden; das Foto
+`assets/img/trainer-julia.jpg` liegt weiterhin im Ordner, falls sie zurückkommen soll.
 
 - [ ] 🟡 **Porträtfoto von Andy** – JPG, Originalgröße, unbearbeitet (Zuschnitt mache ich).
-- [ ] 🟡 Für **jede der acht Personen**:
+- [ ] 🟡 Für **jede der sieben Personen**:
 
 | Feld | Stand |
 | --- | --- |
-| Name | ✅ alle acht |
-| Funktion | ✅ bei vieren; bei Aileen, Justus, Arno und Anna-Karoline steht „Training" |
+| Name | ✅ alle sieben |
+| Funktion | ✅ bei dreien; bei Aileen, Justus, Arno und Anna-Karoline steht „Training" |
 | Graduierung | ✅ alle |
-| Kurzvorstellung | ✅ alle acht (als Aufzählung) |
+| Kurzvorstellung | ✅ alle sieben (als Aufzählung) |
 
-- [x] ✅ Alle acht Namen und Graduierungen stehen. 1. Dan: Michael, Andy, Aileen, Arno
-      und Justus. 1. Kup: Maxim und Anna-Karoline. Julia hat keine Graduierung – bei ihr
-      entfällt die Zeile.
+- [x] ✅ Alle sieben Namen und Graduierungen stehen. 1. Dan: Michael, Andy, Aileen, Arno
+      und Justus. 1. Kup: Maxim und Anna-Karoline.
 - [ ] 🔴 **Einverständnis jeder Person**, mit Name und Bild genannt zu werden. Das
       passende Formular liegt jetzt vor: `downloads/einwilligung-aufnahmen.pdf`.
 - [ ] 🟡 Funktion von Aileen, Justus, Arno und Anna-Karoline – auf den Karten steht
