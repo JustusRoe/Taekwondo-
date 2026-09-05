@@ -45,6 +45,7 @@ function aktuelles_mitglied(): ?array
         'id'    => (int) $_SESSION['mitglied_id'],
         'name'  => (string) ($_SESSION['name'] ?? ''),
         'rolle' => (string) ($_SESSION['rolle'] ?? 'mitglied'),
+        'passwort_wechseln' => !empty($_SESSION['passwort_wechseln']),
     ];
 }
 
@@ -56,6 +57,10 @@ function anmeldung_verlangen(): array
         header('Location: login.php?weiter=' . urlencode($ziel));
         exit;
     }
+    // Konten mit Startpasswort kommen erst weiter, wenn sie ein eigenes
+    // gesetzt haben. Der Aufruf steht hier, damit keine geschützte Seite
+    // ihn vergessen kann.
+    eigenes_passwort_verlangen();
     return aktuelles_mitglied();
 }
 
@@ -67,6 +72,45 @@ function trainer_verlangen(): array
         exit('Dieser Bereich ist dem Trainerteam vorbehalten.');
     }
     return $m;
+}
+
+/**
+ * Solange ein Konto noch das Startpasswort hat, fuehrt jede geschuetzte
+ * Seite zuerst auf passwort.php. Das Startpasswort kennt immer auch die
+ * Person, die den Zugang angelegt hat – danach nur noch das Mitglied selbst.
+ */
+function eigenes_passwort_verlangen(): void
+{
+    $m = aktuelles_mitglied();
+    if ($m && $m['passwort_wechseln'] && basename($_SERVER['SCRIPT_NAME'] ?? '') !== 'passwort.php') {
+        header('Location: passwort.php?erstmalig=1');
+        exit;
+    }
+}
+
+/**
+ * Prueft das Passwort des angemeldeten Kontos noch einmal.
+ *
+ * Wer angemeldet an einem fremden Rechner sitzt, soll damit keine
+ * Trainerzugaenge loeschen oder umstellen koennen. Fehlversuche zaehlen
+ * mit, damit auch hier nicht geraten werden kann.
+ */
+function eigenes_passwort_stimmt(int $mitgliedId, string $passwort): bool
+{
+    if ($passwort === '') {
+        return false;
+    }
+    $stmt = db()->prepare('SELECT benutzername, passwort_hash FROM mitglieder WHERE id = ?');
+    $stmt->execute([$mitgliedId]);
+    $m = $stmt->fetch();
+    if (!is_array($m)) {
+        return false;
+    }
+    if (!password_verify($passwort, (string) $m['passwort_hash'])) {
+        versuch_vermerken((string) $m['benutzername']);
+        return false;
+    }
+    return true;
 }
 
 /** Zählt Fehlversuche, um Passwortraten auszubremsen. */
@@ -98,7 +142,7 @@ function anmelden(string $benutzername, string $passwort): bool
     sitzung_starten();
 
     $stmt = db()->prepare(
-        'SELECT id, name, rolle, passwort_hash FROM mitglieder
+        'SELECT id, name, rolle, passwort_hash, passwort_wechseln FROM mitglieder
           WHERE benutzername = ? AND aktiv = 1'
     );
     $stmt->execute([$benutzername]);
@@ -126,6 +170,7 @@ function anmelden(string $benutzername, string $passwort): bool
     $_SESSION['mitglied_id'] = (int) $m['id'];
     $_SESSION['name']        = $m['name'];
     $_SESSION['rolle']       = $m['rolle'];
+    $_SESSION['passwort_wechseln'] = (int) $m['passwort_wechseln'] === 1;
     $_SESSION['zuletzt']     = time();
 
     db()->prepare('UPDATE mitglieder SET letzter_login = ? WHERE id = ?')

@@ -60,6 +60,7 @@ function kopf(string $titel, ?array $mitglied = null, bool $navigation = true): 
           <?php if ($mitglied['rolle'] === 'trainer'): ?>
             <a href="admin.php">Verwaltung</a>
           <?php endif; ?>
+          <a href="passwort.php">Passwort</a>
         <?php endif; ?>
         <a href="logout.php">Abmelden</a>
       <?php else: ?>

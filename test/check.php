@@ -90,6 +90,16 @@ pruefe('Trainingsseite listet alle Termine',
     substr_count($a['inhalt'], 'kal-eintrag') >= 30,
     substr_count($a['inhalt'], 'kal-eintrag') . ' Termine gefunden');
 
+/* Die Verwaltung schreibt die Termine zwischen diese Markierungen zurück.
+   Fehlen sie, bleibt die Website beim Speichern unverändert stehen. */
+$a = anfrage($basis . '/training.html');
+pruefe('Trainingsseite hat die Markierungen für die Terminverwaltung',
+    str_contains($a['inhalt'], 'TERMINE:ANFANG') && str_contains($a['inhalt'], 'TERMINE:ENDE'));
+
+$a = anfrage($basis . '/assets/js/trainingstermine.js');
+pruefe('Termindatei hat die Markierungen für die Terminverwaltung',
+    str_contains($a['inhalt'], 'TERMINE:ANFANG') && str_contains($a['inhalt'], 'TERMINE:ENDE'));
+
 /* Die Startseite nennt den festen Wochenrhythmus und baut das nächste
    Training per JavaScript aus assets/js/trainingstermine.js auf. */
 $a = anfrage($basis . '/index.html');
@@ -120,6 +130,21 @@ pruefe('Server: Videothek ohne Anmeldung gesperrt',
 
 $a = anfrage($basis . '/backend/stream.php?v=taegeuk-il-jang');
 pruefe('Server: Video ohne Anmeldung gesperrt', $a['code'] === 302, 'HTTP ' . $a['code']);
+
+$a = anfrage($basis . '/backend/termine.php');
+pruefe('Server: Terminverwaltung ohne Anmeldung gesperrt',
+    $a['code'] === 302 && str_contains($a['kopf'], 'login.php'),
+    'HTTP ' . $a['code']);
+
+$a = anfrage($basis . '/backend/konten.php');
+pruefe('Server: Zugangsverwaltung ohne Anmeldung gesperrt',
+    $a['code'] === 302 && str_contains($a['kopf'], 'login.php'),
+    'HTTP ' . $a['code']);
+
+$a = anfrage($basis . '/backend/passwort.php');
+pruefe('Server: Passwortseite ohne Anmeldung gesperrt',
+    $a['code'] === 302 && str_contains($a['kopf'], 'login.php'),
+    'HTTP ' . $a['code']);
 
 $a = anfrage($basis . '/backend/login.php');
 pruefe('Server: Anmeldeseite erreichbar', $a['code'] === 200);

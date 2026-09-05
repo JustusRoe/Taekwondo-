@@ -89,7 +89,12 @@ function letzter_trainer(int $id): bool
 /** Untermenü der Verwaltung. */
 function verwaltung_menue(string $aktiv): void
 {
-    $punkte = ['admin.php' => 'Videos', 'konten.php' => 'Zugänge'];
+    $punkte = [
+        'admin.php'    => 'Videos',
+        'termine.php'  => 'Termine',
+        'konten.php'   => 'Zugänge',
+        'passwort.php' => 'Mein Passwort',
+    ];
     ?>
   <nav class="verwaltung-menue" aria-label="Verwaltung">
     <?php foreach ($punkte as $datei => $text): ?>

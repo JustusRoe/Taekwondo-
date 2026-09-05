@@ -23,6 +23,12 @@ CREATE TABLE IF NOT EXISTS mitglieder (
   aktiv         TINYINT(1)     NOT NULL DEFAULT 1,
   angelegt_am   DATETIME       NOT NULL DEFAULT CURRENT_TIMESTAMP,
   letzter_login DATETIME       DEFAULT NULL,
+  -- Startpasswoerter kennt immer auch die Person, die den Zugang angelegt
+  -- hat. Solange dieses Feld auf 1 steht, fuehrt jede geschuetzte Seite
+  -- zuerst auf passwort.php: Danach kennt das Passwort nur noch die
+  -- Person selbst. Fuer Trainerkonten ist das der wichtigste Teil.
+  passwort_wechseln     TINYINT(1) NOT NULL DEFAULT 1,
+  passwort_geaendert_am DATETIME   DEFAULT NULL,
   PRIMARY KEY (id),
   UNIQUE KEY uq_benutzername (benutzername)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
@@ -67,6 +73,33 @@ CREATE TABLE IF NOT EXISTS login_versuche (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 
+-- ---------------------------------------------------------
+-- Trainingstermine
+--
+-- Gepflegt wird hier, in backend/termine.php. Beim Speichern
+-- schreibt die Verwaltung daraus zwei Stellen der oeffentlichen
+-- Website neu, jeweils zwischen den Markierungen TERMINE:ANFANG
+-- und TERMINE:ENDE:
+--   assets/js/trainingstermine.js  (Daten fuer die Startseite)
+--   training.html                  (Liste, auch ohne JavaScript lesbar)
+--
+-- ort: "steines" | "schloss" | "frei" ("frei" = kein Training)
+-- ---------------------------------------------------------
+CREATE TABLE IF NOT EXISTS trainingstermine (
+  id          INT UNSIGNED NOT NULL AUTO_INCREMENT,
+  datum       DATE         NOT NULL,
+  zeit        VARCHAR(40)  NOT NULL DEFAULT '',
+  gruppe      VARCHAR(80)  NOT NULL DEFAULT '',
+  ort         VARCHAR(20)  NOT NULL DEFAULT 'steines',
+  hinweis     VARCHAR(190) NOT NULL DEFAULT '',
+  geaendert_am DATETIME    NOT NULL DEFAULT CURRENT_TIMESTAMP
+                           ON UPDATE CURRENT_TIMESTAMP,
+  PRIMARY KEY (id),
+  UNIQUE KEY uq_datum_zeit (datum, zeit),
+  KEY idx_datum (datum)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+
 -- =========================================================
 -- Erstes Trainerkonto
 --
@@ -76,6 +109,24 @@ CREATE TABLE IF NOT EXISTS login_versuche (
 --   php -r "echo password_hash('NEUES_PASSWORT', PASSWORD_DEFAULT);"
 -- VOR DEM ECHTBETRIEB ERSETZEN.
 -- =========================================================
-INSERT INTO mitglieder (benutzername, name, email, passwort_hash, rolle) VALUES
+INSERT INTO mitglieder (benutzername, name, email, passwort_hash, rolle, passwort_wechseln) VALUES
   ('testtrainer', 'Test Trainer', 'testtrainer@example.de',
-   '$2y$12$l0r.Y4R6V9ovEaM.86aROez/bqHQDADpVuGCc559XdCmBhYBnKR0.', 'trainer');
+   '$2y$12$l0r.Y4R6V9ovEaM.86aROez/bqHQDADpVuGCc559XdCmBhYBnKR0.', 'trainer', 1);
+
+
+-- =========================================================
+-- Nachtraeglich einspielen (bestehende Installationen)
+--
+-- Die beiden Spalten und die Termintabelle kamen spaeter dazu. Wer die
+-- Datenbank schon angelegt hat, spielt nur diese Zeilen nach; MySQL meldet
+-- "Duplicate column", wenn sie bereits vorhanden sind – dann ist nichts
+-- zu tun.
+--
+--   ALTER TABLE mitglieder
+--     ADD COLUMN passwort_wechseln TINYINT(1) NOT NULL DEFAULT 1,
+--     ADD COLUMN passwort_geaendert_am DATETIME DEFAULT NULL;
+--
+-- Die Tabelle trainingstermine legt das CREATE TABLE oben von selbst an
+-- (IF NOT EXISTS); die Termine selbst importiert danach die Verwaltung
+-- unter backend/termine.php aus einer CSV-Datei.
+-- =========================================================

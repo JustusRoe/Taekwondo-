@@ -22,6 +22,7 @@ ist nur noch der Einstieg.
 | `downloads.html` | Formulare des Vereins und der Abteilung als PDF |
 | `kontakt.html` | Formular mit Validierung, Geschäftsstelle, Anfahrt zu beiden Hallen |
 | `mitglieder*.html` | Anmeldung, Videothek mit Filter und Player mit Abschnitten |
+| `backend/` | Serverfassung: Videothek, Terminverwaltung und Zugänge (PHP + MySQL) |
 | `impressum.html` / `datenschutz.html` | Rechtstexte (Mustertexte) |
 
 Kopf- und Fußbereich sind auf allen Seiten gleich aufgebaut, die Navigationsleiste ist
@@ -68,6 +69,39 @@ Zugang: `testuser` / `test1234` (Mitglied) oder `testtrainer` / `test1234` (Trai
 
 > Diese Anmeldung schützt **nichts**. Sie läuft im Browser, die Videos liegen im
 > öffentlichen Ordner. Jede Seite weist oben darauf hin.
+
+### Verwaltung für das Trainerteam
+
+Angemeldete Trainer finden unter `backend/` drei Bereiche:
+
+- **Videos** (`admin.php`) – Trainingsvideos hochladen und beschreiben.
+- **Termine** (`termine.php`) – der Terminplan. Einzelne Termine lassen sich anlegen
+  und ändern, ein ganzer Plan als CSV-Datei hochladen (`datum;zeit;gruppe;ort;hinweis`);
+  der aktuelle Stand lässt sich als CSV herunterladen und dient zugleich als Vorlage.
+  Nach jedem Speichern schreibt die Seite die Termine in die öffentliche Website
+  zurück – in `assets/js/trainingstermine.js` und in die Liste auf `training.html`,
+  jeweils zwischen den Markierungen `TERMINE:ANFANG` und `TERMINE:ENDE`. Die Website
+  bleibt damit statisch und funktioniert auch ohne PHP; niemand muss für einen neuen
+  Termin an den Quelltext.
+- **Zugänge** (`konten.php`) – Konten anlegen, suchen, filtern und stilllegen.
+
+### Wie die Passwörter laufen
+
+Zugänge vergibt das Trainerteam im Training, eine Selbstregistrierung gibt es nicht.
+Das Startpasswort kennt deshalb immer auch die Person, die den Zugang angelegt hat –
+darum verlangt der Mitgliederbereich beim ersten Anmelden ein eigenes Passwort
+(`passwort.php`). Danach kennt es nur noch das Mitglied selbst; gespeichert ist
+ohnehin nur der Hash. Vergessene Passwörter kann das Trainerteam neu setzen, nicht
+auslesen.
+
+Trainerzugänge dürfen in diese Verwaltung und sind deshalb zusätzlich geschützt:
+
+- Ein Trainerkonto **anlegen**, **abstufen**, **stilllegen**, dessen **Passwort
+  zurücksetzen** oder es **löschen** verlangt das eigene Passwort noch einmal.
+- **Gelöscht** werden kann ein Trainerzugang erst, wenn er stillgelegt ist – ein
+  Fehlklick kostet damit nie einen Zugang.
+- Das **letzte aktive Trainerkonto** lässt sich weder löschen noch abstufen oder
+  stilllegen, sonst käme niemand mehr in die Verwaltung.
 
 **2. Serverfassung** – der Ordner `backend/`. Anmeldung gegen eine MySQL-Datenbank mit
 gehashten Passwörtern, Sperre nach Fehlversuchen, CSRF-Schutz und – der entscheidende

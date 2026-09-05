@@ -70,8 +70,20 @@ $pdo->exec('CREATE TABLE IF NOT EXISTS mitglieder (
     rolle TEXT NOT NULL DEFAULT "mitglied",
     aktiv INTEGER NOT NULL DEFAULT 1,
     angelegt_am TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    letzter_login TEXT
+    letzter_login TEXT,
+    passwort_wechseln INTEGER NOT NULL DEFAULT 1,
+    passwort_geaendert_am TEXT
 )');
+/* Bestehende Testdatenbanken nachziehen – SQLite meldet einen Fehler,
+   wenn es die Spalte schon gibt; der ist hier folgenlos. */
+foreach (['passwort_wechseln INTEGER NOT NULL DEFAULT 1',
+          'passwort_geaendert_am TEXT'] as $spalte) {
+    try {
+        $pdo->exec('ALTER TABLE mitglieder ADD COLUMN ' . $spalte);
+    } catch (PDOException $e) {
+        // Spalte ist bereits vorhanden
+    }
+}
 $pdo->exec('CREATE TABLE IF NOT EXISTS videos (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
     slug TEXT NOT NULL UNIQUE,
@@ -86,6 +98,16 @@ $pdo->exec('CREATE TABLE IF NOT EXISTS videos (
     veroeffentlicht_am TEXT NOT NULL,
     sichtbar INTEGER NOT NULL DEFAULT 1
 )');
+$pdo->exec('CREATE TABLE IF NOT EXISTS trainingstermine (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    datum TEXT NOT NULL,
+    zeit TEXT NOT NULL DEFAULT "",
+    gruppe TEXT NOT NULL DEFAULT "",
+    ort TEXT NOT NULL DEFAULT "steines",
+    hinweis TEXT NOT NULL DEFAULT "",
+    geaendert_am TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    UNIQUE (datum, zeit)
+)');
 $pdo->exec('CREATE TABLE IF NOT EXISTS login_versuche (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
     benutzername TEXT NOT NULL,
@@ -94,12 +116,16 @@ $pdo->exec('CREATE TABLE IF NOT EXISTS login_versuche (
 )');
 
 /* ---------- 4. Testkonten ---------- */
+/* passwort_wechseln = 0: Die Testkonten gelten als eingerichtet, sonst
+   landet jeder Testlauf zuerst auf passwort.php. Frisch angelegte Konten
+   im Echtbetrieb starten dagegen mit 1. */
 $anlegen = $pdo->prepare(
-    'INSERT INTO mitglieder (benutzername, name, email, passwort_hash, rolle)
-     VALUES (?, ?, ?, ?, ?)'
+    'INSERT INTO mitglieder (benutzername, name, email, passwort_hash, rolle, passwort_wechseln)
+     VALUES (?, ?, ?, ?, ?, 0)'
 );
 $aendern = $pdo->prepare(
-    'UPDATE mitglieder SET name = ?, email = ?, passwort_hash = ?, rolle = ?, aktiv = 1
+    'UPDATE mitglieder SET name = ?, email = ?, passwort_hash = ?, rolle = ?, aktiv = 1,
+            passwort_wechseln = 0
       WHERE benutzername = ?'
 );
 $vorhanden = $pdo->prepare('SELECT COUNT(*) FROM mitglieder WHERE benutzername = ?');
@@ -150,7 +176,38 @@ foreach ($daten as $d) {
 }
 printf("  Videothek        %d Videos\n", count($daten));
 
-/* ---------- 6. Konfiguration für das Backend ---------- */
+/* ---------- 6. Trainingstermine aus assets/js/trainingstermine.js ---------- */
+$js = (string) file_get_contents(WURZEL . '/assets/js/trainingstermine.js');
+$von = strpos($js, 'window.TRAININGSTERMINE = [');
+$termine = null;
+if ($von !== false) {
+    $von = strpos($js, '[', $von);
+    $bis = strpos($js, '];', (int) $von);
+    if ($von !== false && $bis !== false) {
+        // Die Kommentarzeilen der Markierungen stören json_decode.
+        $roh = substr($js, (int) $von, $bis - (int) $von + 1);
+        $roh = preg_replace('#/\*.*?\*/#s', '', $roh) ?? $roh;
+        $termine = json_decode($roh, true);
+    }
+}
+
+if (!is_array($termine)) {
+    exit("FEHLER: assets/js/trainingstermine.js konnte nicht gelesen werden.\n");
+}
+
+$pdo->exec('DELETE FROM trainingstermine');
+$termin = $pdo->prepare(
+    'INSERT INTO trainingstermine (datum, zeit, gruppe, ort, hinweis)
+     VALUES (?, ?, ?, ?, ?)'
+);
+foreach ($termine as $t) {
+    $termin->execute([
+        $t['datum'], $t['zeit'], $t['gruppe'], $t['ort'], $t['hinweis'] ?? '',
+    ]);
+}
+printf("  Termine          %d Trainingstermine\n", count($termine));
+
+/* ---------- 7. Konfiguration für das Backend ---------- */
 $config = <<<'PHP'
 <?php
 /**

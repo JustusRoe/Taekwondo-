@@ -51,6 +51,8 @@ sehen beide Konten dasselbe. Die Verwaltung gibt es nur unter
 | Adresse | Inhalt |
 | --- | --- |
 | `http://localhost:8080/index.html` | Die öffentliche Website |
+| `http://localhost:8080/backend/termine.php` | Terminverwaltung (nur als Trainer) |
+| `http://localhost:8080/backend/konten.php` | Zugangsverwaltung (nur als Trainer) |
 | `http://localhost:8080/mitglieder.html` | Mitgliederbereich als Entwurf (Anmeldung nur im Browser) |
 | `http://localhost:8080/backend/login.php` | Mitgliederbereich echt (Datenbank, geschützte Videos) |
 
