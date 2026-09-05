@@ -221,22 +221,91 @@
     }
 
     if (modus === 'voll') {
-      /* Vollständige Terminseite: vergangene Termine ganz entfernen, den
+      /* Vollständige Terminliste: vergangene Termine ganz entfernen, den
          nächsten hervorheben. Monatsüberschriften ohne Termine fallen mit weg.
-         Ohne JavaScript bleibt die Liste vollständig stehen. */
+         Ohne JavaScript bleibt die Liste vollständig stehen.
+
+         Zusätzlich kann über ?gruppe= auf eine Trainingsgruppe eingegrenzt
+         werden – so verlinkt angebot.html die Termine der einzelnen Angebote.
+         Gefiltert wird anhand des Wochentags, der in jeder Zeile steht; die
+         Ausfalltermine gehören damit automatisch zur richtigen Gruppe. */
+      var gruppen = window.TRAININGSGRUPPEN || {};
+      var schluessel = '';
+      try {
+        schluessel = new URLSearchParams(window.location.search).get('gruppe') || '';
+      } catch (e) { schluessel = ''; }
+      var gruppe = gruppen[schluessel];
+      if (!gruppe) schluessel = '';
+
+      /* Filterleiste: die gewählte Schaltfläche markieren */
+      var filter = document.getElementById('kalFilter');
+      if (filter) {
+        Array.prototype.slice.call(filter.querySelectorAll('a[data-gruppe]'))
+          .forEach(function (a) {
+            a.setAttribute('aria-pressed', String(a.dataset.gruppe === schluessel));
+          });
+      }
+
+      /* Überschrift nennt die gewählte Gruppe */
+      var ueberschrift = document.getElementById('termine');
+      if (ueberschrift && gruppe) {
+        ueberschrift.textContent = 'Die nächsten Termine – ' + gruppe.name;
+      }
+
+      function wochentag(li) {
+        var el = li.querySelector('.kal-datum span');
+        return el ? el.textContent.trim() : '';
+      }
+
+      function halle(li) {
+        var el = li.querySelector('.halle');
+        if (!el) return '';
+        var treffer = /(?:^|\s)ort-([a-z]+)/.exec(el.className);
+        return treffer ? treffer[1] : '';
+      }
+
+      /* Der Sammeleintrag am Samstag deckt Breitensport und Bambini ab, die
+         nicht gleichzeitig anfangen. Bei gewählter Gruppe wird die Zeile auf
+         deren Zeit und Namen umgeschrieben. */
+      function aufGruppeUmschreiben(li) {
+        var ort = halle(li);
+        var zeitEl = li.querySelector('.kal-zeit');
+        var gruppeEl = li.querySelector('.kal-gruppe');
+        if (zeitEl) {
+          zeitEl.textContent = (gruppe.zeitJeOrt && gruppe.zeitJeOrt[ort]) || gruppe.zeit;
+        }
+        if (gruppeEl) {
+          var hinweis = (gruppe.hinweisJeOrt && gruppe.hinweisJeOrt[ort]) || gruppe.hinweis;
+          gruppeEl.textContent = gruppe.name;
+          if (hinweis) {
+            var span = document.createElement('span');
+            span.className = 'kal-hinweis';
+            span.textContent = hinweis;
+            gruppeEl.appendChild(span);
+          }
+        }
+      }
+
       var naechsterGesetzt = false;
       Array.prototype.slice.call(kalender.querySelectorAll('.kal-eintrag[data-datum]'))
         .forEach(function (li) {
           if (alsDatum(li.dataset.datum) < heute) {
             li.remove();
-          } else if (!naechsterGesetzt && !li.classList.contains('ist-frei')) {
+            return;
+          }
+          if (gruppe && gruppe.tage.indexOf(wochentag(li)) === -1) {
+            li.remove();
+            return;
+          }
+          if (gruppe && !li.classList.contains('ist-frei')) aufGruppeUmschreiben(li);
+          if (!naechsterGesetzt && !li.classList.contains('ist-frei')) {
             li.classList.add('ist-naechster');
             naechsterGesetzt = true;
           }
         });
 
-      /* Ein Monatsband ohne folgenden Termin gehört zu einem Monat, der
-         komplett vorbei ist. */
+      /* Ein Monatsband ohne folgenden Termin gehört zu einem Monat, aus dem
+         nichts übrig geblieben ist. */
       Array.prototype.slice.call(kalender.querySelectorAll('.kal-monat'))
         .forEach(function (band) {
           var naechstes = band.nextElementSibling;
@@ -244,7 +313,13 @@
         });
 
       var leerHinweis = document.getElementById('kalLeer');
-      if (leerHinweis && !kalender.querySelector('.kal-eintrag')) leerHinweis.hidden = false;
+      if (leerHinweis && !kalender.querySelector('.kal-eintrag')) {
+        if (gruppe) {
+          leerHinweis.textContent =
+            'Für ' + gruppe.name + ' stehen in diesem Plan keine Termine mehr an.';
+        }
+        leerHinweis.hidden = false;
+      }
 
     } else {
       /* Startseite: das nächste Training aus trainingstermine.js aufbauen.

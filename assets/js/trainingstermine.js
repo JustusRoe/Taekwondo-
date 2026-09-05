@@ -53,6 +53,44 @@ window.TRAININGSTERMINE = [
   { "datum": "2026-12-19", "tag": "Samstag",    "zeit": "09:30 – 11:30", "gruppe": "Training & Bambini", "ort": "schloss", "hinweis": "Bambini erst ab 11:30 Uhr" }
 ];
 
+/* =========================================================
+   Trainingsgruppen
+   -----------------------------------------------------------
+   Ordnet die drei Angebote den Trainingstagen zu. Damit lassen
+   sich die Termine nach Gruppe filtern (angebot.html verlinkt
+   auf training.html?gruppe=...).
+
+   Die Zuordnung laeuft ueber den Wochentag, nicht ueber den
+   Text im Feld "gruppe": So gehoeren auch die Ausfalltermine
+   ("Kein Training") automatisch zur richtigen Gruppe.
+
+   zeit         Uhrzeit dieser Gruppe – der Sammeleintrag am
+                Samstag deckt Breitensport und Bambini ab, die
+                aber nicht gleichzeitig anfangen.
+   zeitJeOrt    Abweichung in einer bestimmten Halle
+   hinweisJeOrt Zusatzzeile fuer diese Halle
+   ========================================================= */
+window.TRAININGSGRUPPEN = {
+  breitensport: {
+    name: 'Training – alle Gürtelgrade',
+    tage: ['Samstag'],
+    zeit: '09:30 – 11:30'
+  },
+  bambini: {
+    name: 'Bambini-Training',
+    tage: ['Samstag'],
+    zeit: '10:30 – 11:30',
+    zeitJeOrt:    { schloss: 'ab 11:30' },
+    hinweisJeOrt: { schloss: 'In der Halle am Schloss beginnt Bambini erst um 11:30 Uhr' }
+  },
+  selbstverteidigung: {
+    name: 'Selbstverteidigung',
+    tage: ['Donnerstag'],
+    zeit: '18:00 – 20:00',
+    hinweis: 'Im Spiegelraum'
+  }
+};
+
 window.TRAININGSORTE = {
   steines: {
     name: 'Halle am Steines',

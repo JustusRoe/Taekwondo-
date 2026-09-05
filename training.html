@@ -111,6 +111,17 @@
            vollständig lesbar bleibt. Das Skript entfernt daraus die
            vergangenen Termine und hebt den nächsten hervor. -->
       <h2 class="kal-ueberschrift" id="termine">Die nächsten Termine</h2>
+
+      <!-- Filter nach Gruppe. Die Einträge sind echte Links, damit sie auch
+           ohne JavaScript zu einer sinnvollen Seite führen; das Skript wertet
+           den Parameter ?gruppe= aus und blendet die übrigen Termine aus. -->
+      <nav class="kal-filter" id="kalFilter" aria-label="Termine nach Gruppe filtern">
+        <span class="kal-filter-titel">Gruppe:</span>
+        <a class="tool-btn" href="training.html#termine" data-gruppe="">Alle</a>
+        <a class="tool-btn" href="training.html?gruppe=breitensport#termine" data-gruppe="breitensport">Training – alle Gürtelgrade</a>
+        <a class="tool-btn" href="training.html?gruppe=bambini#termine" data-gruppe="bambini">Bambini</a>
+        <a class="tool-btn" href="training.html?gruppe=selbstverteidigung#termine" data-gruppe="selbstverteidigung">Selbstverteidigung</a>
+      </nav>
       <div class="kalender" id="kalender" data-modus="voll">
         <ol class="kal-liste" id="kalListe">
           <li class="kal-monat"><span>August 2026</span></li>
