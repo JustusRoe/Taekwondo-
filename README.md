@@ -7,12 +7,13 @@ und Trainingstermine sind echt; Fotos und Trainerprofile noch Platzhalter – si
 
 ## Aufbau der Seite
 
-Die Website ist keine lange Einzelseite mehr: `index.html` ist eine Landing Page, die
-auf die Themenseiten verweist. Jedes Thema hat eine eigene Datei.
+Die Website ist keine lange Einzelseite mehr: Jedes Thema hat eine eigene Datei, und
+die Navigationsleiste führt alle Themen auf – auf dem Handy als Burger-Menü. `index.html`
+ist nur noch der Einstieg.
 
 | Seite | Inhalt |
 | --- | --- |
-| `index.html` | Landing Page: Hero, Kachelübersicht aller Seiten, nächste Trainingstermine |
+| `index.html` | Einstieg: Hero und die nächsten Trainingstermine |
 | `training.html` | Wochenplan nach Hallen, Terminkalender der laufenden Woche, erstes Training, Ferien |
 | `termine.html` | Vollständiger Terminplan bis Dezember; vergangene Termine werden ausgeblendet |
 | `angebot.html` | Drei Gruppen als Bildkarten (Bambini, Breitensport, Selbstverteidigung) |
@@ -24,15 +25,15 @@ auf die Themenseiten verweist. Jedes Thema hat eine eigene Datei.
 | `mitglieder*.html` | Anmeldung, Videothek mit Filter und Player mit Abschnitten |
 | `impressum.html` / `datenschutz.html` | Rechtstexte (Mustertexte) |
 
-Kopf- und Fußbereich sind auf allen Seiten gleich aufgebaut. Wird ein Menüpunkt
-ergänzt, muss er in jeder HTML-Datei nachgezogen werden – dafür kommt die Seite ohne
-Build-Schritt aus.
+Kopf- und Fußbereich sind auf allen Seiten gleich aufgebaut, die Navigationsleiste ist
+in jeder Datei identisch. Wird ein Menüpunkt ergänzt, muss er in jeder HTML-Datei
+nachgezogen werden – dafür kommt die Seite ohne Build-Schritt aus.
 
 ## Projektstruktur
 
 ```
 .
-├── index.html                   Landing Page mit Verweisen auf die Themenseiten
+├── index.html                   Einstieg: Hero und nächste Trainingstermine
 ├── training.html                Trainingszeiten, Hallen und erstes Training
 ├── termine.html                 Vollständiger Terminplan
 ├── angebot.html                 Die drei Trainingsgruppen

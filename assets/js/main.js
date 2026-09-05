@@ -51,7 +51,7 @@
 
   /* ---------- Einblenden beim Scrollen ---------- */
   const revealTargets = document.querySelectorAll(
-    '.section-head, .card, .member, .panel, .hub-card, .split-media, .split-copy, .downloads, .contact-form, .stats'
+    '.section-head, .card, .member, .panel, .split-media, .split-copy, .downloads, .contact-form, .stats'
   );
 
   if ('IntersectionObserver' in window) {

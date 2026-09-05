@@ -68,8 +68,8 @@ if ($a['code'] === 0) {
 }
 pruefe('Startseite erreichbar', $a['code'] === 200, 'HTTP ' . $a['code']);
 
-/* Die Startseite ist eine Landing Page: Sie trägt die Inhalte nicht mehr selbst,
-   sondern verweist auf die Themenseiten. */
+/* Die Startseite traegt die Inhalte nicht mehr selbst. Jedes Thema hat eine eigene
+   Datei, erreichbar ueber die Navigationsleiste, die auf jeder Seite gleich ist. */
 $unterseiten = ['training.html', 'termine.html', 'angebot.html', 'abteilung.html',
                 'trainerteam.html', 'galerie.html', 'downloads.html', 'kontakt.html'];
 $fehlend = array_values(array_filter($unterseiten,
