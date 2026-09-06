@@ -150,6 +150,26 @@ und der ganze Mitgliederbereich ist wertlos:
 `LIVEGANG.md`, `CHECKLISTE-INHALTE.md`, `.git/`. Das sind Entwicklungs- und
 Pflegewerkzeuge, die auf dem Server nichts verloren haben.
 
+**Und das hier auch – wichtig:**
+
+```
+mitglieder.html  mitglieder-videothek.html  mitglieder-video.html
+assets/js/mitglieder.js
+assets/js/videodaten.js
+assets/video/*.mp4  und  *.webm       (die Vorschaubilder *.jpg dagegen schon)
+```
+
+Das ist die **nachgebaute Anmeldung zum Vorführen**. Sie läuft nur im Browser,
+schützt nichts und zeigt die Testzugänge offen auf der Seite an
+(`testuser · test1234`). Die Videodateien daneben sind Platzhalter aus der
+Entwicklung; im Betrieb liegen die echten außerhalb des öffentlichen Ordners
+und werden von `backend/stream.php` erst nach geprüfter Anmeldung ausgeliefert.
+
+Schritt 8 biegt den Menüpunkt „Mitglieder" automatisch auf `backend/login.php`
+um, die echte Anmeldung. Die mitgelieferte `.htaccess` sperrt die
+Entwurfsdateien zusätzlich aus – aber am saubersten ist, sie gar nicht erst
+hochzuladen.
+
 **Und niemals hochladen:** die lokale `backend/config.php`. Sie zeigt auf die
 Testdatenbank. Die Fassung für den Server wird im nächsten Schritt direkt dort
 angelegt.
@@ -221,9 +241,17 @@ Vor dem Hochladen einmal lokal ausführen:
 php werkzeuge/livegang.php --live
 ```
 
-Das nimmt die Sperre aus allen Seiten und schreibt `robots.txt` neu. Die Seiten
-des Mitgliederbereichs behalten ihr `noindex` – die gehören nicht in die Suche.
-Rückgängig machen: `--entwurf`. Nachsehen, wie es gerade steht: `--status`.
+Das erledigt zwei Dinge auf einmal:
+
+1. Es nimmt die Sperre aus allen Seiten und schreibt `robots.txt` neu. Die
+   Seiten des Mitgliederbereichs behalten ihr `noindex` – die gehören nicht in
+   die Suche.
+2. Es biegt den Menüpunkt **„Mitglieder"** von `mitglieder.html` (der Attrappe)
+   auf `backend/login.php` um, die echte Anmeldung. Bliebe der Entwurf
+   verlinkt, landete jeder Besucher auf einer Anmeldung, die nichts schützt.
+
+Rückgängig machen: `--entwurf`. Nachsehen, wie es gerade steht: `--status` –
+das meldet auch, worauf der Menüpunkt gerade zeigt.
 
 ## 9. Erstes Trainerkonto einrichten
 
@@ -262,6 +290,11 @@ Der Reihe nach im Browser aufrufen:
 - [ ] Als Mitglied: Video abspielen und darin vorspulen
 - [ ] `deine-domain.de/backend/config.php` direkt aufrufen – muss einen Fehler
       geben, nicht den Inhalt zeigen
+- [ ] `deine-domain.de/mitglieder.html` aufrufen – muss „nicht gefunden"
+      melden. Erscheint dort eine Anmeldemaske mit sichtbaren Testzugängen,
+      ist die Entwurfsfassung mit hochgeladen und die `.htaccess` fehlt
+- [ ] `deine-domain.de/assets/video/taegeuk-il-jang.mp4` aufrufen – muss
+      ebenfalls „nicht gefunden" melden
 - [ ] Auf dem Telefon ansehen: Burger-Menü, Trainerkarten, Terminliste
 
 ## 11. Schreibrechte

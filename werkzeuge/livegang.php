@@ -16,6 +16,12 @@
  *
  * Die Seiten des Mitgliederbereichs behalten ihr noindex immer: Sie
  * gehören nicht in die Suche, egal ob Entwurf oder Livebetrieb.
+ *
+ * Zweitens biegt das Skript den Menüpunkt „Mitglieder" um. Im Entwurf
+ * zeigt er auf mitglieder.html – die nachgebaute Anmeldung, die nichts
+ * schützt und die Testzugänge offen anzeigt. Im Livebetrieb muss er auf
+ * backend/login.php zeigen, die echte Anmeldung gegen die Datenbank.
+ * Bliebe der Entwurf verlinkt, landete jeder Besucher auf einer Attrappe.
  */
 declare(strict_types=1);
 
@@ -69,16 +75,36 @@ function status(): void
     $robots = trim((string) @file_get_contents(WURZEL . '/robots.txt'));
     $robotsSperrt = str_contains($robots, "Disallow: /\n") || str_ends_with($robots, 'Disallow: /');
 
+    $entwurfVerlinkt = 0;
+    foreach (seiten() as $pfad) {
+        if (str_contains((string) file_get_contents($pfad), 'href="mitglieder.html"')) {
+            $entwurfVerlinkt++;
+        }
+    }
+
     echo "Öffentliche Seiten:      ", count(seiten()), "\n";
     echo "davon für Suchmaschinen gesperrt: ", count($gesperrt), "\n";
     if ($gesperrt) {
         echo "  ", implode(', ', $gesperrt), "\n";
     }
-    echo "robots.txt sperrt alles: ", $robotsSperrt ? 'ja' : 'nein', "\n\n";
+    echo "robots.txt sperrt alles: ", $robotsSperrt ? 'ja' : 'nein', "\n";
+    echo "Menüpunkt „Mitglieder\" zeigt auf: ",
+        $entwurfVerlinkt > 0 ? 'mitglieder.html (Entwurf)' : 'backend/login.php (echt)', "\n\n";
 
-    echo (count($gesperrt) === 0 && !$robotsSperrt)
+    echo (count($gesperrt) === 0 && !$robotsSperrt && $entwurfVerlinkt === 0)
         ? "→ Die Seite steht auf LIVE.\n"
         : "→ Die Seite steht auf ENTWURF.\n";
+}
+
+/**
+ * Biegt den Menüpunkt „Mitglieder" auf die richtige Anmeldung um.
+ * Im Entwurf auf die Attrappe, im Livebetrieb auf die echte.
+ */
+function verweise_umbiegen(string $inhalt, bool $live): string
+{
+    $von = $live ? 'href="mitglieder.html"' : 'href="backend/login.php"';
+    $nach = $live ? 'href="backend/login.php"' : 'href="mitglieder.html"';
+    return str_replace($von, $nach, $inhalt);
 }
 
 function umschalten(bool $live): void
@@ -88,6 +114,8 @@ function umschalten(bool $live): void
     foreach (seiten() as $pfad) {
         $inhalt = (string) file_get_contents($pfad);
         $vorher = $inhalt;
+
+        $inhalt = verweise_umbiegen($inhalt, $live);
 
         if ($live) {
             // Kommentar und Meta-Zeile zusammen entfernen
@@ -117,9 +145,20 @@ function umschalten(bool $live): void
     file_put_contents(WURZEL . '/robots.txt', $live ? ROBOTS_LIVE : ROBOTS_ENTWURF);
 
     echo "\n", $geaendert, " Seiten geändert, robots.txt neu geschrieben.\n";
-    echo $live
-        ? "Die Seite ist jetzt für Suchmaschinen freigegeben.\n"
-        : "Die Seite ist jetzt für Suchmaschinen gesperrt.\n";
+    if ($live) {
+        echo "Die Seite ist für Suchmaschinen freigegeben, der Menüpunkt\n";
+        echo "„Mitglieder\" zeigt auf die echte Anmeldung.\n\n";
+        echo "NICHT auf den Server hochladen:\n";
+        echo "  mitglieder.html, mitglieder-videothek.html, mitglieder-video.html\n";
+        echo "  assets/js/mitglieder.js, assets/js/videodaten.js\n";
+        echo "  assets/video/*.mp4 und *.webm  (die Vorschaubilder *.jpg schon)\n";
+        echo "Das ist die nachgebaute Anmeldung samt Testzugängen. Sie schützt\n";
+        echo "nichts. Die .htaccess sperrt sie zusätzlich – aber hochladen\n";
+        echo "muss man sie gar nicht erst.\n";
+    } else {
+        echo "Die Seite ist für Suchmaschinen gesperrt, der Menüpunkt\n";
+        echo "„Mitglieder\" zeigt wieder auf den Entwurf.\n";
+    }
 }
 
 $befehl = $argv[1] ?? '--status';

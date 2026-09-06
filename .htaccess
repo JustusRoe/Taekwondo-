@@ -46,6 +46,25 @@ Options -Indexes
 RedirectMatch 404 ^/werkzeuge/
 
 # ---------------------------------------------------------
+# Die nachgebaute Anmeldung aussperren
+#
+# mitglieder*.html sind der Entwurf zum Vorführen: Die Anmeldung
+# läuft dort nur im Browser, schützt nichts und zeigt die
+# Testzugänge offen an. Im Livebetrieb führt der Menüpunkt
+# „Mitglieder" auf backend/login.php – diese Sperre ist das Netz
+# darunter, falls die Dateien doch mit hochgeladen werden.
+# ---------------------------------------------------------
+RedirectMatch 404 ^/mitglieder(-videothek|-video)?\.html$
+RedirectMatch 404 ^/assets/js/(mitglieder|videodaten)\.js$
+
+# Die Videodateien gehören außerhalb des öffentlichen Ordners und
+# werden von backend/stream.php erst nach geprüfter Anmeldung
+# ausgeliefert. Was hier liegt, sind Platzhalter aus der
+# Entwicklung. Die Vorschaubilder (*.jpg) bleiben erreichbar –
+# sie verraten nichts und werden von der Videothek gebraucht.
+RedirectMatch 404 ^/assets/video/.*\.(mp4|webm)$
+
+# ---------------------------------------------------------
 # 3. Kleinigkeiten für Sicherheit und Anzeige
 # ---------------------------------------------------------
 <IfModule mod_headers.c>
