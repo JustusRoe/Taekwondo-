@@ -76,10 +76,16 @@ nebeneinander ruhig wirken (`werkzeuge/hintergrund-weichzeichnen.py`). Die Karte
 - [x] ✅ Kartenlinks zeigen auf Google Maps, mit euren Einträgen für die
       Mehrzweckhalle und die Halle Am Schloss.
 - [ ] ⚪ Ferienregelung in einem Satz (fällt Training aus oder wird es verlegt?)
-- [ ] ⚪ Termine ab Januar 2027, sobald der neue Plan steht
+- [ ] 🟡 **Termine ab Januar 2027.** Der eingetragene Plan endet am 19.12.2026.
+      Danach zeigt die Startseite kein nächstes Training mehr – vor Weihnachten also
+      den neuen Zeitraum erzeugen.
 
-Die Termine pflegst du später selbst in einer einzigen Datei:
-`assets/js/trainingstermine.js`. Der Kalender auf der Startseite baut sich daraus auf.
+Die Termine pflegst du im Mitgliederbereich unter *Verwaltung → Termine*: einen
+Zeitraum eingeben, und alle Donnerstage und Samstage entstehen mit den festen
+Zeiten von selbst. Danach nur noch eintragen, was abweicht – Ferien herausnehmen
+und die Halle setzen. Jedes Speichern schreibt die Termine in die Website zurück
+(`assets/js/trainingstermine.js` und die Liste auf `training.html`), damit die
+Seite ohne Datenbank auskommt.
 
 ---
 
@@ -139,19 +145,31 @@ stimmen dann schon.
 
 ## F · Mitgliederbereich 🟡
 
-Eingerichtet für **Poomsae** und **Hanbon Kyorugi**, mit sechs Platzhaltervideos.
+Die **Einschrittkampf-Reihe (Hanbon Kyorugi) steht: 13 Videos in ihrer
+Reihenfolge**, aufbereitet aus den Handyaufnahmen. Für **Poomsae** liegen weiter
+Platzhalterclips.
 
 Zugänge und Videos verwaltet ihr selbst im Browser – FTP wird nicht gebraucht.
 Konten legt nur das Trainerteam an, eine Selbstanmeldung gibt es nicht.
 
-- [ ] 🔴 **Einwilligung jeder gefilmten Person** – auch für den passwortgeschützten Bereich
+- [ ] 🔴 **Einwilligung jeder gefilmten Person** – auch für den passwortgeschützten
+      Bereich. Bei der Einschrittkampf-Reihe sind zwei Personen erkennbar. Die
+      Rohaufnahmen liegen dazu im öffentlichen Repository (Entscheidung vom
+      12.09.2026), dafür braucht es die Einwilligung zur **öffentlichen**
+      Veröffentlichung – die für einen Mitgliederbereich genügt dort nicht.
+- [ ] 🟡 **Techniknamen der 13 Einschrittkampf-Videos.** Sie heißen bisher
+      „Einschrittkampf 1" bis „Einschrittkampf 13", Gürtelgrad überall „Alle Grade".
+      Wer die Reihe kennt, trägt die richtigen Bezeichnungen ein – in der Verwaltung
+      unter *Videos* oder in `assets/js/videodaten.js`.
 - [ ] 🟡 Wer vergibt die Zugänge und setzt Passwörter zurück?
 - [ ] 🟡 Bekommen alle Mitglieder Zugang oder nur bestimmte Gruppen?
-- [ ] 🟡 Mitgliederliste für die Kontenanlage: Name, gewünschter Benutzername, E-Mail,
-      Rolle (Mitglied oder Trainer)
-- [ ] 🟡 Erste echte Videos. Nötig sind nur Titel, Bereich, Gürtelgrad und Beschreibung –
-      Länge, Vorschaubild und der Name der Trainerin oder des Trainers ergeben sich beim
-      Hochladen von selbst.
+- [x] ✅ **Mitgliederliste für die Kontenanlage** – es genügt jetzt eine Liste von
+      Namen, eine je Zeile. Benutzername und Startpasswort entstehen automatisch,
+      eine E-Mail-Adresse ist nicht nötig. Heraus kommt eine Zugangsliste zum
+      Ausdrucken; abschreiben muss niemand etwas.
+- [ ] 🟡 Weitere Videos für Poomsae. Nötig sind nur Titel, Bereich, Gürtelgrad und
+      Beschreibung – Länge, Vorschaubild und der Name der Trainerin oder des Trainers
+      ergeben sich beim Hochladen von selbst.
 
 **Videoformat:** MP4 (H.264 + AAC), 720p genügt, rund 90 MB je 10 Minuten.
 Kostenloses Werkzeug zum Umwandeln: HandBrake.

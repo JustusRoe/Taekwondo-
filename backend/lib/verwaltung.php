@@ -46,6 +46,55 @@ function passwort_vorschlag(): string
     return $a . '-' . $b . '-' . random_int(1000, 9999);
 }
 
+/**
+ * Macht aus einem Namen einen Benutzernamen: „Michael Buchhold" wird
+ * „m.buchhold".
+ *
+ * Umlaute werden ausgeschrieben, alles andere fällt weg. $belegt sind die
+ * Namen, die es schon gibt – bei einer Dopplung hängt die Funktion eine
+ * Zahl an, damit zwei Personen mit gleichem Anfangsbuchstaben und
+ * Nachnamen nicht kollidieren.
+ */
+function benutzername_ableiten(string $name, array $belegt = []): string
+{
+    $klein = mb_strtolower(trim($name));
+    $klein = str_replace(
+        ['ä', 'ö', 'ü', 'ß', 'á', 'à', 'â', 'é', 'è', 'ê', 'í', 'ó', 'ô', 'ú', 'ñ', 'ç'],
+        ['ae', 'oe', 'ue', 'ss', 'a', 'a', 'a', 'e', 'e', 'e', 'i', 'o', 'o', 'u', 'n', 'c'],
+        $klein
+    );
+    $teile = preg_split('/[^a-z0-9]+/', $klein, -1, PREG_SPLIT_NO_EMPTY) ?: [];
+
+    if (!$teile) {
+        $vorschlag = 'zugang';
+    } elseif (count($teile) === 1) {
+        $vorschlag = $teile[0];
+    } else {
+        // Erster Buchstabe des Vornamens, Punkt, letzter Namensteil.
+        $vorschlag = mb_substr($teile[0], 0, 1) . '.' . $teile[count($teile) - 1];
+    }
+
+    $vorschlag = mb_substr($vorschlag, 0, 60);
+    if (mb_strlen($vorschlag) < 3) {
+        $vorschlag = str_pad($vorschlag, 3, 'x');
+    }
+
+    $endgueltig = $vorschlag;
+    $zaehler = 2;
+    while (in_array($endgueltig, $belegt, true)) {
+        $endgueltig = mb_substr($vorschlag, 0, 57) . $zaehler;
+        $zaehler++;
+    }
+    return $endgueltig;
+}
+
+/** Benutzernamen, die in der Datenbank schon vergeben sind. */
+function benutzernamen_belegt(): array
+{
+    $stmt = db()->query('SELECT benutzername FROM mitglieder');
+    return array_map('strval', $stmt->fetchAll(PDO::FETCH_COLUMN) ?: []);
+}
+
 /** Prüft einen Benutzernamen; gibt eine Fehlermeldung zurück oder ''. */
 function benutzername_pruefen(string $name): string
 {
@@ -130,6 +179,12 @@ function verwaltung_menue(string $aktiv): void
         'konten.php'   => 'Zugänge',
         'passwort.php' => 'Mein Passwort',
     ];
+    // Die Zugangsliste steht nur im Menü, solange eine offen ist – sie
+    // gehört zum Anlegen und nicht in die Dauernavigation.
+    if (!empty($_SESSION['zugangsliste'])) {
+        $punkte['zugangsliste.php'] = 'Zugangsliste ('
+            . count($_SESSION['zugangsliste']) . ')';
+    }
     ?>
   <nav class="verwaltung-menue" aria-label="Verwaltung">
     <?php foreach ($punkte as $datei => $text): ?>

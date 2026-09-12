@@ -109,15 +109,21 @@ CREATE TABLE IF NOT EXISTS trainingstermine (
 -- =========================================================
 -- Erstes Trainerkonto
 --
--- Ohne dieses Konto kommt niemand in die Verwaltung, um weitere
--- Konten anzulegen. Passwort: test1234
--- Neues Passwort erzeugen mit:
---   php -r "echo password_hash('NEUES_PASSWORT', PASSWORD_DEFAULT);"
--- VOR DEM ECHTBETRIEB ERSETZEN.
--- =========================================================
-INSERT INTO mitglieder (benutzername, name, email, passwort_hash, rolle, passwort_wechseln) VALUES
-  ('testtrainer', 'Test Trainer', 'testtrainer@example.de',
-   '$2y$12$l0r.Y4R6V9ovEaM.86aROez/bqHQDADpVuGCc559XdCmBhYBnKR0.', 'trainer', 1);
+-- Hier steht bewusst kein Konto.
+--
+-- Frueher stand an dieser Stelle ein Trainerkonto mit festem Passwort.
+-- Das ist eine schlechte Idee: Wer es nach dem Livegang zu loeschen
+-- vergisst, hat ein Konto mit oeffentlich bekanntem Passwort auf dem
+-- Server -- und das Passwort steht dazu in dieser Datei.
+--
+-- Stattdessen: nach dem Einspielen dieser Datei einmal
+--
+--   https://deine-domain.de/backend/einrichten.php
+--
+-- aufrufen. Die Seite legt das erste Trainerkonto an, mit einem
+-- Passwort, das du selbst waehlst. Sie funktioniert nur, solange diese
+-- Tabelle leer ist, und sperrt sich danach selbst. Alle weiteren
+-- Zugaenge entstehen in der Verwaltung unter "Zugaenge".
 
 
 -- =========================================================

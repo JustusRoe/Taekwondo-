@@ -10,6 +10,15 @@ videos-roh/*
 !videos-roh/LIESMICH.md
 !videos-roh/reihenfolge.txt
 
+# Auslieferungspaket (wird von werkzeuge/paket.sh erzeugt)
+#
+# Nicht eingecheckt, obwohl es praktisch waere: Jede Datei laege dann
+# zweimal im Repository, und eine Textaenderung muesste an beiden Stellen
+# nachgezogen werden. Ein Paket, das nicht mehr zur Quelle passt, ist
+# schlimmer als keins. Neu bauen dauert wenige Sekunden; wer es ohne
+# Werkzeuge braucht, holt es als ZIP aus dem Actions-Reiter bei GitHub.
+auslieferung/
+
 # Systemdateien
 .DS_Store
 Thumbs.db

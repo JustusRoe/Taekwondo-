@@ -78,7 +78,10 @@ Zugang: `testuser` / `test1234` (Mitglied) oder `testtrainer` / `test1234` (Trai
 
 Angemeldete Trainer finden unter `backend/` drei Bereiche:
 
-- **Videos** (`admin.php`) – Trainingsvideos hochladen und beschreiben.
+- **Videos** (`admin.php`) – Trainingsvideos hochladen und beschreiben. Eine ganze
+  Reihe kommt schneller per SFTP in den geschützten Ordner: Dateien ohne Eintrag
+  erkennt die Seite selbst und trägt sie auf einen Klick ein, mit Titel, Bereich und
+  Platz in der Reihe aus `reihe.csv`, falls die daneben liegt.
 - **Termine** (`termine.php`) – der Terminplan. Einzelne Termine lassen sich anlegen
   und ändern, ein ganzer Plan als CSV-Datei hochladen (`datum;zeit;gruppe;ort;hinweis`);
   der aktuelle Stand lässt sich als CSV herunterladen und dient zugleich als Vorlage.
@@ -97,6 +100,25 @@ darum verlangt der Mitgliederbereich beim ersten Anmelden ein eigenes Passwort
 (`passwort.php`). Danach kennt es nur noch das Mitglied selbst; gespeichert ist
 ohnehin nur der Hash. Vergessene Passwörter kann das Trainerteam neu setzen, nicht
 auslesen.
+
+**Das allererste Konto** entsteht über `backend/einrichten.php`. Die Seite legt ein
+Trainerkonto mit selbst gewähltem Passwort an, funktioniert nur bei leerer
+Mitgliedertabelle und sperrt sich danach selbst – auch gegen ein nachgebautes
+Formular. Ein vorgegebenes Konto mit festem Passwort gibt es bewusst nicht: Es stünde
+im Quelltext und wäre damit öffentlich bekannt.
+
+**Zugangsliste.** Weil in der Datenbank nur der Hash steht, lässt sich ein
+Startpasswort später nicht mehr auslesen. Wer zwanzig Zugänge anlegt, müsste sich
+zwanzig Passwörter im Moment des Anlegens abschreiben. Stattdessen sammelt
+`zugangsliste.php` alles, was in dieser Sitzung vergeben wurde – einzeln angelegt, in
+einer Ladung angelegt oder zurückgesetzt – und gibt es in drei Formen aus: als
+Druckseite, als CSV-Datei und als Zettel je Person zum Ausschneiden. Die Liste liegt
+nur in der Sitzung und endet mit dem Abmelden, nach zwei Stunden oder auf Klick.
+
+Für viele Zugänge auf einmal nimmt *Zugänge → Mehrere Zugänge auf einmal anlegen*
+eine Liste von Namen; Benutzername und Startpasswort entstehen automatisch. Aus
+„Michael Buchhold" wird `m.buchhold`, Umlaute werden ausgeschrieben, und bei einer
+Dopplung hängt eine Zahl an.
 
 Trainerzugänge dürfen in diese Verwaltung und sind deshalb zusätzlich geschützt:
 
@@ -238,6 +260,34 @@ php werkzeuge/livegang.php --entwurf    # wieder sperren
 
 Die Seiten des Mitgliederbereichs behalten ihr `noindex` in jedem Fall.
 
+### Das Auslieferungspaket
+
+Im Projektordner liegen Tests, Hilfsskripte, Rohaufnahmen und die Entwurfsfassung
+des Mitgliederbereichs – nichts davon gehört auf den Server. `werkzeuge/paket.sh`
+stellt zusammen, was hochgehört, und sortiert es nach Zielort:
+
+```bash
+werkzeuge/paket.sh
+```
+
+```
+auslieferung/
+├── LIESMICH.md          was wohin kommt
+├── www/                 → in den öffentlichen Ordner des Hostings
+├── videos-privat/       → eine Ebene darüber, ausserhalb des Webordners
+└── datenbank/           → schema.sql in phpMyAdmin importieren
+```
+
+Das Paket ist bewusst nicht eingecheckt: Jede Datei läge sonst zweimal im
+Repository, und eine Textänderung müsste an zwei Stellen nachgezogen werden. Wer es
+ohne Kommandozeile braucht, holt es als ZIP bei GitHub unter *Actions* → oberster
+Lauf → *Artifacts*; die Datei entsteht bei jedem Push
+(`.github/workflows/paket.yml`).
+
+Das Skript prüft sich selbst und bricht ab, wenn die Seiten noch auf Entwurf stehen,
+wenn Zugangsdaten oder Testzugänge im Paket auftauchen oder wenn eine Rohaufnahme
+mitgerutscht ist.
+
 ## Vorschau im Netz (GitHub Pages)
 
 Um den Entwurf dem Vorstand zu zeigen, genügt GitHub Pages – kostenlos, kein zusätzliches
@@ -252,18 +302,19 @@ https://justusroe.github.io/Taekwondo-/
 ```
 
 **Was dort funktioniert:** die komplette Website samt Trainingsplan, Terminkalender,
-Galerie, Downloads und Kontaktformular (mit Entwurfshinweis statt Versand). Auch der
-Mitgliederbereich als Entwurf – Anmeldung mit `testuser` / `test1234`, Videothek, Player
-mit Abschnittssprüngen.
+Galerie, Downloads und Kontaktformular (mit Entwurfshinweis statt Versand).
 
 **Was dort nicht funktioniert:** alles unter `backend/`. GitHub Pages liefert nur Dateien
 aus, es führt kein PHP aus. Die echte Anmeldung gegen die Datenbank und der geschützte
 Videoabruf über `stream.php` lassen sich nur auf einem PHP-Hoster oder lokal über
 `./test/testmain.sh` zeigen.
 
-**Vor dem Livegang wieder entfernen:** `robots.txt` sperrt derzeit alle Suchmaschinen aus,
-und `index.html` trägt ein `noindex`. Beides ist für den Entwurf gewollt – bleibt es
-stehen, findet Google die fertige Seite nie. Beide Stellen sind im Quelltext kommentiert.
+Seit die Seite auf LIVE steht, zeigt der Menüpunkt „Mitglieder" auf
+`backend/login.php` – auf Pages führt er damit ins Leere. Wer den Mitgliederbereich
+dort wieder vorführen will, schaltet mit `php werkzeuge/livegang.php --entwurf`
+zurück; dann greift der Menüpunkt wieder auf die nachgebaute Anmeldung
+(`testuser` / `test1234`). Für den Livegang vorher `--live` nicht vergessen, sonst
+trägt jede Seite ein `noindex` und `robots.txt` sperrt alle Suchmaschinen aus.
 
 ## Gestaltung
 

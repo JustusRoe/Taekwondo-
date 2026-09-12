@@ -22,6 +22,34 @@ $fehler  = '';
 $neuesPasswort = '';        // wird genau einmal angezeigt
 $neuerBenutzer = '';
 
+/**
+ * Nimmt einen Zugang in die offene Zugangsliste auf.
+ *
+ * Die Liste sammelt, was in dieser Sitzung an Startpasswörtern vergeben
+ * wurde – einzeln angelegt, in einer Ladung angelegt oder zurückgesetzt.
+ * Sie liegt nur in der Sitzung: In der Datenbank steht ausschließlich der
+ * Hash, und nachträglich lässt sich ein Startpasswort nicht mehr auslesen.
+ * Wer die Liste schließt oder sich abmeldet, hat sie endgültig verloren.
+ */
+function zugangsliste_ergaenzen(string $benutzer, string $name,
+                                string $passwort, string $rolle): void
+{
+    $_SESSION['zugangsliste'] ??= [];
+    // Zweimal dieselbe Person (etwa nach einem zweiten Zurücksetzen) soll
+    // einmal in der Liste stehen, mit dem zuletzt gesetzten Passwort.
+    $_SESSION['zugangsliste'] = array_values(array_filter(
+        $_SESSION['zugangsliste'],
+        static fn (array $e): bool => $e['benutzername'] !== $benutzer
+    ));
+    $_SESSION['zugangsliste'][] = [
+        'benutzername' => $benutzer,
+        'name'         => $name,
+        'passwort'     => $passwort,
+        'rolle'        => $rolle,
+    ];
+    $_SESSION['zugangsliste_zeit'] ??= time();
+}
+
 /** Liest ein Konto oder bricht ab. */
 function konto(int $id): ?array
 {
@@ -77,8 +105,104 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 $meldung = 'Zugang für ' . $name . ' wurde angelegt.';
                 $neuesPasswort = $passwort;
                 $neuerBenutzer = $benutzer;
+                zugangsliste_ergaenzen($benutzer, $name, $passwort, $rolle);
             } catch (PDOException $e) {
                 $fehler = 'Diesen Benutzernamen gibt es bereits.';
+            }
+        }
+    }
+
+    /* ---------- Mehrere Konten auf einmal ---------- */
+    if ($aktion === 'sammel') {
+        $zeilen = preg_split('/\r\n|\r|\n/', (string) ($_POST['liste'] ?? '')) ?: [];
+        $rolle  = $_POST['rolle'] === 'trainer' ? 'trainer' : 'mitglied';
+
+        // Erst alles einlesen und pruefen, dann schreiben. Eine Zeile, die
+        // nicht passt, soll nicht dazu fuehren, dass die Haelfte der
+        // Zugaenge angelegt ist und die andere nicht.
+        $belegt  = benutzernamen_belegt();
+        $geplant = [];
+        foreach ($zeilen as $nr => $zeile) {
+            $zeile = trim($zeile);
+            if ($zeile === '' || str_starts_with($zeile, '#')) {
+                continue;
+            }
+            $felder = array_map('trim', explode(';', $zeile));
+            $name   = $felder[0];
+            $email  = $felder[1] ?? '';
+
+            if ($name === '') {
+                continue;
+            }
+            if ($email !== '' && !filter_var($email, FILTER_VALIDATE_EMAIL)) {
+                $fehler = 'Zeile ' . ($nr + 1) . ': „' . $email
+                        . '" sieht nicht wie eine E-Mail-Adresse aus.';
+                break;
+            }
+
+            $benutzer = benutzername_ableiten($name, $belegt);
+            $belegt[] = $benutzer;
+
+            // Das Startpasswort muss die Vorgabe der Rolle erfuellen –
+            // sonst koennte die Person es beim ersten Wechsel nicht
+            // bestaetigen. passwort_vorschlag() liegt darueber, aber
+            // pruefen kostet nichts.
+            $passwort = passwort_vorschlag();
+            if (passwort_pruefen($passwort, $rolle, $benutzer) !== '') {
+                $passwort = passwort_vorschlag() . '-' . random_int(10, 99);
+            }
+
+            $geplant[] = [
+                'benutzername' => $benutzer,
+                'name'         => $name,
+                'email'        => $email,
+                'passwort'     => $passwort,
+            ];
+        }
+
+        if ($fehler === '' && !$geplant) {
+            $fehler = 'In der Liste steht kein Name.';
+        }
+        // Eine Ladung Trainerzugaenge vergibt Rechte an der Verwaltung.
+        if ($fehler === '' && $rolle === 'trainer' && !$bestaetigt) {
+            $fehler = 'Für Trainerzugänge bitte das eigene Passwort bestätigen.';
+        }
+
+        if ($fehler === '') {
+            try {
+                db()->beginTransaction();
+                $einfuegen = db()->prepare(
+                    'INSERT INTO mitglieder (benutzername, name, email, passwort_hash, rolle, passwort_wechseln)
+                     VALUES (?, ?, ?, ?, ?, 1)'
+                );
+                foreach ($geplant as $g) {
+                    $einfuegen->execute([
+                        $g['benutzername'], $g['name'], $g['email'] ?: null,
+                        password_hash($g['passwort'], PASSWORD_DEFAULT), $rolle,
+                    ]);
+                }
+                db()->commit();
+
+                // Die Liste liegt in der Sitzung, nicht in der Datenbank:
+                // Gespeichert ist nur der Hash, im Klartext existieren die
+                // Passwoerter genau bis zum Abmelden oder bis die Liste
+                // geschlossen wird.
+                $_SESSION['zugangsliste'] = array_map(static fn (array $g): array => [
+                    'benutzername' => $g['benutzername'],
+                    'name'         => $g['name'],
+                    'passwort'     => $g['passwort'],
+                    'rolle'        => $rolle,
+                ], $geplant);
+                $_SESSION['zugangsliste_zeit'] = time();
+
+                header('Location: zugangsliste.php');
+                exit;
+            } catch (PDOException $e) {
+                if (db()->inTransaction()) {
+                    db()->rollBack();
+                }
+                $fehler = 'Es wurde nichts angelegt: Einen dieser Benutzernamen '
+                        . 'gibt es schon. Bitte die Liste prüfen.';
             }
         }
     }
@@ -143,6 +267,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 ->execute([$neuerBenutzer]);
             $meldung = 'Neues Startpasswort gesetzt.';
             $neuesPasswort = $passwort;
+            zugangsliste_ergaenzen(
+                $neuerBenutzer,
+                (string) $ziel['name'],
+                $passwort,
+                (string) ($ziel['rolle'] ?? 'mitglied')
+            );
         }
     }
 
@@ -501,6 +631,53 @@ kopf('Zugänge', $mitglied);
 
         <div class="form-actions">
           <button type="submit" class="btn btn-primary">Zugang anlegen</button>
+        </div>
+      </form>
+    </details>
+
+    <details class="anlegen-block">
+      <summary class="tool-btn">Mehrere Zugänge auf einmal anlegen</summary>
+      <form method="post" action="" class="contact-form">
+        <input type="hidden" name="csrf" value="<?= h(csrf_token()) ?>">
+        <input type="hidden" name="aktion" value="sammel">
+
+        <p class="field">
+          <label for="liste">Namen – eine Person je Zeile</label>
+          <textarea id="liste" name="liste" rows="10" required
+                    placeholder="Michael Buchhold&#10;Aileen Roeder; aileen@example.de&#10;Andy Schneider"></textarea>
+          <span class="feld-hinweis">
+            Benutzername und Startpasswort entstehen automatisch: aus
+            „Michael Buchhold" wird <code>m.buchhold</code>. Eine E-Mail-Adresse
+            kann hinter einem Semikolon stehen, sie ist nicht nötig. Zeilen
+            mit <code>#</code> am Anfang werden übersprungen.
+          </span>
+        </p>
+
+        <p class="field">
+          <label for="sammelRolle">Rolle für alle in dieser Liste</label>
+          <select id="sammelRolle" name="rolle">
+            <option value="mitglied">Mitglied – sieht die Videothek</option>
+            <option value="trainer">Trainer – sieht zusätzlich die Verwaltung</option>
+          </select>
+        </p>
+
+        <p class="field">
+          <label for="sammelBestaetigung">Dein Passwort
+            <span class="optional">(nur für Trainerkonten)</span></label>
+          <input type="password" id="sammelBestaetigung" name="bestaetigung"
+                 autocomplete="current-password">
+        </p>
+
+        <p class="feld-hinweis">
+          Danach erscheint die <strong>Zugangsliste</strong>: alle Namen mit
+          Benutzername und Startpasswort, zum Ausdrucken oder als Datei.
+          Nichts davon muss abgeschrieben werden – aber die Liste gibt es
+          nur dieses eine Mal, denn gespeichert wird ausschließlich der
+          verschlüsselte Abdruck.
+        </p>
+
+        <div class="form-actions">
+          <button type="submit" class="btn btn-primary">Liste anlegen</button>
         </div>
       </form>
     </details>

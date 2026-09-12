@@ -44,14 +44,15 @@ sieht man die Ebene darüber.
 4. **Schreibrechte prüfen.** Der Webserver muss in `videos-privat/` und in
    `assets/video/` schreiben dürfen – dort landen die hochgeladenen Videos und die
    Vorschaubilder. Meist genügt Rechte-Stufe 755; bei manchen Hostern 775.
-5. **Erstes Passwort setzen.** `schema.sql` legt ein einziges Trainerkonto an
-   (`testtrainer`, Passwort `test1234`). Damit meldet man sich einmal an und legt unter
-   *Verwaltung → Zugänge* die echten Konten an – danach dieses Konto löschen. Alternativ
-   direkt in der Datenbank:
-   ```
-   php -r "echo password_hash('NEUES_PASSWORT', PASSWORD_DEFAULT);"
-   ```
-   Den ausgegebenen Wert in die Spalte `passwort_hash` eintragen.
+5. **Erstes Trainerkonto anlegen.** `schema.sql` legt bewusst *kein* Konto an – ein
+   festes Passwort im Quelltext wäre öffentlich bekannt. Stattdessen einmal
+   `einrichten.php` im Browser aufrufen: Die Seite legt ein Trainerkonto mit selbst
+   gewähltem Passwort an, funktioniert nur bei leerer Mitgliedertabelle und sperrt
+   sich danach selbst. Anschließend kann die Datei gelöscht werden.
+
+   Alle weiteren Zugänge entstehen unter *Verwaltung → Zugänge*; für viele auf
+   einmal nimmt die Seite eine Liste von Namen und gibt eine Zugangsliste zum
+   Ausdrucken aus (`zugangsliste.php`).
 6. **HTTPS erzwingen.** Ohne Verschlüsselung wandern Passwörter im Klartext durchs Netz.
    Bei IONOS ist ein Zertifikat enthalten; im Kundenmenü aktivieren und in der
    `.htaccess` des öffentlichen Ordners auf HTTPS umleiten.

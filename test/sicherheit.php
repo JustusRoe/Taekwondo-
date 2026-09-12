@@ -332,8 +332,129 @@ pruefe('Die Terminliste auf training.html maskiert alle eingetippten Felder',
     $block !== '' && $ungeschuetzt === [],
     $ungeschuetzt ? 'ohne h(): ' . implode(', ', $ungeschuetzt) : 'html_block() nicht gefunden');
 
+/* =========================================================
+   Einrichtungsseite und Zugangsliste
+
+   Beides ist neu und heikel: einrichten.php legt ein Trainerkonto ohne
+   jede Anmeldung an, und die Zugangsliste zeigt Startpasswörter im
+   Klartext. Die Sperren dafür gehören geprüft.
+   ========================================================= */
+echo "\nEinrichtungsseite und Zugangsliste\n";
+
+$konten = (int) einWert('SELECT COUNT(*) FROM mitglieder');
+
+$a = anfrage($basis . '/backend/einrichten.php');
+pruefe('einrichten.php ist gesperrt, solange es Konten gibt',
+    $konten > 0 && str_contains($a['inhalt'], 'Schon eingerichtet')
+    && !str_contains($a['inhalt'], 'name="passwort"'),
+    'Antwort: ' . substr(strip_tags($a['inhalt']), 0, 120));
+
+// Der Riegel muss auch für POST gelten – ein Formular lässt sich
+// nachbauen, die Sperre darf nicht nur die Anzeige betreffen.
+$a = anfrage($basis . '/backend/einrichten.php', [
+    'csrf' => csrf($a['inhalt']), 'name' => 'Eindringling',
+    'benutzer' => 'eindringling', 'passwort' => 'Ahorn-Kranich-Segel-11',
+    'wiederholen' => 'Ahorn-Kranich-Segel-11',
+]);
+pruefe('einrichten.php legt auch per POST kein zweites Konto an',
+    (int) einWert('SELECT COUNT(*) FROM mitglieder WHERE benutzername = ?', ['eindringling']) === 0);
+
+$keksMitglied = einloggen($basis, 'testuser', 'test1234');
+
+/* Ein angemeldetes Mitglied bekommt 403 – es ist angemeldet, darf aber
+   nicht in die Verwaltung. Wer gar nicht angemeldet ist, wird auf die
+   Anmeldung geschickt (302). Beides ist eine Sperre. */
+$gesperrt = static fn (array $a): bool => in_array($a['code'], [302, 403], true);
+
+$a = anfrage($basis . '/backend/zugangsliste.php', null, $keksMitglied);
+pruefe('Die Zugangsliste ist für Mitglieder gesperrt',
+    $keksMitglied !== '' && $gesperrt($a)
+    && !str_contains($a['inhalt'], 'zl-passwort'),
+    'HTTP ' . $a['code']);
+
+$a = anfrage($basis . '/backend/zugangsliste.php?csv=1', null, $keksMitglied);
+pruefe('Auch die CSV-Ausgabe der Zugangsliste ist für Mitglieder gesperrt',
+    $keksMitglied !== '' && $gesperrt($a)
+    && !str_contains($a['kopf'], 'text/csv'),
+    'HTTP ' . $a['code']);
+
+$a = anfrage($basis . '/backend/admin.php', ['aktion' => 'vorhandene'], $keksMitglied);
+pruefe('Das Eintragen vorhandener Videodateien ist für Mitglieder gesperrt',
+    $keksMitglied !== '' && $gesperrt($a), 'HTTP ' . $a['code']);
+
+$a = anfrage($basis . '/backend/zugangsliste.php');
+pruefe('Ohne Anmeldung führt die Zugangsliste auf die Anmeldung',
+    $a['code'] === 302, 'HTTP ' . $a['code']);
+
+// Ohne offene Liste darf die Seite nichts zeigen – sie liegt in der
+// Sitzung, ein Trainerkonto allein macht sie nicht sichtbar.
+$keksTrainer = einloggen($basis, 'testtrainer', 'test1234');
+$a = anfrage($basis . '/backend/zugangsliste.php', null, $keksTrainer);
+pruefe('Ohne angelegte Zugänge zeigt die Liste keine Passwörter',
+    $keksTrainer !== '' && str_contains($a['inhalt'], 'keine Liste offen'));
+
+// Die Sammelanlage vergibt Benutzernamen selbst. Steht einer davon schon
+// in der Datenbank, muss sie ausweichen statt den vorhandenen Zugang zu
+// ueberschreiben.
+//
+// Den Zusammenstoss stellt die Pruefung selbst her. Sich darauf zu
+// verlassen, dass ein passender Demozugang in der Testdatenbank liegt,
+// war ein Fehler: Der Zugang a.roeder stammte aus einem frueheren Lauf,
+// und in einer frischen Datenbank gab es ihn nicht - die Pruefung schlug
+// dann fehl, obwohl am Programm nichts falsch war.
+db()->prepare('DELETE FROM mitglieder WHERE benutzername IN (?, ?)')
+    ->execute(['a.roeder', 'a.roeder2']);
+db()->prepare(
+    'INSERT INTO mitglieder (benutzername, name, email, passwort_hash, rolle, aktiv)
+     VALUES (?, ?, ?, ?, ?, 1)'
+)->execute(['a.roeder', 'Aileen Röder', null,
+            password_hash('Kiesel-Wolke-4711', PASSWORD_DEFAULT), 'mitglied']);
+
+$a = anfrage($basis . '/backend/konten.php', null, $keksTrainer);
+$hashVorher = (string) einWert('SELECT passwort_hash FROM mitglieder WHERE benutzername = ?',
+    ['a.roeder']);
+$sammel = anfrage($basis . '/backend/konten.php', [
+    'csrf' => csrf($a['inhalt']), 'aktion' => 'sammel', 'rolle' => 'mitglied',
+    'liste' => "Aileen Röder\nPruef Neuling",
+], $keksTrainer);
+
+/* Beim Fehlschlag muss ablesbar sein, woran es lag: keine Anmeldung,
+   kein Token, eine Fehlermeldung der Seite oder etwas anderes. */
+$warum = 'HTTP ' . $sammel['code'] . ', Konto a.roeder vorher: '
+       . ($hashVorher !== '' ? 'ja' : 'NEIN')
+       . ', Anmeldung: ' . ($keksTrainer !== '' ? 'ja' : 'NEIN')
+       . ', Token: ' . (csrf($a['inhalt']) !== '' ? 'ja' : 'NEIN');
+if ($sammel['code'] === 200
+    && preg_match('~ist-fehler[^>]*>(?:<strong>)?(.*?)(?:</strong>)?</p>~s', $sammel['inhalt'], $t)) {
+    $warum .= ', Meldung: ' . trim(strip_tags($t[1]));
+}
+
+pruefe('Sammelanlage weicht bei einem vergebenen Benutzernamen aus',
+    (int) einWert('SELECT COUNT(*) FROM mitglieder WHERE benutzername = ?', ['a.roeder2']) === 1,
+    $warum);
+pruefe('Der vorhandene Zugang bleibt dabei unberührt',
+    $hashVorher !== ''
+    && $hashVorher === (string) einWert(
+        'SELECT passwort_hash FROM mitglieder WHERE benutzername = ?', ['a.roeder']));
+
+// Die Zugangsliste steht danach – und nur mit den zwei neuen Zugängen,
+// nicht mit allen Konten der Datenbank.
+$a = anfrage($basis . '/backend/zugangsliste.php', null, $keksTrainer);
+pruefe('Die Zugangsliste zeigt genau die neu angelegten Zugänge',
+    substr_count($a['inhalt'], '<tr>') === 3     // Kopfzeile plus zwei
+    && str_contains($a['inhalt'], 'a.roeder2')
+    && str_contains($a['inhalt'], 'p.neuling'),
+    'Zeilen: ' . substr_count($a['inhalt'], '<tr>'));
+
+// In der Datenbank darf kein Startpasswort im Klartext liegen.
+$klartexte = (int) einWert(
+    'SELECT COUNT(*) FROM mitglieder WHERE passwort_hash NOT LIKE ?', ['$2y$%']);
+pruefe('Alle Passwörter liegen als bcrypt-Hash in der Datenbank',
+    $klartexte === 0, $klartexte . ' Konten ohne bcrypt-Hash');
+
 /* ---------- Aufräumen ---------- */
-db()->prepare('DELETE FROM mitglieder WHERE benutzername = ?')->execute(['pruefziel']);
+db()->prepare('DELETE FROM mitglieder WHERE benutzername IN (?, ?, ?, ?, ?)')
+    ->execute(['pruefziel', 'eindringling', 'a.roeder', 'a.roeder2', 'p.neuling']);
 sperren_aufheben();
 foreach (glob(sys_get_temp_dir() . '/tkd-kontakt-*.txt') ?: [] as $z) {
     @unlink($z);

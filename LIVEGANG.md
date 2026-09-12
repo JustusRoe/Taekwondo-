@@ -143,11 +143,40 @@ und der ganze Mitgliederbereich ist wertlos:
         └── backend/
 ```
 
-**Das kommt in `www/`:** alle `.html`-Dateien, `.htaccess`, `robots.txt`,
-`.nojekyll`, sowie die Ordner `assets/`, `downloads/` und `backend/`.
+### Am einfachsten: das fertige Paket
 
-**Das bleibt auf deinem Rechner:** `test/`, `werkzeuge/`, `README.md`,
-`LIVEGANG.md`, `CHECKLISTE-INHALTE.md`, `.git/`. Das sind Entwicklungs- und
+Statt von Hand auszusortieren, was hochgehört und was nicht, gibt es ein
+Paket, das genau das enthält:
+
+```
+werkzeuge/paket.sh
+```
+
+Das Ergebnis liegt in `auslieferung/` und ist schon sortiert:
+
+| Ordner im Paket | Wohin auf dem Server |
+| --- | --- |
+| `www/` | der **Inhalt** in den öffentlichen Ordner |
+| `videos-privat/` | der **Inhalt** eine Ebene darüber |
+| `datenbank/schema.sql` | nicht hochladen – in phpMyAdmin importieren (Schritt 4) |
+
+Wer keine Kommandozeile benutzen will, holt dasselbe Paket als ZIP bei
+GitHub: Reiter *Actions* → obersten Lauf öffnen → unten bei *Artifacts*
+`auslieferung` herunterladen.
+
+Das Skript prüft sich selbst und bricht ab, wenn die Seiten noch auf
+Entwurf stehen, wenn Testzugänge im Paket auftauchen oder wenn eine
+Rohaufnahme mitgerutscht ist.
+
+### Oder von Hand
+
+**Das kommt in `www/`:** alle `.html`-Dateien außer `mitglieder*.html`,
+dazu `.htaccess`, `robots.txt` sowie die Ordner `assets/`, `downloads/`
+und `backend/`.
+
+**Das bleibt auf deinem Rechner:** `test/`, `werkzeuge/`, `videos-roh/`,
+`auslieferung/`, `README.md`, `LIVEGANG.md`, `CHECKLISTE-INHALTE.md`,
+`.git/`, `.github/`, `.nojekyll`. Das sind Entwicklungs- und
 Pflegewerkzeuge, die auf dem Server nichts verloren haben.
 
 **Und das hier auch – wichtig:**
@@ -160,10 +189,10 @@ assets/video/*.mp4  *.webm  *.mov    (die Vorschaubilder *.jpg dagegen schon)
 ```
 
 Das ist die **nachgebaute Anmeldung zum Vorführen**. Sie läuft nur im Browser,
-schützt nichts und zeigt die Testzugänge offen auf der Seite an
-(`testuser · test1234`). Die Videodateien daneben sind Platzhalter aus der
-Entwicklung; im Betrieb liegen die echten außerhalb des öffentlichen Ordners
-und werden von `backend/stream.php` erst nach geprüfter Anmeldung ausgeliefert.
+schützt nichts und zeigt Zugangsdaten offen auf der Seite an. Die
+Videodateien daneben gehören nicht in den öffentlichen Ordner: Im Betrieb
+liegen sie außerhalb und werden von `backend/stream.php` erst nach
+geprüfter Anmeldung ausgeliefert.
 
 Schritt 8 biegt den Menüpunkt „Mitglieder" automatisch auf `backend/login.php`
 um, die echte Anmeldung. Die mitgelieferte `.htaccess` sperrt die
@@ -255,22 +284,52 @@ das meldet auch, worauf der Menüpunkt gerade zeigt.
 
 ## 9. Erstes Trainerkonto einrichten
 
-`schema.sql` legt genau ein Konto an: **`testtrainer`** mit dem Passwort
-**`test1234`**. Das steht so im Quelltext und ist damit öffentlich bekannt.
+Es gibt **kein vorgegebenes Konto und kein vorgegebenes Passwort**. Ein
+Konto mit festem Passwort im Quelltext wäre öffentlich bekannt – wer es
+nach dem Livegang zu löschen vergisst, hat ein offenes Tor in die
+Verwaltung. Stattdessen:
 
-Direkt nach dem Livegang, in dieser Reihenfolge:
+1. Einmal `deine-domain.de/backend/einrichten.php` aufrufen.
+2. Namen eintragen und ein eigenes Passwort wählen, mindestens zwölf
+   Zeichen. Den Benutzernamen kann man leer lassen – aus „Michael
+   Buchhold" wird dann `m.buchhold`.
+3. Fertig. Die Seite sperrt sich selbst: Solange dieses Konto steht,
+   weist sie jeden weiteren Aufruf ab, auch ein nachgebautes Formular.
+4. `backend/einrichten.php` vom Server löschen. Nötig ist es nicht, aber
+   was nicht da ist, kann nicht schiefgehen.
 
-1. Unter `deine-domain.de/backend/login.php` mit `testtrainer` / `test1234`
-   anmelden. Die Seite verlangt sofort ein eigenes Passwort – setz eins mit
-   mindestens zwölf Zeichen.
-2. Unter *Verwaltung → Zugänge* die echten Trainerkonten anlegen. Für jedes
-   Trainerkonto wird dabei dein eigenes Passwort abgefragt.
-3. Mit einem der neuen Konten anmelden und prüfen, dass es in die Verwaltung
-   kommt.
-4. Erst dann `testtrainer` stilllegen und löschen.
+Ab hier entstehen alle weiteren Zugänge in der Verwaltung.
 
-Solange `testtrainer` mit dem bekannten Passwort existiert, hat jeder Zugang
-zur Verwaltung, der den Quelltext gelesen hat.
+### Zugänge für die Abteilung anlegen
+
+Unter *Verwaltung → Zugänge* gibt es zwei Wege:
+
+* **Einen einzelnen Zugang**, wenn im Training jemand dazukommt.
+* **Mehrere Zugänge auf einmal** – dafür eine Liste von Namen in das Feld,
+  eine Person je Zeile. Benutzername und Startpasswort entstehen
+  automatisch; hinter einem Semikolon kann eine E-Mail-Adresse stehen.
+
+Danach erscheint die **Zugangsliste**: alle Namen mit Benutzername und
+Startpasswort. Drei Ausgaben, je nachdem was gebraucht wird:
+
+| Ausgabe | Wofür |
+| --- | --- |
+| *Drucken* | Eine Seite für den Cheftrainer. Menü und Farben fallen weg. |
+| *Als CSV speichern* | Für Excel oder LibreOffice, etwa als Vorlage für einen Serienbrief. |
+| *Zum Ausschneiden* | Ein Zettel je Person – so bekommt niemand die Zugänge der anderen zu sehen. |
+
+**Diese Liste gibt es genau einmal.** In der Datenbank steht nur der
+verschlüsselte Abdruck; ein Startpasswort lässt sich später nicht mehr
+auslesen, auch nicht vom Trainerteam. Wer eins verliert, bekommt unter
+*Zugänge → Bearbeiten → Passwort neu setzen* ein neues – das landet dann
+wieder in der Liste.
+
+Damit muss niemand mehr zwanzig Passwörter einzeln abschreiben. Und die
+Liste wird schnell wertlos: Jeder Zugang verlangt beim ersten Anmelden ein
+eigenes Passwort. Danach kennt es nur noch das Mitglied selbst.
+
+Die Liste gehört nicht in eine E-Mail und nicht in eine Chatgruppe –
+Papier im Training ist hier der sicherere Weg.
 
 ## 10. Durchprüfen
 
@@ -371,9 +430,18 @@ HEVC in 10 Bit, das spielen viele Browser nicht ab.
 4. Die aufbereiteten `hanbon-kyorugi-*.mp4` und `*.webm` per SFTP nach
    `videos-privat/` auf dem Webspace legen, die Vorschaubilder `*.jpg`
    nach `www/assets/video/`. Die Rohaufnahmen (`IMG_*.mov`) bleiben auf
-   dem eigenen Rechner – der Server braucht sie nicht.
-5. Die Einträge im Mitgliederbereich unter *Videos* ergänzen – Titel,
-   Gürtelgrad und Platz in der Reihe. Die Datei ist dann schon da.
+   dem eigenen Rechner – der Server braucht sie nicht. Wer mit dem Paket
+   aus Schritt 5 arbeitet, hat das schon getan.
+5. Anmelden, *Verwaltung → Videos*. Oben steht dann: *„13 Videodateien
+   liegen schon im Ordner und sind noch nicht eingetragen."* Titel,
+   Bereich und Platz in der Reihe sind vorausgefüllt, sofern
+   `reihe.csv` neben den Videos liegt – die legt `paket.sh` mit an. Ein
+   Klick auf *Ausgewählte eintragen*, und die Reihe steht in der
+   Videothek.
+
+   Ohne diese Liste müsste jedes Video einzeln durch den Browser
+   hochgeladen und beschrieben werden. Bei dreizehn Teilen einer Reihe
+   ist der Weg über SFTP schneller.
 
 War ein einzelnes Video falsch, muss nicht alles neu laufen:
 

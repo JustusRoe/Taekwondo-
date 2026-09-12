@@ -1,0 +1,45 @@
+# Baut das Auslieferungspaket bei jeder Änderung und legt es als ZIP
+# zum Herunterladen ab.
+#
+# Damit braucht niemand PHP oder eine Kommandozeile auf dem eigenen
+# Rechner, um an die schlanke Fassung zu kommen:
+#
+#   GitHub → Reiter "Actions" → oberster Lauf → unten "Artifacts"
+#   → "auslieferung" herunterladen und auspacken.
+#
+# Im ZIP liegen www/, videos-privat/ und datenbank/ – wohin was kommt,
+# steht in der LIESMICH.md darin.
+name: Auslieferungspaket
+
+on:
+  push:
+    branches:
+      - claude/taekwondo-club-website-jui1tt
+      - claude/aileen-taekwondo-restructure-qui26y
+  workflow_dispatch:
+
+jobs:
+  paket:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: PHP bereitstellen
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.2'
+
+      # paket.sh prüft selbst, dass die Quelldateien auf LIVE stehen,
+      # dass keine Testzugänge und keine Rohaufnahmen mitkommen, und
+      # bricht sonst ab. Der Lauf schlägt dann fehl – genau so soll es
+      # sein, ein fehlerhaftes Paket soll niemand herunterladen.
+      - name: Paket bauen
+        run: bash werkzeuge/paket.sh
+
+      - name: Als ZIP ablegen
+        uses: actions/upload-artifact@v4
+        with:
+          name: auslieferung
+          path: auslieferung/
+          retention-days: 30
+          if-no-files-found: error

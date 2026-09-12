@@ -17,6 +17,92 @@ $mitglied = trainer_verlangen();
 $meldung = '';
 $fehler  = '';
 
+/**
+ * Videodateien im geschützten Ordner, zu denen es noch keinen Eintrag gibt.
+ *
+ * Eine ganze Reihe – dreizehn Einschrittkampf-Videos etwa – kommt per SFTP
+ * in einem Zug auf den Server. Dafür braucht es keinen Upload durch den
+ * Browser; es fehlt nur der Eintrag in der Datenbank. Diese Funktion
+ * findet solche Dateien.
+ *
+ * Titel, Bereich, Gürtelgrad, Platz in der Reihe und Laufzeit stehen, wenn
+ * vorhanden, in reihe.csv neben den Videos – die legt werkzeuge/paket.sh
+ * an. Ohne diese Datei bleibt der Dateiname als Titel, und die Laufzeit
+ * bleibt bei 0; beides lässt sich danach in der Liste ändern.
+ *
+ * @return array<string, array<string, mixed>> Kürzel => Angaben
+ */
+function vorhandene_dateien(): array
+{
+    $ordner = rtrim((string) konfiguration()['video_ordner'], '/');
+    if (!is_dir($ordner)) {
+        return [];
+    }
+
+    $vergeben = db()->query('SELECT slug FROM videos')->fetchAll(PDO::FETCH_COLUMN) ?: [];
+    $vergeben = array_map('strval', $vergeben);
+
+    /* Angaben aus reihe.csv, falls sie neben den Videos liegt. */
+    $angaben = [];
+    $csv = $ordner . '/reihe.csv';
+    if (is_file($csv) && ($zeiger = fopen($csv, 'r')) !== false) {
+        $kopf = fgetcsv($zeiger, 0, ';');
+        while (($zeile = fgetcsv($zeiger, 0, ';')) !== false) {
+            if (!is_array($kopf) || count($zeile) !== count($kopf)) {
+                continue;
+            }
+            $satz = array_combine($kopf, $zeile);
+            if (isset($satz['slug'])) {
+                $angaben[(string) $satz['slug']] = $satz;
+            }
+        }
+        fclose($zeiger);
+    }
+
+    $gefunden = [];
+    foreach (glob($ordner . '/*.{mp4,webm,mov}', GLOB_BRACE) ?: [] as $pfad) {
+        $datei = basename($pfad);
+        $slug  = pathinfo($datei, PATHINFO_FILENAME);
+
+        if (in_array($slug, $vergeben, true)) {
+            continue;
+        }
+        // MP4 ist die Hauptfassung. Liegt sie daneben, ist die WebM-Datei
+        // nur das Ausweichformat und braucht keinen eigenen Eintrag.
+        if (!str_ends_with($datei, '.mp4') && is_file($ordner . '/' . $slug . '.mp4')) {
+            continue;
+        }
+        if (isset($gefunden[$slug])) {
+            continue;
+        }
+
+        $a = $angaben[$slug] ?? [];
+        // Aus "hanbon-kyorugi-07" wird ohne reihe.csv die 7 als Platz.
+        $nummer = preg_match('/-(\d{1,3})$/', $slug, $t) ? (int) $t[1] : 0;
+        $poster = is_file(rtrim((string) konfiguration()['poster_ordner'], '/') . '/' . $slug . '.jpg')
+            ? $slug . '.jpg'
+            : null;
+
+        $gefunden[$slug] = [
+            'dateiname'   => $datei,
+            'posterdatei' => $poster,
+            'titel'       => (string) ($a['titel'] ?? $slug),
+            'bereich'     => (string) ($a['bereich'] ?? ''),
+            'grad'        => (string) ($a['grad'] ?? ''),
+            'dauer'       => max(0, (int) ($a['dauer'] ?? 0)),
+            'reihenfolge' => max(0, min(999, (int) ($a['reihenfolge'] ?? $nummer))),
+            'aus_csv'     => $a !== [],
+            'groesse'     => (int) @filesize($pfad),
+        ];
+    }
+
+    // In der Reihenfolge anzeigen, in der sie auch laufen sollen.
+    uasort($gefunden, static fn (array $a, array $b): int
+        => [$a['reihenfolge'] ?: 999, $a['titel']] <=> [$b['reihenfolge'] ?: 999, $b['titel']]);
+
+    return $gefunden;
+}
+
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     csrf_pruefen();
     $aktion = (string) ($_POST['aktion'] ?? '');
@@ -37,6 +123,54 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $meldung = 'Eintrag und Videodatei gelöscht.';
         } else {
             $meldung = 'Eintrag gelöscht.';
+        }
+    }
+
+    /* ---------- Dateien eintragen, die schon im Ordner liegen ---------- */
+    if ($aktion === 'vorhandene') {
+        $gewaehlt = (array) ($_POST['slug'] ?? []);
+        $offen    = vorhandene_dateien();
+        $gezaehlt = 0;
+
+        try {
+            db()->beginTransaction();
+            $einfuegen = db()->prepare(
+                'INSERT INTO videos (slug, titel, bereich, grad, trainer, beschreibung,
+                                     dateiname, posterdatei, dauer, veroeffentlicht_am,
+                                     reihenfolge)
+                 VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)'
+            );
+            foreach ($gewaehlt as $slug) {
+                $slug = (string) $slug;
+                if (!isset($offen[$slug])) {
+                    continue;           // nicht mehr offen oder erfunden
+                }
+                $d = $offen[$slug];
+                $titel = trim((string) ($_POST['titel'][$slug] ?? ''));
+                $einfuegen->execute([
+                    $slug,
+                    $titel !== '' ? $titel : $d['titel'],
+                    trim((string) ($_POST['bereich'][$slug] ?? $d['bereich'])),
+                    trim((string) ($_POST['grad'][$slug] ?? $d['grad'])),
+                    $mitglied['name'],
+                    '',
+                    $d['dateiname'],
+                    $d['posterdatei'],
+                    $d['dauer'],
+                    date('Y-m-d'),
+                    $d['reihenfolge'],
+                ]);
+                $gezaehlt++;
+            }
+            db()->commit();
+            $meldung = $gezaehlt === 0
+                ? 'Es war nichts ausgewählt.'
+                : $gezaehlt . ' Videos wurden eingetragen.';
+        } catch (PDOException $e) {
+            if (db()->inTransaction()) {
+                db()->rollBack();
+            }
+            $fehler = 'Es wurde nichts eingetragen: Eines dieser Kürzel ist schon vergeben.';
         }
     }
 
@@ -122,6 +256,81 @@ kopf('Verwaltung', $mitglied);
 
     <?php verwaltung_menue('admin.php'); ?>
     <?php hinweis($meldung, $fehler); ?>
+
+    <?php $offen = vorhandene_dateien(); ?>
+    <?php if ($offen): ?>
+      <details class="anlegen-block" open>
+        <summary class="tool-btn">
+          <?= count($offen) ?> Videodateien liegen schon im Ordner und sind noch nicht eingetragen
+        </summary>
+        <form method="post" action="" class="contact-form">
+          <input type="hidden" name="csrf" value="<?= h(csrf_token()) ?>">
+          <input type="hidden" name="aktion" value="vorhandene">
+
+          <p class="feld-hinweis">
+            Eine ganze Reihe kommt in einem Zug per SFTP auf den Server –
+            dafür braucht es keinen Upload durch den Browser, es fehlt nur
+            der Eintrag. Angaben, die daneben in <code>reihe.csv</code>
+            stehen, sind schon eingesetzt; ändern lässt sich alles hier und
+            später.
+          </p>
+
+          <div class="table-wrap">
+            <table class="konten-tabelle">
+              <thead>
+                <tr>
+                  <th scope="col"><span class="visually-hidden">Eintragen</span></th>
+                  <th scope="col">Nr.</th>
+                  <th scope="col">Titel</th>
+                  <th scope="col">Bereich</th>
+                  <th scope="col">Grad</th>
+                  <th scope="col">Datei</th>
+                </tr>
+              </thead>
+              <tbody>
+                <?php foreach ($offen as $slug => $d): ?>
+                  <tr>
+                    <td>
+                      <input type="checkbox" name="slug[]" value="<?= h($slug) ?>" checked
+                             aria-label="<?= h($d['titel']) ?> eintragen">
+                    </td>
+                    <td><?= $d['reihenfolge'] ?: '<span class="leer">–</span>' ?></td>
+                    <td>
+                      <input type="text" name="titel[<?= h($slug) ?>]"
+                             value="<?= h($d['titel']) ?>" required>
+                    </td>
+                    <td>
+                      <input type="text" name="bereich[<?= h($slug) ?>]"
+                             value="<?= h($d['bereich']) ?>" size="16">
+                    </td>
+                    <td>
+                      <input type="text" name="grad[<?= h($slug) ?>]"
+                             value="<?= h($d['grad']) ?>" size="12">
+                    </td>
+                    <td>
+                      <code><?= h($d['dateiname']) ?></code><br>
+                      <small>
+                        <?= $d['dauer'] > 0
+                              ? sprintf('%d:%02d', intdiv($d['dauer'], 60), $d['dauer'] % 60)
+                              : 'Laufzeit unbekannt' ?>,
+                        <?= round($d['groesse'] / 1048576, 1) ?> MB<?php
+                        ?><?= $d['posterdatei'] ? ', Vorschaubild da' : ', ohne Vorschaubild' ?>
+                      </small>
+                    </td>
+                  </tr>
+                <?php endforeach; ?>
+              </tbody>
+            </table>
+          </div>
+
+          <div class="form-actions">
+            <button type="submit" class="btn btn-primary">
+              Ausgewählte eintragen
+            </button>
+          </div>
+        </form>
+      </details>
+    <?php endif; ?>
 
     <div class="verwaltung-layout">
       <div>

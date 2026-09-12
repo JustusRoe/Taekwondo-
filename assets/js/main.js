@@ -89,7 +89,9 @@
 
   function closeLightbox() {
     lightbox.hidden = true;
-    lightboxImg.src = '';
+    // removeAttribute statt src = '': Ein leeres src laesst den Browser
+    // die Seite selbst noch einmal anfordern.
+    lightboxImg.removeAttribute('src');
     document.body.style.overflow = '';
     if (lastFocused) lastFocused.focus();
   }
