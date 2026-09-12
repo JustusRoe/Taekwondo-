@@ -4,7 +4,7 @@
  *
  *   php werkzeuge/videodaten-erzeugen.php
  *
- * Liest die aufbereiteten Dateien aus videos-privat/, ermittelt Laufzeit
+ * Liest die aufbereiteten Dateien aus assets/video/, ermittelt Laufzeit
  * und Nummer aus dem Dateinamen und schreibt daraus den Abschnitt
  * "Hanbon Kyorugi" in assets/js/videodaten.js – zwischen den
  * Markierungen REIHE:ANFANG und REIHE:ENDE.
@@ -26,6 +26,11 @@ const WURZEL = __DIR__ . '/..';
 const KUERZEL = 'hanbon-kyorugi';
 const BEREICH = 'Hanbon Kyorugi';
 const DATEI = WURZEL . '/assets/js/videodaten.js';
+
+/* Wo die aufbereiteten Dateien liegen. Der Entwurfsbereich laedt seine
+   Videos aus assets/video/, deshalb steht die Reihe dort. Ueber die
+   Umgebungsvariable ORDNER laesst sich ein anderer Ort angeben. */
+define('ORDNER', WURZEL . '/' . (getenv('ORDNER') ?: 'assets/video'));
 
 /** Laufzeit in Sekunden, aus der Datei gelesen. */
 function laufzeit(string $pfad): int
@@ -49,7 +54,7 @@ function laufzeit(string $pfad): int
 /** Rohaufnahme je Nummer, aus <kuerzel>-herkunft.txt. */
 function herkunft(): array
 {
-    $datei = WURZEL . '/videos-privat/' . KUERZEL . '-herkunft.txt';
+    $datei = ORDNER . '/' . KUERZEL . '-herkunft.txt';
     if (!is_file($datei)) {
         return [];
     }
@@ -77,7 +82,7 @@ $herkunft = herkunft();
 
 $eintraege = [];
 $zurueckgesetzt = [];
-$dateien = glob(WURZEL . '/videos-privat/' . KUERZEL . '-[0-9][0-9].mp4') ?: [];
+$dateien = glob(ORDNER . '/' . KUERZEL . '-[0-9][0-9].mp4') ?: [];
 sort($dateien);
 
 foreach ($dateien as $pfad) {
@@ -108,7 +113,7 @@ foreach ($dateien as $pfad) {
 }
 
 if (!$eintraege) {
-    exit("Keine aufbereiteten Videos in videos-privat/ gefunden.\n"
+    exit("Keine aufbereiteten Videos in " . ORDNER . " gefunden.\n"
        . "Erst werkzeuge/video-aufbereiten.sh laufen lassen.\n");
 }
 

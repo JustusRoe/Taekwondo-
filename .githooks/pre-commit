@@ -1,7 +1,12 @@
 #!/usr/bin/env bash
 #
-# Verhindert, dass Dateien ins oeffentliche Repository wandern, die dort
-# nicht hingehoeren: Serverzugaenge und Aufnahmen von Mitgliedern.
+# Verhindert, dass Dateien ins Repository wandern, die dort nicht
+# hingehoeren: die Serverzugaenge und der Zwischenstand der Videoablage.
+#
+# Die Trainingsvideos selbst stehen bewusst im Repository (Commit
+# a9dcd7c) und werden hier deshalb nicht mehr abgehalten. Wer das
+# zurueckdrehen will, nimmt die beiden Muster fuer assets/video/ und
+# videos-roh/ aus der Git-Historie dieses Hakens wieder herein.
 #
 # Einschalten (einmal je Arbeitsplatz):
 #
@@ -16,7 +21,7 @@ set -euo pipefail
 DATEIEN="$(git diff --cached --name-only --diff-filter=ACMR)"
 [ -n "$DATEIEN" ] || exit 0
 
-MUSTER='^(backend/config\.php$|videos-privat/|videos-roh/.*\.(mov|mp4|m4v|webm|avi|mkv|MOV|MP4)$|assets/video/hanbon-kyorugi-[0-9][0-9]\.(mp4|webm|jpg)$)'
+MUSTER='^(backend/config\.php$|videos-privat/)'
 
 TREFFER="$(printf '%s\n' "$DATEIEN" | grep -E "$MUSTER" || true)"
 [ -n "$TREFFER" ] || exit 0
@@ -30,13 +35,11 @@ cat >&2 <<'TEXT'
 Das Repository ist oeffentlich. Eingecheckte Dateien kann jeder
 herunterladen, auch spaeter noch aus der Versionsgeschichte.
 
-  backend/config.php     enthaelt Datenbank-Zugangsdaten.
-  videos-privat/         Trainingsvideos, darauf sind Mitglieder zu erkennen.
-  videos-roh/*.mov       dieselben Aufnahmen, unbearbeitet.
-  assets/video/hanbon-*  Vorschaubilder dieser Aufnahmen.
-
-Videos kommen per SFTP nach videos-privat/ auf den Webspace, nicht ins
-Repository – siehe videos-roh/LIESMICH.md und LIVEGANG.md.
+  backend/config.php  enthaelt die Datenbank-Zugangsdaten des Servers.
+  videos-privat/      ist der Zwischenstand fuer den SFTP-Upload. Die
+                      Videos der Webseite liegen in assets/video/; die
+                      Ablage hier ein zweites Mal einzuchecken wuerde
+                      jede Datei doppelt im Repository fuehren.
 
 Aus dem Index nehmen:  git restore --staged <Datei>
 Trotzdem einchecken:   git commit --no-verify

@@ -137,9 +137,9 @@ Vorschaubild. SDR-Material erkennt das Skript und lässt die Farbumrechnung dann
 weg.
 
 ```bash
-# Rohaufnahmen nach videos-roh/ legen, reihenfolge.txt ausfüllen, dann:
+# Rohaufnahmen liegen in assets/video/, reihenfolge.txt legt die Reihenfolge fest:
 werkzeuge/video-aufbereiten.sh --liste videos-roh/reihenfolge.txt \
-    videos-privat hanbon-kyorugi
+    assets/video hanbon-kyorugi
 php werkzeuge/videodaten-erzeugen.php
 ```
 
@@ -148,27 +148,32 @@ in den Dateinamen. Kameranamen wie `IMG_1263` sagen nur, wann aufgenommen wurde,
 nicht welche Technik zu sehen ist. War ein einzelnes Video falsch, ersetzt
 `--platz 4` genau diese Nummer und lässt die übrigen unberührt.
 
-Dabei hält das Skript in `videos-privat/<kürzel>-herkunft.txt` fest, aus welcher
+Auf die Zeitstempel in den Dateien ist dabei kein Verlass: Bei den klein
+geschriebenen `.mov` dieser Reihe steht als `creation_time` der Zeitpunkt des
+Exports – mehrere Dateien tragen dieselbe Sekunde. Nur die groß geschriebenen
+`.MOV` haben ihre echte Aufnahmezeit behalten, und die steigt mit der
+Dateinummer. Deshalb ist die Nummer der Maßstab.
+
+Dabei hält das Skript in `assets/video/<kürzel>-herkunft.txt` fest, aus welcher
 Rohaufnahme jede Nummer entstanden ist. Steckt hinter einer Nummer später eine
 andere Aufnahme, setzt `videodaten-erzeugen.php` den von Hand eingetragenen
 Techniknamen zurück und meldet das – ein Name am falschen Video wäre schlimmer
 als einer, der neu eingetragen werden muss.
 
-**Die Aufnahmen selbst gehören nicht ins Repository.** Es ist öffentlich, und auf
-den Videos sind Mitglieder zu erkennen; eingecheckte Dateien bleiben auch nach
-dem Löschen in der Versionsgeschichte abrufbar. Sie kommen per SFTP nach
-`videos-privat/` auf den Webspace, wo sie außerhalb des öffentlichen Ordners
-liegen und nur `backend/stream.php` sie an angemeldete Mitglieder ausliefert.
-Gründe und Wege stehen in `videos-roh/LIESMICH.md`.
+**Die Aufnahmen liegen im Repository, und das ist öffentlich.** Sie sind damit für
+jeden abrufbar, der die Adresse kennt, und bleiben auch nach einem Löschen über
+den Commit-Hash erreichbar. Das ist eine bewusste Entscheidung; was dazugehört –
+Einwilligungen der gezeigten Personen und der Weg zurück – steht in
+`videos-roh/LIESMICH.md`. Auf der Website selbst bleiben die Videos geschützt:
+Dort liegen sie in `videos-privat/` außerhalb des öffentlichen Ordners, und nur
+`backend/stream.php` liefert sie nach geprüfter Anmeldung aus.
 
-Ein Git-Haken hält versehentliche Commits ab. Einmal je Arbeitsplatz:
+Ein Git-Haken hält `backend/config.php` und den Zwischenstand in `videos-privat/`
+vom Commit ab. Einmal je Arbeitsplatz:
 
 ```bash
 git config core.hooksPath .githooks
 ```
-
-Danach bricht `git commit` ab, wenn `backend/config.php`, Videos oder
-Rohaufnahmen im Commit stecken – auch nach `git add -f`.
 
 ## Trainerporträts
 

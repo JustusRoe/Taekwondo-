@@ -2,28 +2,39 @@
 #
 # Eine Datei je Zeile, von oben nach unten. Zeile 1 wird Nr. 1 im
 # Mitgliederbereich. Leere Zeilen und alles hinter # wird übersprungen.
-# Relative Pfade gelten ab diesem Ordner.
+# Relative Pfade gelten ab diesem Ordner – die Rohaufnahmen liegen im
+# Repository, deshalb zeigen die Zeilen nach ../assets/video/.
 #
 # Danach:
 #   werkzeuge/video-aufbereiten.sh --liste videos-roh/reihenfolge.txt \
-#       videos-privat hanbon-kyorugi
+#       assets/video hanbon-kyorugi
 #   php werkzeuge/videodaten-erzeugen.php
+#
+# Die Reihenfolge folgt der Dateinummer der Kamera. Die creation_time
+# taugt dafür nicht: Bei den klein geschriebenen .mov steht dort der
+# Zeitpunkt des Exports (Blöcke um 11:39, 11:50 und 12:02), nicht der
+# der Aufnahme. Bei den groß geschriebenen .MOV stimmt sie und steigt
+# mit der Dateinummer – deshalb ist die Nummer der richtige Maßstab.
+#
+# IMG_1258, IMG_1265 und IMG_1280 sind nachträglich beschnitten
+# (1338x752, 1624x914, 1646x926 statt 1920x1080). Sie zeigen deshalb
+# einen anderen Bildausschnitt als die übrigen.
+#
+# Noch offen: Die Techniknamen stehen in assets/js/videodaten.js als
+# "Einschrittkampf 1" bis "Einschrittkampf 13". Wer die Reihe kennt,
+# trägt dort die richtigen Bezeichnungen und Gürtelgrade ein; ein
+# weiterer Lauf von videodaten-erzeugen.php überschreibt sie nicht.
 
-# Stand: Diese sechs sind aufbereitet und stehen im Mitgliederbereich.
-# ACHTUNG: Eine dieser Aufnahmen ist die falsche – noch nicht geklärt,
-# welche. Vor dem nächsten Lauf durchsehen und die Zeile austauschen,
-# oder gezielt ersetzen mit
-#   werkzeuge/video-aufbereiten.sh --platz NR videos-privat hanbon-kyorugi DATEI
-IMG_1255.mov
-IMG_1256.mov
-IMG_1257.mov
-IMG_1258.mov
-IMG_1259.mov
-IMG_1260.mov
-
-# Ab hier fehlen die Aufnahmen noch. IMG_1261 und IMG_1262 kamen nie an,
-# IMG_1263 und IMG_1264 liegen unbearbeitet vor. Dateinamen eintragen,
-# sobald alle da sind – und dabei prüfen, welche Technik welche Nummer
-# ist. Insgesamt sollen es 13 werden.
-# IMG_1263.mov
-# IMG_1264.mov
+../assets/video/IMG_1255.mov
+../assets/video/IMG_1256.mov
+../assets/video/IMG_1257.MOV
+../assets/video/IMG_1258.mov
+../assets/video/IMG_1259.MOV
+../assets/video/IMG_1260.mov
+../assets/video/IMG_1263.mov
+../assets/video/IMG_1264.MOV
+../assets/video/IMG_1265.mov
+../assets/video/IMG_1272.mov
+../assets/video/IMG_1275.MOV
+../assets/video/IMG_1278.MOV
+../assets/video/IMG_1280.mov

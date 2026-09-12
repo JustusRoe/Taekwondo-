@@ -156,7 +156,7 @@ Pflegewerkzeuge, die auf dem Server nichts verloren haben.
 mitglieder.html  mitglieder-videothek.html  mitglieder-video.html
 assets/js/mitglieder.js
 assets/js/videodaten.js
-assets/video/*.mp4  und  *.webm       (die Vorschaubilder *.jpg dagegen schon)
+assets/video/*.mp4  *.webm  *.mov    (die Vorschaubilder *.jpg dagegen schon)
 ```
 
 Das ist die **nachgebaute Anmeldung zum Vorführen**. Sie läuft nur im Browser,
@@ -344,10 +344,12 @@ kein FTP mehr gebraucht.
 
 ## Videos in den Mitgliederbereich
 
-Es gibt zwei Wege, und beide führen nach `videos-privat/` auf dem Server –
-niemals ins Repository. Warum das so wichtig ist, steht in
-`videos-roh/LIESMICH.md`: Das Repository ist öffentlich, und auf den
-Aufnahmen sind Mitglieder zu erkennen.
+Es gibt zwei Wege, und beide führen nach `videos-privat/` auf dem Server.
+Dort liegt der Ordner außerhalb des öffentlichen Bereichs, und nur
+`backend/stream.php` reicht die Videos an angemeldete Mitglieder weiter –
+daran ändert sich nichts dadurch, dass die Rohaufnahmen im Repository
+liegen. Was dort öffentlich sichtbar ist und was dazugehört, steht in
+`videos-roh/LIESMICH.md`.
 
 **Der normale Weg – über den Mitgliederbereich.** Als Trainer anmelden,
 *Videos*, Datei auswählen, Titel und Platz in der Reihe eintragen. PHP legt
@@ -358,40 +360,45 @@ bequemste Weg; Grenze ist die Upload-Größe des Hostings (Schritt 2).
 kommen, lohnt das Aufbereiten auf dem eigenen Rechner: Handyvideos sind
 HEVC in 10 Bit, das spielen viele Browser nicht ab.
 
-1. Aufnahmen nach `videos-roh/` legen.
+1. Aufnahmen nach `assets/video/` legen.
 2. `videos-roh/reihenfolge.txt` ausfüllen – eine Datei je Zeile, in der
    Reihenfolge, in der sie im Mitgliederbereich stehen sollen.
 3. ```
    werkzeuge/video-aufbereiten.sh --liste videos-roh/reihenfolge.txt \
-       videos-privat hanbon-kyorugi
+       assets/video hanbon-kyorugi
    php werkzeuge/videodaten-erzeugen.php
    ```
-4. Den Inhalt von `videos-privat/` per SFTP nach `videos-privat/` auf dem
-   Webspace legen, die Vorschaubilder `*.jpg` zusätzlich nach
-   `www/assets/video/`.
+4. Die aufbereiteten `hanbon-kyorugi-*.mp4` und `*.webm` per SFTP nach
+   `videos-privat/` auf dem Webspace legen, die Vorschaubilder `*.jpg`
+   nach `www/assets/video/`. Die Rohaufnahmen (`IMG_*.mov`) bleiben auf
+   dem eigenen Rechner – der Server braucht sie nicht.
 5. Die Einträge im Mitgliederbereich unter *Videos* ergänzen – Titel,
    Gürtelgrad und Platz in der Reihe. Die Datei ist dann schon da.
 
 War ein einzelnes Video falsch, muss nicht alles neu laufen:
 
 ```
-werkzeuge/video-aufbereiten.sh --platz 4 videos-privat hanbon-kyorugi \
-    videos-roh/IMG_1299.mov
+werkzeuge/video-aufbereiten.sh --platz 4 assets/video hanbon-kyorugi \
+    assets/video/IMG_1299.mov
 ```
 
 Ersetzt nur Nr. 4. Danach wieder `php werkzeuge/videodaten-erzeugen.php`.
 
 ## Schutz gegen versehentliches Einchecken
 
-Im Repository liegt ein Git-Haken, der Serverzugänge und Aufnahmen von
-Mitgliedern vom Commit abhält. Er muss einmal je Arbeitsplatz
-eingeschaltet werden:
+Im Repository liegt ein Git-Haken, der die Serverzugänge und den
+Zwischenstand der Videoablage vom Commit abhält. Er muss einmal je
+Arbeitsplatz eingeschaltet werden:
 
 ```
 git config core.hooksPath .githooks
 ```
 
-Danach bricht `git commit` ab, sobald `backend/config.php`, etwas aus
-`videos-privat/`, eine Rohaufnahme oder ein Video-Vorschaubild im Commit
-steckt – auch nach `git add -f`. Wer es wirklich will, kommt mit
-`git commit --no-verify` durch.
+Danach bricht `git commit` ab, sobald `backend/config.php` oder etwas aus
+`videos-privat/` im Commit steckt – auch nach `git add -f`. Wer es
+wirklich will, kommt mit `git commit --no-verify` durch.
+
+`config.php` enthält die Datenbank-Zugangsdaten des Servers. Und
+`videos-privat/` ist nur der Zwischenstand für den SFTP-Upload: Die
+Videos der Website liegen in `assets/video/`, ein zweites Mal eingecheckt
+würde jede Datei doppelt im Repository stehen.

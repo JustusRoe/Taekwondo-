@@ -88,7 +88,7 @@ window.VIDEOTHEK = [
     "datum": "2026-09-12",
     "dauer": 11,
     "reihenfolge": 3,
-    "herkunft": "IMG_1257.mov",
+    "herkunft": "IMG_1257.MOV",
     "beschreibung": ""
   },
   {
@@ -112,7 +112,7 @@ window.VIDEOTHEK = [
     "datum": "2026-09-12",
     "dauer": 10,
     "reihenfolge": 5,
-    "herkunft": "IMG_1259.mov",
+    "herkunft": "IMG_1259.MOV",
     "beschreibung": ""
   },
   {
@@ -125,6 +125,90 @@ window.VIDEOTHEK = [
     "dauer": 10,
     "reihenfolge": 6,
     "herkunft": "IMG_1260.mov",
+    "beschreibung": ""
+  },
+  {
+    "slug": "hanbon-kyorugi-07",
+    "titel": "Einschrittkampf 7",
+    "bereich": "Hanbon Kyorugi",
+    "grad": "Alle Grade",
+    "trainer": "",
+    "datum": "2026-09-12",
+    "dauer": 8,
+    "reihenfolge": 7,
+    "herkunft": "IMG_1263.mov",
+    "beschreibung": ""
+  },
+  {
+    "slug": "hanbon-kyorugi-08",
+    "titel": "Einschrittkampf 8",
+    "bereich": "Hanbon Kyorugi",
+    "grad": "Alle Grade",
+    "trainer": "",
+    "datum": "2026-09-12",
+    "dauer": 14,
+    "reihenfolge": 8,
+    "herkunft": "IMG_1264.MOV",
+    "beschreibung": ""
+  },
+  {
+    "slug": "hanbon-kyorugi-09",
+    "titel": "Einschrittkampf 9",
+    "bereich": "Hanbon Kyorugi",
+    "grad": "Alle Grade",
+    "trainer": "",
+    "datum": "2026-09-12",
+    "dauer": 11,
+    "reihenfolge": 9,
+    "herkunft": "IMG_1265.mov",
+    "beschreibung": ""
+  },
+  {
+    "slug": "hanbon-kyorugi-10",
+    "titel": "Einschrittkampf 10",
+    "bereich": "Hanbon Kyorugi",
+    "grad": "Alle Grade",
+    "trainer": "",
+    "datum": "2026-09-12",
+    "dauer": 10,
+    "reihenfolge": 10,
+    "herkunft": "IMG_1272.mov",
+    "beschreibung": ""
+  },
+  {
+    "slug": "hanbon-kyorugi-11",
+    "titel": "Einschrittkampf 11",
+    "bereich": "Hanbon Kyorugi",
+    "grad": "Alle Grade",
+    "trainer": "",
+    "datum": "2026-09-12",
+    "dauer": 9,
+    "reihenfolge": 11,
+    "herkunft": "IMG_1275.MOV",
+    "beschreibung": ""
+  },
+  {
+    "slug": "hanbon-kyorugi-12",
+    "titel": "Einschrittkampf 12",
+    "bereich": "Hanbon Kyorugi",
+    "grad": "Alle Grade",
+    "trainer": "",
+    "datum": "2026-09-12",
+    "dauer": 13,
+    "reihenfolge": 12,
+    "herkunft": "IMG_1278.MOV",
+    "beschreibung": ""
+  },
+  {
+    "slug": "hanbon-kyorugi-13",
+    "titel": "Einschrittkampf 13",
+    "bereich": "Hanbon Kyorugi",
+    "grad": "Alle Grade",
+    "trainer": "",
+    "datum": "2026-09-12",
+    "dauer": 8,
+    "reihenfolge": 13,
+    "herkunft": "IMG_1280.mov",
     "beschreibung": ""
   },
 /* REIHE:ENDE */

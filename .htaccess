@@ -59,10 +59,12 @@ RedirectMatch 404 ^/assets/js/(mitglieder|videodaten)\.js$
 
 # Die Videodateien gehören außerhalb des öffentlichen Ordners und
 # werden von backend/stream.php erst nach geprüfter Anmeldung
-# ausgeliefert. Was hier liegt, sind Platzhalter aus der
-# Entwicklung. Die Vorschaubilder (*.jpg) bleiben erreichbar –
-# sie verraten nichts und werden von der Videothek gebraucht.
-RedirectMatch 404 ^/assets/video/.*\.(mp4|webm)$
+# ausgeliefert. Hier liegen die Platzhalter aus der Entwicklung und
+# die Rohaufnahmen (IMG_*.mov), aus denen die Reihen entstehen –
+# beide hat der Server nicht auszuliefern; die Rohaufnahmen sind
+# dazu je rund 20 MB. Die Vorschaubilder (*.jpg) bleiben erreichbar,
+# die Videothek braucht sie.
+RedirectMatch 404 ^/assets/video/.*\.(mp4|webm|mov|MOV)$
 
 # ---------------------------------------------------------
 # 3. Kleinigkeiten für Sicherheit und Anzeige

@@ -19,9 +19,9 @@ test/daten/
 test/videos-privat/
 test/daten/postausgang/
 
-# Vorschaubilder der echten Trainingsvideos. Die Videos selbst liegen in
-# videos-privat/ und damit ohnehin ausserhalb des Repositorys; die Bilder
-# zeigen dieselben Personen und gehoeren genauso wenig hinein.
-assets/video/hanbon-kyorugi-[0-9][0-9].jpg
-assets/video/hanbon-kyorugi-[0-9][0-9].mp4
-assets/video/hanbon-kyorugi-[0-9][0-9].webm
+# Die aufbereiteten Trainingsvideos und ihre Vorschaubilder waren hier
+# ausgeschlossen, weil darauf Mitglieder zu erkennen sind. Seit die
+# Rohaufnahmen bewusst im Repository liegen (Commit a9dcd7c) schuetzt der
+# Ausschluss nichts mehr – er wuerde nur die Videothek der Vorschau auf
+# GitHub Pages leer laufen lassen, denn der Entwurfsbereich laedt seine
+# Dateien aus assets/video/. Deshalb sind sie jetzt eingecheckt.
