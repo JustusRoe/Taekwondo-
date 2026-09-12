@@ -215,6 +215,34 @@ Beim ersten Lauf lädt das Freistellungsmodell (176 MB) selbst herunter. Die
 Website braucht davon nichts – sie bleibt reines HTML, CSS und JavaScript ohne
 Bauschritt. Die unbearbeiteten Fassungen stehen in der Git-Historie.
 
+### Lücken zwischen Arm und Rumpf
+
+Wer den Arm etwas vom Körper weg hält, hat dort einen Spalt, in dem die
+Mattenwand zu sehen ist. Alle drei getesteten Modelle (`u2net`,
+`u2net_human_seg`, `isnet-general-use`) zählen so einen Spalt zur Silhouette –
+sie liefern einen Umriss, und ein schmaler Zwischenraum fällt darin weg. Der
+Spalt bleibt deshalb scharf und körnig, während ringsum alles ruhig ist, und
+liest sich dann als Schmierer auf dem Arm statt als Wand dahinter. Bei Michael,
+Maxim und Anna-Karoline war das so.
+
+Automatisch ist die Stelle nicht sauber zu finden: Ein Versuch über Farbe,
+Zusammenhang und Form erwischte zuverlässig auch den KWON-Aufdruck und
+Schattenfalten im Gewebe. Deshalb wird sie als Rechteck angegeben:
+
+```bash
+python3 werkzeuge/hintergrund-weichzeichnen.py assets/img/trainer-michael.jpg \
+    --luecke 190,630,62,320
+```
+
+Darin wird geglättet, was grau ist – weder helles Gewebe noch farbig noch
+schwarz. Die untere Helligkeitsgrenze hält schwarze Gürtel und dunkle Haare
+heraus. Der Spalt behält Form und Helligkeit, es verschwindet nur das Korn;
+außerhalb des Rechtecks bleibt alles unangetastet. Mehrere `--luecke` sind
+möglich, aber nur ein Bild je Aufruf.
+
+Die benutzten Rechtecke: Anna-Karoline `140,660,62,190` und `138,860,46,140`,
+Maxim `140,690,80,310`, Michael `190,630,62,320`.
+
 ## Alles auf einmal starten
 
 Für den Mitgliederbereich mit Datenbank genügt ein Befehl. Das Skript richtet die
@@ -310,11 +338,24 @@ Videoabruf über `stream.php` lassen sich nur auf einem PHP-Hoster oder lokal ü
 `./test/testmain.sh` zeigen.
 
 Seit die Seite auf LIVE steht, zeigt der Menüpunkt „Mitglieder" auf
-`backend/login.php` – auf Pages führt er damit ins Leere. Wer den Mitgliederbereich
-dort wieder vorführen will, schaltet mit `php werkzeuge/livegang.php --entwurf`
-zurück; dann greift der Menüpunkt wieder auf die nachgebaute Anmeldung
-(`testuser` / `test1234`). Für den Livegang vorher `--live` nicht vergessen, sonst
-trägt jede Seite ein `noindex` und `robots.txt` sperrt alle Suchmaschinen aus.
+`backend/login.php`. Auf GitHub Pages **lädt ein Klick darauf die Datei
+herunter**, statt eine Anmeldeseite zu zeigen: Pages liefert `.php` mit dem
+Inhaltstyp `application/x-httpd-php` aus, und der Browser weiß damit nichts
+anzufangen außer zu speichern. Auf einem Hoster mit PHP – also auf der echten
+Website – gibt Apache dieselbe Datei an den PHP-Interpreter, und heraus kommt
+die Anmeldeseite. Das Verhalten verschwindet also mit dem Livegang von selbst,
+es ist kein Fehler in der Seite.
+
+Zu holen ist dabei nichts: In den PHP-Dateien stehen keine Zugangsdaten. Die
+einzige Datei mit Geheimnissen ist `backend/config.php`, und die liegt nicht im
+Repository, sondern wird direkt auf dem Server angelegt.
+
+Wer den Mitgliederbereich auf Pages trotzdem vorführen will, schaltet mit
+`php werkzeuge/livegang.php --entwurf` zurück; dann greift der Menüpunkt wieder
+auf die nachgebaute Anmeldung (`testuser` / `test1234`). Für den Livegang
+vorher `--live` nicht vergessen, sonst trägt jede Seite ein `noindex` und
+`robots.txt` sperrt alle Suchmaschinen aus. `werkzeuge/paket.sh` weigert sich in
+diesem Fall, ein Paket zu bauen – das ist die Sicherung dagegen.
 
 ## Gestaltung
 
