@@ -341,3 +341,57 @@ JavaScript.
 
 Termine und Zugänge dagegen laufen über den Mitgliederbereich – dafür wird
 kein FTP mehr gebraucht.
+
+## Videos in den Mitgliederbereich
+
+Es gibt zwei Wege, und beide führen nach `videos-privat/` auf dem Server –
+niemals ins Repository. Warum das so wichtig ist, steht in
+`videos-roh/LIESMICH.md`: Das Repository ist öffentlich, und auf den
+Aufnahmen sind Mitglieder zu erkennen.
+
+**Der normale Weg – über den Mitgliederbereich.** Als Trainer anmelden,
+*Videos*, Datei auswählen, Titel und Platz in der Reihe eintragen. PHP legt
+die Datei selbst in `videos-privat/` ab. Für einzelne Videos ist das der
+bequemste Weg; Grenze ist die Upload-Größe des Hostings (Schritt 2).
+
+**Der Weg für eine ganze Reihe.** Wenn zehn oder mehr Aufnahmen vom Handy
+kommen, lohnt das Aufbereiten auf dem eigenen Rechner: Handyvideos sind
+HEVC in 10 Bit, das spielen viele Browser nicht ab.
+
+1. Aufnahmen nach `videos-roh/` legen.
+2. `videos-roh/reihenfolge.txt` ausfüllen – eine Datei je Zeile, in der
+   Reihenfolge, in der sie im Mitgliederbereich stehen sollen.
+3. ```
+   werkzeuge/video-aufbereiten.sh --liste videos-roh/reihenfolge.txt \
+       videos-privat hanbon-kyorugi
+   php werkzeuge/videodaten-erzeugen.php
+   ```
+4. Den Inhalt von `videos-privat/` per SFTP nach `videos-privat/` auf dem
+   Webspace legen, die Vorschaubilder `*.jpg` zusätzlich nach
+   `www/assets/video/`.
+5. Die Einträge im Mitgliederbereich unter *Videos* ergänzen – Titel,
+   Gürtelgrad und Platz in der Reihe. Die Datei ist dann schon da.
+
+War ein einzelnes Video falsch, muss nicht alles neu laufen:
+
+```
+werkzeuge/video-aufbereiten.sh --platz 4 videos-privat hanbon-kyorugi \
+    videos-roh/IMG_1299.mov
+```
+
+Ersetzt nur Nr. 4. Danach wieder `php werkzeuge/videodaten-erzeugen.php`.
+
+## Schutz gegen versehentliches Einchecken
+
+Im Repository liegt ein Git-Haken, der Serverzugänge und Aufnahmen von
+Mitgliedern vom Commit abhält. Er muss einmal je Arbeitsplatz
+eingeschaltet werden:
+
+```
+git config core.hooksPath .githooks
+```
+
+Danach bricht `git commit` ab, sobald `backend/config.php`, etwas aus
+`videos-privat/`, eine Rohaufnahme oder ein Video-Vorschaubild im Commit
+steckt – auch nach `git add -f`. Wer es wirklich will, kommt mit
+`git commit --no-verify` durch.

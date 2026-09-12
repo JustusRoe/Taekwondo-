@@ -64,6 +64,7 @@ window.VIDEOTHEK = [
     "datum": "2026-09-12",
     "dauer": 10,
     "reihenfolge": 1,
+    "herkunft": "IMG_1255.mov",
     "beschreibung": ""
   },
   {
@@ -75,6 +76,7 @@ window.VIDEOTHEK = [
     "datum": "2026-09-12",
     "dauer": 9,
     "reihenfolge": 2,
+    "herkunft": "IMG_1256.mov",
     "beschreibung": ""
   },
   {
@@ -86,6 +88,7 @@ window.VIDEOTHEK = [
     "datum": "2026-09-12",
     "dauer": 11,
     "reihenfolge": 3,
+    "herkunft": "IMG_1257.mov",
     "beschreibung": ""
   },
   {
@@ -97,6 +100,7 @@ window.VIDEOTHEK = [
     "datum": "2026-09-12",
     "dauer": 11,
     "reihenfolge": 4,
+    "herkunft": "IMG_1258.mov",
     "beschreibung": ""
   },
   {
@@ -108,6 +112,7 @@ window.VIDEOTHEK = [
     "datum": "2026-09-12",
     "dauer": 10,
     "reihenfolge": 5,
+    "herkunft": "IMG_1259.mov",
     "beschreibung": ""
   },
   {
@@ -119,6 +124,7 @@ window.VIDEOTHEK = [
     "datum": "2026-09-12",
     "dauer": 10,
     "reihenfolge": 6,
+    "herkunft": "IMG_1260.mov",
     "beschreibung": ""
   },
 /* REIHE:ENDE */

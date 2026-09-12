@@ -58,6 +58,7 @@ nachgezogen werden – dafür kommt die Seite ohne Build-Schritt aus.
 ├── LIVEGANG.md                  Anleitung: von IONOS bis zur erreichbaren Seite
 ├── .htaccess                    Servereinstellungen (HTTPS, Zwischenspeicher)
 ├── werkzeuge/                   Hilfsskripte, nicht Teil der Website
+├── videos-roh/                  Ablage der Rohaufnahmen (Inhalt nicht im Repository)
 ├── downloads/                   PDF-Dokumente des Download-Bereichs
 └── backend/                     Serverfassung des Mitgliederbereichs (PHP + MySQL)
 ```
@@ -126,6 +127,48 @@ In `assets/video/` liegen sechs kurze, selbst erzeugte Platzhalterclips mit sich
 Abschnitten – so lässt sich das Springen und Spulen ausprobieren, ohne echte Aufnahmen zu
 veröffentlichen. Sie liegen als MP4 (H.264, das Format für den Echtbetrieb) und
 zusätzlich als WebM vor, damit sie auch in Browsern ohne H.264 abspielen.
+
+### Echte Aufnahmen aufbereiten
+
+Handyvideos sind HEVC in 10 Bit mit HLG-Farben – das spielen viele Browser nicht
+ab, und wo sie es tun, wirkt das Bild blass. `werkzeuge/video-aufbereiten.sh`
+macht daraus H.264 in 8 Bit mit richtigen Farben, dazu eine WebM-Fassung und ein
+Vorschaubild. SDR-Material erkennt das Skript und lässt die Farbumrechnung dann
+weg.
+
+```bash
+# Rohaufnahmen nach videos-roh/ legen, reihenfolge.txt ausfüllen, dann:
+werkzeuge/video-aufbereiten.sh --liste videos-roh/reihenfolge.txt \
+    videos-privat hanbon-kyorugi
+php werkzeuge/videodaten-erzeugen.php
+```
+
+Die Reihenfolge steht in `videos-roh/reihenfolge.txt`, eine Datei je Zeile – nicht
+in den Dateinamen. Kameranamen wie `IMG_1263` sagen nur, wann aufgenommen wurde,
+nicht welche Technik zu sehen ist. War ein einzelnes Video falsch, ersetzt
+`--platz 4` genau diese Nummer und lässt die übrigen unberührt.
+
+Dabei hält das Skript in `videos-privat/<kürzel>-herkunft.txt` fest, aus welcher
+Rohaufnahme jede Nummer entstanden ist. Steckt hinter einer Nummer später eine
+andere Aufnahme, setzt `videodaten-erzeugen.php` den von Hand eingetragenen
+Techniknamen zurück und meldet das – ein Name am falschen Video wäre schlimmer
+als einer, der neu eingetragen werden muss.
+
+**Die Aufnahmen selbst gehören nicht ins Repository.** Es ist öffentlich, und auf
+den Videos sind Mitglieder zu erkennen; eingecheckte Dateien bleiben auch nach
+dem Löschen in der Versionsgeschichte abrufbar. Sie kommen per SFTP nach
+`videos-privat/` auf den Webspace, wo sie außerhalb des öffentlichen Ordners
+liegen und nur `backend/stream.php` sie an angemeldete Mitglieder ausliefert.
+Gründe und Wege stehen in `videos-roh/LIESMICH.md`.
+
+Ein Git-Haken hält versehentliche Commits ab. Einmal je Arbeitsplatz:
+
+```bash
+git config core.hooksPath .githooks
+```
+
+Danach bricht `git commit` ab, wenn `backend/config.php`, Videos oder
+Rohaufnahmen im Commit stecken – auch nach `git add -f`.
 
 ## Trainerporträts
 

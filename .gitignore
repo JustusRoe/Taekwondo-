@@ -4,6 +4,12 @@ backend/config.php
 # Private Videoablage (liegt im Echtbetrieb außerhalb des Web-Ordners)
 videos-privat/
 
+# Rohaufnahmen vom Handy. Der Ordner selbst gehört mit LIESMICH.md und
+# reihenfolge.txt ins Repository, die Aufnahmen darin nicht.
+videos-roh/*
+!videos-roh/LIESMICH.md
+!videos-roh/reihenfolge.txt
+
 # Systemdateien
 .DS_Store
 Thumbs.db
@@ -17,3 +23,5 @@ test/daten/postausgang/
 # videos-privat/ und damit ohnehin ausserhalb des Repositorys; die Bilder
 # zeigen dieselben Personen und gehoeren genauso wenig hinein.
 assets/video/hanbon-kyorugi-[0-9][0-9].jpg
+assets/video/hanbon-kyorugi-[0-9][0-9].mp4
+assets/video/hanbon-kyorugi-[0-9][0-9].webm

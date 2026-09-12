@@ -1,0 +1,45 @@
+#!/usr/bin/env bash
+#
+# Verhindert, dass Dateien ins oeffentliche Repository wandern, die dort
+# nicht hingehoeren: Serverzugaenge und Aufnahmen von Mitgliedern.
+#
+# Einschalten (einmal je Arbeitsplatz):
+#
+#   git config core.hooksPath .githooks
+#
+# Der Haken greift bewusst auch bei "git add -f": wer eine dieser Dateien
+# wirklich einchecken will, kommt mit "git commit --no-verify" durch, muss
+# es aber ausdruecklich tun.
+set -euo pipefail
+
+# Nur neu hinzugefuegte oder geaenderte Dateien ansehen.
+DATEIEN="$(git diff --cached --name-only --diff-filter=ACMR)"
+[ -n "$DATEIEN" ] || exit 0
+
+MUSTER='^(backend/config\.php$|videos-privat/|videos-roh/.*\.(mov|mp4|m4v|webm|avi|mkv|MOV|MP4)$|assets/video/hanbon-kyorugi-[0-9][0-9]\.(mp4|webm|jpg)$)'
+
+TREFFER="$(printf '%s\n' "$DATEIEN" | grep -E "$MUSTER" || true)"
+[ -n "$TREFFER" ] || exit 0
+
+echo "" >&2
+echo "Commit gestoppt. Diese Dateien gehoeren nicht ins Repository:" >&2
+echo "" >&2
+printf '  %s\n' $TREFFER >&2
+cat >&2 <<'TEXT'
+
+Das Repository ist oeffentlich. Eingecheckte Dateien kann jeder
+herunterladen, auch spaeter noch aus der Versionsgeschichte.
+
+  backend/config.php     enthaelt Datenbank-Zugangsdaten.
+  videos-privat/         Trainingsvideos, darauf sind Mitglieder zu erkennen.
+  videos-roh/*.mov       dieselben Aufnahmen, unbearbeitet.
+  assets/video/hanbon-*  Vorschaubilder dieser Aufnahmen.
+
+Videos kommen per SFTP nach videos-privat/ auf den Webspace, nicht ins
+Repository – siehe videos-roh/LIESMICH.md und LIVEGANG.md.
+
+Aus dem Index nehmen:  git restore --staged <Datei>
+Trotzdem einchecken:   git commit --no-verify
+TEXT
+echo "" >&2
+exit 1

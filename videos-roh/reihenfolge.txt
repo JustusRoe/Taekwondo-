@@ -1,0 +1,29 @@
+# Reihenfolge der Einschrittkampf-Videos (Hanbon Kyorugi)
+#
+# Eine Datei je Zeile, von oben nach unten. Zeile 1 wird Nr. 1 im
+# Mitgliederbereich. Leere Zeilen und alles hinter # wird übersprungen.
+# Relative Pfade gelten ab diesem Ordner.
+#
+# Danach:
+#   werkzeuge/video-aufbereiten.sh --liste videos-roh/reihenfolge.txt \
+#       videos-privat hanbon-kyorugi
+#   php werkzeuge/videodaten-erzeugen.php
+
+# Stand: Diese sechs sind aufbereitet und stehen im Mitgliederbereich.
+# ACHTUNG: Eine dieser Aufnahmen ist die falsche – noch nicht geklärt,
+# welche. Vor dem nächsten Lauf durchsehen und die Zeile austauschen,
+# oder gezielt ersetzen mit
+#   werkzeuge/video-aufbereiten.sh --platz NR videos-privat hanbon-kyorugi DATEI
+IMG_1255.mov
+IMG_1256.mov
+IMG_1257.mov
+IMG_1258.mov
+IMG_1259.mov
+IMG_1260.mov
+
+# Ab hier fehlen die Aufnahmen noch. IMG_1261 und IMG_1262 kamen nie an,
+# IMG_1263 und IMG_1264 liegen unbearbeitet vor. Dateinamen eintragen,
+# sobald alle da sind – und dabei prüfen, welche Technik welche Nummer
+# ist. Insgesamt sollen es 13 werden.
+# IMG_1263.mov
+# IMG_1264.mov
