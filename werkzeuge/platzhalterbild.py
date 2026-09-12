@@ -31,7 +31,7 @@ ROT = (193, 25, 31)
 
 # Datei, Breite, Höhe, Bildunterschrift
 BILDER = [
-    ('hero.jpg',               1700,  947, 'Training in der Halle am Steines'),
+    ('galerie-training.jpg',   1600,  800, 'Training in der Halle'),
     ('kinder-training.jpg',    1200,  819, 'Bambini-Training'),
     ('formenlauf-poomsae.jpg', 1200,  798, 'Formenlauf (Poomsae)'),
     ('wettkampftraining.jpg',  1200,  900, 'Selbstverteidigung'),

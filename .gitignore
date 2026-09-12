@@ -12,3 +12,8 @@ Thumbs.db
 test/daten/
 test/videos-privat/
 test/daten/postausgang/
+
+# Vorschaubilder der echten Trainingsvideos. Die Videos selbst liegen in
+# videos-privat/ und damit ohnehin ausserhalb des Repositorys; die Bilder
+# zeigen dieselben Personen und gehoeren genauso wenig hinein.
+assets/video/hanbon-kyorugi-[0-9][0-9].jpg

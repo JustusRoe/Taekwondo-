@@ -67,8 +67,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             try {
                 db()->prepare(
                     'INSERT INTO videos (slug, titel, bereich, grad, trainer, beschreibung,
-                                         dateiname, posterdatei, dauer, veroeffentlicht_am)
-                     VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)'
+                                         dateiname, posterdatei, dauer, veroeffentlicht_am,
+                                         reihenfolge)
+                     VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)'
                 )->execute([
                     $slug,
                     trim((string) $_POST['titel']),
@@ -80,6 +81,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     $posterDatei,
                     max(0, (int) $_POST['dauer']),           // aus der Datei gelesen
                     (string) ($_POST['datum'] ?: date('Y-m-d')),
+                    max(0, min(999, (int) ($_POST['reihenfolge'] ?? 0))),
                 ]);
 
                 // Erst nach dem erfolgreichen Eintrag umbenennen: Schlägt das
@@ -98,7 +100,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     }
 }
 
-$videos = db()->query('SELECT * FROM videos ORDER BY veroeffentlicht_am DESC, id DESC')->fetchAll();
+$videos = db()->query(
+    'SELECT * FROM videos
+      ORDER BY CASE WHEN reihenfolge = 0 THEN 1 ELSE 0 END,
+               reihenfolge, veroeffentlicht_am DESC, id DESC'
+)->fetchAll();
 
 kopf('Verwaltung', $mitglied);
 ?>
@@ -175,6 +181,13 @@ kopf('Verwaltung', $mitglied);
             <p class="field">
               <label for="datum">Veröffentlicht am</label>
               <input type="date" id="datum" name="datum" value="<?= date('Y-m-d') ?>">
+            </p>
+            <p class="field">
+              <label for="reihenfolge">Platz in der Reihe <span class="optional">(optional)</span></label>
+              <input type="number" id="reihenfolge" name="reihenfolge" min="0" max="999" value="0">
+              <span class="feld-hinweis">Für Techniken, die in einer festen Nummer gelernt
+                werden – etwa 1 bis 13 beim Einschrittkampf. Die Videothek zeigt sie dann in
+                dieser Reihenfolge. 0 heißt: gehört zu keiner Reihe, dann zählt das Datum.</span>
             </p>
             <p class="field" id="dauerFeld" hidden>
               <label for="dauerManuell">Länge in Sekunden</label>

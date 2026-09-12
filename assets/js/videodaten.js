@@ -7,7 +7,9 @@
    einer Stelle. In der späteren Fassung liefert die Datenbank
    dieselben Felder (siehe backend/schema.sql).
 
-   Alle Videos sind Platzhalter, bis eigene Aufnahmen vorliegen.
+   Die Poomsae-Videos sind noch Platzhalter. Der Einschrittkampf
+   steht zwischen den Markierungen REIHE:ANFANG und REIHE:ENDE und
+   wird von werkzeuge/videodaten-erzeugen.php geschrieben.
    ========================================================= */
 window.VIDEOTHEK = [
   {
@@ -50,24 +52,74 @@ window.VIDEOTHEK = [
     "dauer": 58,
     "beschreibung": "Die dritte Form mit doppelten Handtechniken und schnellerem Wechsel der Richtung. Der Ablauf wird zunächst langsam gezeigt, dann im Prüfungstempo."
   },
+  /* REIHE:ANFANG – Einschrittkampf, geschrieben von
+     werkzeuge/videodaten-erzeugen.php, nicht von Hand ändern.
+     Titel und Beschreibungen bleiben bei einem Lauf erhalten. */
   {
-    "slug": "hanbon-kyorugi-1",
-    "titel": "Hanbon Kyorugi 1 – Ablauf und Konter",
+    "slug": "hanbon-kyorugi-01",
+    "titel": "Einschrittkampf 1",
     "bereich": "Hanbon Kyorugi",
-    "grad": "ab 8. Kup",
-    "trainer": "Michael Buchhold",
-    "datum": "2026-07-04",
-    "dauer": 44,
-    "beschreibung": "Einschrittkampf mit fester Rollenverteilung. Wichtig ist die Distanz vor dem Angriff: einen halben Schritt zu nah, und der Block kommt zu spät."
+    "grad": "Alle Grade",
+    "trainer": "",
+    "datum": "2026-09-12",
+    "dauer": 10,
+    "reihenfolge": 1,
+    "beschreibung": ""
   },
   {
-    "slug": "hanbon-kyorugi-2",
-    "titel": "Hanbon Kyorugi 2 – Ausweichen",
+    "slug": "hanbon-kyorugi-02",
+    "titel": "Einschrittkampf 2",
     "bereich": "Hanbon Kyorugi",
-    "grad": "ab 6. Kup",
-    "trainer": "Michael Buchhold",
-    "datum": "2026-06-27",
-    "dauer": 42,
-    "beschreibung": "Zweite Form des Einschrittkampfs: statt zu blocken, wird ausgewichen. Der Konter kommt aus der Drehung – langsam üben, bis der Stand sicher steht."
-  }
+    "grad": "Alle Grade",
+    "trainer": "",
+    "datum": "2026-09-12",
+    "dauer": 9,
+    "reihenfolge": 2,
+    "beschreibung": ""
+  },
+  {
+    "slug": "hanbon-kyorugi-03",
+    "titel": "Einschrittkampf 3",
+    "bereich": "Hanbon Kyorugi",
+    "grad": "Alle Grade",
+    "trainer": "",
+    "datum": "2026-09-12",
+    "dauer": 11,
+    "reihenfolge": 3,
+    "beschreibung": ""
+  },
+  {
+    "slug": "hanbon-kyorugi-04",
+    "titel": "Einschrittkampf 4",
+    "bereich": "Hanbon Kyorugi",
+    "grad": "Alle Grade",
+    "trainer": "",
+    "datum": "2026-09-12",
+    "dauer": 11,
+    "reihenfolge": 4,
+    "beschreibung": ""
+  },
+  {
+    "slug": "hanbon-kyorugi-05",
+    "titel": "Einschrittkampf 5",
+    "bereich": "Hanbon Kyorugi",
+    "grad": "Alle Grade",
+    "trainer": "",
+    "datum": "2026-09-12",
+    "dauer": 10,
+    "reihenfolge": 5,
+    "beschreibung": ""
+  },
+  {
+    "slug": "hanbon-kyorugi-06",
+    "titel": "Einschrittkampf 6",
+    "bereich": "Hanbon Kyorugi",
+    "grad": "Alle Grade",
+    "trainer": "",
+    "datum": "2026-09-12",
+    "dauer": 10,
+    "reihenfolge": 6,
+    "beschreibung": ""
+  },
+/* REIHE:ENDE */
 ];

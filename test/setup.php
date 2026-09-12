@@ -77,15 +77,31 @@ foreach ([__DIR__ . '/daten', __DIR__ . '/videos-privat'] as $ordner) {
     }
 }
 
-/* ---------- 2. Videodateien in die private Ablage ---------- */
-$quelle = WURZEL . '/assets/video';
-$ziel   = __DIR__ . '/videos-privat';
+/* ---------- 2. Videodateien in die private Ablage ----------
+   Zwei Quellen: die Platzhalterclips aus assets/video und, falls
+   vorhanden, die echten Aufnahmen aus videos-privat im Projektordner.
+   Letztere liegen nicht im Repository – es sind Aufnahmen von
+   Mitgliedern, die nicht oeffentlich gehoeren. Wer sie hat, bekommt
+   damit dieselbe Videothek wie im Betrieb. */
+$ziel = __DIR__ . '/videos-privat';
 $kopiert = 0;
-foreach (glob($quelle . '/*.{mp4,webm}', GLOB_BRACE) ?: [] as $datei) {
-    $nach = $ziel . '/' . basename($datei);
-    if (!is_file($nach) || filesize($nach) !== filesize($datei)) {
-        copy($datei, $nach);
-        $kopiert++;
+foreach ([WURZEL . '/assets/video', WURZEL . '/videos-privat'] as $quelle) {
+    foreach (glob($quelle . '/*.{mp4,webm}', GLOB_BRACE) ?: [] as $datei) {
+        $nach = $ziel . '/' . basename($datei);
+        if (!is_file($nach) || filesize($nach) !== filesize($datei)) {
+            copy($datei, $nach);
+            $kopiert++;
+        }
+    }
+}
+
+/* Die Vorschaubilder liegen im oeffentlichen Ordner – von dort holt sie
+   die Videothek (poster_url). Die zu den echten Aufnahmen sind in
+   .gitignore ausgenommen, damit sie nicht im Repository landen. */
+foreach (glob(WURZEL . '/videos-privat/*.jpg') ?: [] as $bild) {
+    $nach = WURZEL . '/assets/video/' . basename($bild);
+    if (!is_file($nach) || filesize($nach) !== filesize($bild)) {
+        copy($bild, $nach);
     }
 }
 printf("  Videoablage      %d Dateien (%d neu kopiert)\n", count(glob($ziel . '/*') ?: []), $kopiert);
@@ -142,8 +158,14 @@ $pdo->exec('CREATE TABLE IF NOT EXISTS videos (
     posterdatei TEXT,
     dauer INTEGER NOT NULL DEFAULT 0,
     veroeffentlicht_am TEXT NOT NULL,
-    sichtbar INTEGER NOT NULL DEFAULT 1
+    sichtbar INTEGER NOT NULL DEFAULT 1,
+    reihenfolge INTEGER NOT NULL DEFAULT 0
 )');
+try {
+    $pdo->exec('ALTER TABLE videos ADD COLUMN reihenfolge INTEGER NOT NULL DEFAULT 0');
+} catch (PDOException $e) {
+    // Spalte ist bereits vorhanden
+}
 $pdo->exec('CREATE TABLE IF NOT EXISTS trainingstermine (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
     datum TEXT NOT NULL,
@@ -214,12 +236,18 @@ printf("  Beispielkonten   %d Zugänge (%d Trainer, %d stillgelegt, %d mit Start
     count(array_filter(DEMO, fn ($k) => $k[4] === 1)));
 
 /* ---------- 5. Videos aus assets/js/videodaten.js ---------- */
-$js = file_get_contents(WURZEL . '/assets/js/videodaten.js');
+$js = (string) file_get_contents(WURZEL . '/assets/js/videodaten.js');
 $von = strpos($js, '[');
 $bis = strrpos($js, ']');
-$daten = ($von !== false && $bis !== false)
-    ? json_decode(substr($js, $von, $bis - $von + 1), true)
-    : null;
+$daten = null;
+if ($von !== false && $bis !== false) {
+    // Die Markierungen der Videoreihe sind Kommentare – json_decode
+    // scheitert daran, deshalb vorher heraus.
+    $roh = substr($js, $von, $bis - $von + 1);
+    $roh = preg_replace('#/\*.*?\*/#s', '', $roh) ?? $roh;
+    $roh = preg_replace('/,(\s*])/', '$1', $roh) ?? $roh;
+    $daten = json_decode($roh, true);
+}
 
 if (!is_array($daten)) {
     exit("FEHLER: assets/js/videodaten.js konnte nicht gelesen werden.\n");
@@ -229,8 +257,8 @@ $pdo->exec('DELETE FROM videos');
 
 $video = $pdo->prepare(
     'INSERT INTO videos (slug, titel, bereich, grad, trainer, beschreibung,
-                         dateiname, posterdatei, dauer, veroeffentlicht_am)
-     VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)'
+                         dateiname, posterdatei, dauer, veroeffentlicht_am, reihenfolge)
+     VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)'
 );
 foreach ($daten as $d) {
     // Der Testbrowser spielt notfalls WebM ab; sonst MP4 wie im Echtbetrieb.
@@ -241,6 +269,7 @@ foreach ($daten as $d) {
     $video->execute([
         $d['slug'], $d['titel'], $d['bereich'], $d['grad'], $d['trainer'],
         $d['beschreibung'], $datei, $d['slug'] . '.jpg', $d['dauer'], $d['datum'],
+        $d['reihenfolge'] ?? 0,
     ]);
 }
 printf("  Videothek        %d Videos\n", count($daten));

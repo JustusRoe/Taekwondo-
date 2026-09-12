@@ -20,12 +20,29 @@ if (!$video) {
     exit;
 }
 
-$stmt = db()->prepare(
-    'SELECT * FROM videos WHERE sichtbar = 1 AND id <> ?
-      ORDER BY veroeffentlicht_am DESC LIMIT 3'
-);
-$stmt->execute([$video['id']]);
-$weitere = $stmt->fetchAll();
+/* Gehört das Video zu einer Reihe, sind die naechsten Teile die
+   nuetzlichste Empfehlung: Nach dem ersten Einschritt will man den
+   zweiten, nicht das neueste Video der Videothek. Nur wenn es keine
+   naechsten gibt, wird auf die neuesten zurueckgefallen. */
+$weitere = [];
+if ((int) $video['reihenfolge'] > 0) {
+    $stmt = db()->prepare(
+        'SELECT * FROM videos
+          WHERE sichtbar = 1 AND bereich = ? AND reihenfolge > ?
+          ORDER BY reihenfolge LIMIT 3'
+    );
+    $stmt->execute([$video['bereich'], (int) $video['reihenfolge']]);
+    $weitere = $stmt->fetchAll();
+}
+
+if (!$weitere) {
+    $stmt = db()->prepare(
+        'SELECT * FROM videos WHERE sichtbar = 1 AND id <> ?
+          ORDER BY veroeffentlicht_am DESC LIMIT 3'
+    );
+    $stmt->execute([$video['id']]);
+    $weitere = $stmt->fetchAll();
+}
 
 /* Liegt neben der MP4-Datei eine gleichnamige WebM-Fassung, wird sie als
    Ausweichquelle angeboten – für Browser ohne H.264. */

@@ -19,7 +19,12 @@ if ($suche !== '') {
     $muster = '%' . $suche . '%';
     array_push($werte, $muster, $muster, $muster);
 }
-$sql .= ' ORDER BY v.veroeffentlicht_am DESC, v.id DESC';
+/* Videos einer Reihe zuerst, in ihrer Nummer – der Einschrittkampf wird
+   in der Reihenfolge 1 bis 13 gelernt, nach Datum stuende er verkehrt
+   herum. Alles ohne Reihe (reihenfolge = 0) folgt danach, neueste zuerst
+   wie bisher. */
+$sql .= ' ORDER BY CASE WHEN v.reihenfolge = 0 THEN 1 ELSE 0 END,'
+      . ' v.reihenfolge, v.veroeffentlicht_am DESC, v.id DESC';
 
 $stmt = db()->prepare($sql);
 $stmt->execute($werte);

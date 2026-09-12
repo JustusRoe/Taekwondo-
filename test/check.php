@@ -174,10 +174,24 @@ pruefe('Server: Anmeldung mit testuser erfolgreich',
     $a['code'] === 302 && str_contains($a['kopf'], 'videothek.php'),
     'HTTP ' . $a['code']);
 
+/* Die erwartete Zahl kommt aus assets/js/videodaten.js, nicht als feste
+   Zahl im Prüfskript: Kommen Videos dazu, soll die Prüfung nicht
+   deswegen fehlschlagen. */
+$js = (string) file_get_contents(__DIR__ . '/../assets/js/videodaten.js');
+$erwartet = substr_count($js, '"slug":');
+
 $a = anfrage($basis . '/backend/videothek.php');
 $anzahl = substr_count($a['inhalt'], 'class="video-card"');
-pruefe('Server: Videothek zeigt sechs Videos',
-    $a['code'] === 200 && $anzahl === 6, 'gefunden: ' . $anzahl);
+pruefe("Server: Videothek zeigt alle $erwartet Videos",
+    $a['code'] === 200 && $anzahl === $erwartet, 'gefunden: ' . $anzahl);
+
+/* Eine Reihe wird in ihrer Nummer gelernt – nach Datum stünde sie
+   verkehrt herum. Geprüft wird, dass Teil 1 vor Teil 2 steht. */
+$eins = strpos($a['inhalt'], 'hanbon-kyorugi-01');
+$zwei = strpos($a['inhalt'], 'hanbon-kyorugi-02');
+pruefe('Server: Videoreihe steht in ihrer Reihenfolge',
+    $eins === false || $zwei === false || $eins < $zwei,
+    'Teil 1 steht hinter Teil 2');
 
 $a = anfrage($basis . '/backend/video.php?v=taegeuk-il-jang');
 pruefe('Server: Videoseite zeigt den Player',

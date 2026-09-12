@@ -54,6 +54,12 @@ CREATE TABLE IF NOT EXISTS videos (
   dauer         SMALLINT UNSIGNED NOT NULL DEFAULT 0,  -- Sekunden
   veroeffentlicht_am DATE      NOT NULL DEFAULT (CURRENT_DATE),
   sichtbar      TINYINT(1)     NOT NULL DEFAULT 1,
+  -- Platz innerhalb einer Reihe. Der Einschrittkampf besteht aus
+  -- dreizehn Techniken, die in ihrer Nummer gelernt werden – nach
+  -- Datum sortiert stuenden sie verkehrt herum. 0 bedeutet "keine
+  -- Reihe"; solche Videos erscheinen hinter den nummerierten, nach
+  -- Datum wie bisher.
+  reihenfolge   SMALLINT UNSIGNED NOT NULL DEFAULT 0,
   PRIMARY KEY (id),
   UNIQUE KEY uq_slug (slug),
   KEY idx_bereich (bereich, sichtbar)
@@ -125,6 +131,9 @@ INSERT INTO mitglieder (benutzername, name, email, passwort_hash, rolle, passwor
 --   ALTER TABLE mitglieder
 --     ADD COLUMN passwort_wechseln TINYINT(1) NOT NULL DEFAULT 1,
 --     ADD COLUMN passwort_geaendert_am DATETIME DEFAULT NULL;
+--
+--   ALTER TABLE videos
+--     ADD COLUMN reihenfolge SMALLINT UNSIGNED NOT NULL DEFAULT 0;
 --
 -- Die Tabelle trainingstermine legt das CREATE TABLE oben von selbst an
 -- (IF NOT EXISTS); die Termine selbst importiert danach die Verwaltung
