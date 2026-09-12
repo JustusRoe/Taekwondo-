@@ -295,6 +295,43 @@ $a = anfrage($ziel);
 pruefe('Ein Aufruf ohne abgeschicktes Formular wird abgewiesen',
     $a['code'] === 400 && str_contains($a['inhalt'], 'nur abgeschickte Formulare'));
 
+/* ---------- 7. Eingaben der Verwaltung landen nicht als Markup ---------- */
+echo "\nTermintexte auf der öffentlichen Website\n";
+
+/* Gruppe und Hinweis tippt das Trainerteam ein und beide landen auf der
+   öffentlichen Website. Werden sie dort als HTML eingesetzt statt als
+   Text, läuft ein eingetipptes <script> im Browser jedes Besuchers.
+
+   Die Prüfung ist absichtlich eine Textsuche in den Dateien: Ein Skript
+   ohne Browser kann nicht feststellen, was der Kalender am Ende baut.
+   Sie schlägt an, wenn jemand wieder auf innerHTML umstellt. */
+$js = (string) file_get_contents(__DIR__ . '/../assets/js/main.js');
+$von = strpos($js, 'function eintragEl');
+$bis = $von !== false ? strpos($js, "\n      }", $von) : false;
+$bauteil = ($von !== false && $bis !== false) ? substr($js, $von, $bis - $von) : '';
+
+pruefe('Der Kalender der Startseite baut seine Zeilen per DOM, nicht aus HTML-Text',
+    $bauteil !== '' && !str_contains($bauteil, 'innerHTML'),
+    $bauteil === '' ? 'eintragEl() nicht gefunden' : 'innerHTML ist zurück');
+
+/* Die feste Liste auf training.html wird serverseitig erzeugt – dort muss
+   jeder eingetippte Wert durch h() gehen. */
+$php = (string) file_get_contents(__DIR__ . '/../backend/lib/termine.php');
+$von = strpos($php, 'function html_block');
+$bis = $von !== false ? strpos($php, "\n}", $von) : false;
+$block = ($von !== false && $bis !== false) ? substr($php, $von, $bis - $von) : '';
+
+$ungeschuetzt = [];
+foreach (['gruppe', 'hinweis', 'zeit'] as $feld) {
+    if (preg_match('/\$t\[\x27' . $feld . '\x27\]/', $block)
+        && !preg_match('/h\(\$t\[\x27' . $feld . '\x27\]\)/', $block)) {
+        $ungeschuetzt[] = $feld;
+    }
+}
+pruefe('Die Terminliste auf training.html maskiert alle eingetippten Felder',
+    $block !== '' && $ungeschuetzt === [],
+    $ungeschuetzt ? 'ohne h(): ' . implode(', ', $ungeschuetzt) : 'html_block() nicht gefunden');
+
 /* ---------- Aufräumen ---------- */
 db()->prepare('DELETE FROM mitglieder WHERE benutzername = ?')->execute(['pruefziel']);
 sperren_aufheben();

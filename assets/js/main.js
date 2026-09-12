@@ -380,30 +380,59 @@
         }
       }
 
+      /* Kleine Helfer, damit unten kein HTML aus Text zusammengesetzt wird. */
+      function el(tag, klasse, text) {
+        var e = document.createElement(tag);
+        if (klasse) e.className = klasse;
+        if (text !== undefined && text !== null) e.textContent = String(text);
+        return e;
+      }
+
+      /**
+       * Baut eine Zeile des Kalenders.
+       *
+       * Bewusst mit createElement und textContent statt mit innerHTML:
+       * Gruppe und Hinweis kommen aus der Terminverwaltung, sind also von
+       * Hand eingetippt. Als HTML-Text zusammengesetzt würde daraus
+       * Markup – ein Hinweis wie "Training & Spiel" zerlegte die Zeile,
+       * und ein eingetipptes <script> liefe im Browser jedes Besuchers.
+       * textContent setzt alles als Text ein, egal was drinsteht.
+       */
       function eintragEl(t) {
         var teil = t.datum.split('-');
         var frei = t.ort === 'frei';
-        var li = document.createElement('li');
-        li.className = 'kal-eintrag' + (frei ? ' ist-frei' : '');
+        var li = el('li', 'kal-eintrag' + (frei ? ' ist-frei' : ''));
         li.dataset.datum = t.datum;
-        var info = orte[t.ort] || {};
-        var name = info.name || '';
-        var hinweis = t.hinweis ? ' <span class="kal-hinweis">' + t.hinweis + '</span>' : '';
-        var ort;
-        if (frei) {
-          ort = '<span class="kal-frei">kein Training</span>';
-        } else if (info.karte) {
-          ort = '<a class="halle ort-' + t.ort + '" href="' + info.karte +
-                '" target="_blank" rel="noopener">' + name + '</a>';
-        } else {
-          ort = '<span class="halle ort-' + t.ort + '">' + name + '</span>';
+
+        var datum = el('span', 'kal-datum');
+        datum.appendChild(el('strong', null, teil[2] + '.' + teil[1] + '.'));
+        datum.appendChild(el('span', null, t.tag));
+        li.appendChild(datum);
+
+        li.appendChild(el('span', 'kal-zeit', t.zeit));
+
+        var gruppe = el('span', 'kal-gruppe', t.gruppe);
+        if (t.hinweis) {
+          gruppe.appendChild(el('span', 'kal-hinweis', t.hinweis));
         }
-        li.innerHTML =
-          '<span class="kal-datum"><strong>' + teil[2] + '.' + teil[1] + '.</strong>' +
-            '<span>' + t.tag + '</span></span>' +
-          '<span class="kal-zeit">' + t.zeit + '</span>' +
-          '<span class="kal-gruppe">' + t.gruppe + hinweis + '</span>' +
-          ort;
+        li.appendChild(gruppe);
+
+        var info = orte[t.ort] || {};
+        /* Nur bekannte Hallenkürzel werden zu einer Klasse – sonst
+           entstünde aus einem Datenbankwert ein Stück Klassenname. */
+        var kuerzel = Object.prototype.hasOwnProperty.call(orte, t.ort) ? t.ort : '';
+
+        if (frei) {
+          li.appendChild(el('span', 'kal-frei', 'kein Training'));
+        } else if (info.karte) {
+          var a = el('a', 'halle' + (kuerzel ? ' ort-' + kuerzel : ''), info.name || '');
+          a.href = info.karte;
+          a.target = '_blank';
+          a.rel = 'noopener';
+          li.appendChild(a);
+        } else {
+          li.appendChild(el('span', 'halle' + (kuerzel ? ' ort-' + kuerzel : ''), info.name || ''));
+        }
         return li;
       }
 
