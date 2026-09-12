@@ -215,6 +215,28 @@ Beim ersten Lauf lädt das Freistellungsmodell (176 MB) selbst herunter. Die
 Website braucht davon nichts – sie bleibt reines HTML, CSS und JavaScript ohne
 Bauschritt. Die unbearbeiteten Fassungen stehen in der Git-Historie.
 
+### Die Kante des Doboks
+
+Die Maske von u2net ist nicht schwarzweiß, sondern ein weicher Verlauf, und die
+Überblendung folgt ihm. Bei Anna-Karoline begann dieser Verlauf am rechten Ärmel
+mit Wert 154 von 255 schon tief im Gewebe und fiel über 25 Bildpunkte ab – dort
+wurde der Ärmel also zu fast der Hälfte mit dem weichgezeichneten Hintergrund
+vermischt. Das Ergebnis: Der Arm verlor seine Kante und verlief nach außen in
+einen blassen Schleier. 33 810 Bildpunkte waren bei ihr betroffen, bei den
+anderen Porträts je rund 4 000.
+
+`maske_nachziehen()` behebt das. Dobok und Wand liegen in der Helligkeit weit
+auseinander – das Gewebe bei etwa 235, die Mattenwand nie heller als 180 –, und
+was heller ist als die hellste Stelle der Wand, kann nur Gewebe sein. Diese
+Fläche bekommt volle Deckung; weich wird es erst an der tatsächlichen Kante. Die
+Grenze wird je Bild aus dem Hintergrund gelesen, damit sie auch bei anderer
+Ausleuchtung stimmt.
+
+Nachgemessen über alle sieben Porträts: Was im Original heller als 200 war,
+weicht jetzt um durchschnittlich 0,8 bis 1,2 Helligkeitsstufen ab – das ist
+Rauschen. Der Hintergrund wird dabei um durchschnittlich unter 1,2 Stufen heller,
+es entsteht also kein Saum.
+
 ### Lücken zwischen Arm und Rumpf
 
 Wer den Arm etwas vom Körper weg hält, hat dort einen Spalt, in dem die

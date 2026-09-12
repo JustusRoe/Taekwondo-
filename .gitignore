@@ -22,6 +22,8 @@ auslieferung/
 # Systemdateien
 .DS_Store
 Thumbs.db
+__pycache__/
+*.pyc
 
 # Lokale Testumgebung (wird von test/testmain.sh erzeugt)
 test/daten/

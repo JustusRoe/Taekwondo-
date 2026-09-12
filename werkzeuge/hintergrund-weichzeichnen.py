@@ -39,6 +39,85 @@ def maske(pfad, sitzung):
     return np.array(m.convert("L"))
 
 
+def maske_nachziehen(bgr, m):
+    """
+    Zieht die Maske bis an die Kante des Doboks.
+
+    u2net trifft den Umriss gut, endet aber stellenweise ein Stück
+    *innerhalb* des Gewebes – bei Anna-Karoline am rechten Ärmel bis zu
+    13 Bildpunkte. Dieser Streifen gilt dann als Hintergrund, wird
+    weichgezeichnet, und der Arm verliert seine Kante: Er verläuft nach
+    außen in einen hellen Schleier statt sauber aufzuhören.
+
+    Zu erkennen ist das, weil Gewebe und Wand hier weit auseinander
+    liegen. Der Dobok ist nahezu weiß (Helligkeit um 235), die Mattenwand
+    grau und nie heller als etwa 180. Was heller ist als die hellste
+    Stelle der Wand, kann also nur Gewebe sein – und was davon an die
+    Maske grenzt, gehört zur Person.
+
+    Die Grenze wird aus dem Bild gelesen statt festgelegt, damit das auch
+    bei einer heller ausgeleuchteten Wand noch stimmt. Gewachsen wird nur
+    in der Nähe der Maske: Ein weißes Stück am Bildrand, das nichts mit
+    der Person zu tun hat, soll nicht dazukommen.
+    """
+    person = m > 128
+    if not person.any() or person.all():
+        return m
+
+    sicher = cv2.erode((~person).astype(np.uint8) * 255,
+                       np.ones((25, 25), np.uint8), iterations=2) > 0
+    if sicher.sum() < 2000:
+        return m
+
+    hell = cv2.cvtColor(bgr, cv2.COLOR_BGR2LAB)[:, :, 0]
+    schwelle = max(190, int(np.percentile(hell[sicher], 99.9)) + 10)
+    gewebe = hell > schwelle
+
+    nahe = cv2.dilate(person.astype(np.uint8), np.ones((3, 3), np.uint8),
+                      iterations=16) > 0
+
+    # Punktweise nach Helligkeit zu entscheiden ergibt einen ausgefransten
+    # Rand: Die dunkleren Falten im Gewebe blieben Hintergrund, die hellen
+    # Stellen wurden Person, und dazwischen entstanden Fetzen. Deshalb
+    # wird die Fläche geschlossen und werden Löcher gefüllt – der Ärmel
+    # bekommt eine durchgehende Kante.
+    kandidat = (person | (gewebe & nahe)).astype(np.uint8) * 255
+    kandidat = cv2.morphologyEx(kandidat, cv2.MORPH_CLOSE,
+                                np.ones((9, 9), np.uint8))
+
+    # Löcher füllen: von den Bildrändern aus in den Hintergrund fluten,
+    # was dabei nicht erreicht wird, liegt innen.
+    aussenherum = np.zeros((kandidat.shape[0] + 2, kandidat.shape[1] + 2), np.uint8)
+    geflutet = kandidat.copy()
+    cv2.floodFill(geflutet, aussenherum, (0, 0), 255)
+    kandidat = kandidat | cv2.bitwise_not(geflutet)
+
+    # Volle Deckung für die ganze Fläche, nicht nur für das, was neu
+    # dazukommt. Der Grund liegt darin, wie die Maske aussieht: Sie ist
+    # nicht schwarzweiß, sondern ein weicher Verlauf, und die
+    # Überblendung folgt ihm. Bei Anna-Karoline beginnt er mit Wert 154
+    # schon tief im Ärmel und fällt über 25 Bildpunkte ab – dort wird das
+    # Gewebe also zu fast der Hälfte mit dem weichgezeichneten
+    # Hintergrund vermischt, und der Arm verliert seine Kante. Innerhalb
+    # des Gewebes soll die Deckung voll sein; weich wird es erst an der
+    # tatsächlichen Kante, und dafür genügen die paar Bildpunkte, die der
+    # Weichzeichner am Ende ohnehin verstreicht.
+    fest = kandidat > 0
+    # Gezählt wird nur, was wirklich ins Gewicht fällt. Fast die ganze
+    # Person hat Maskenwert 254 statt 255; das mitzuzählen ergäbe eine
+    # große Zahl ohne Bedeutung.
+    geaendert = int((fest & (m < 223)).sum())
+    if not fest.any():
+        return m
+
+    neu = m.copy()
+    neu[fest] = 255
+    print(f"   Maske bis zur Gewebekante nachgezogen: {geaendert} "
+          f"Bildpunkte mit deutlich zu geringer Deckung "
+          f"(Grenze bei Helligkeit {schwelle})")
+    return neu
+
+
 def luecken_glaetten(ergebnis, bgr, m, kaesten):
     """
     Glättet Hintergrund, der zwischen Arm und Rumpf durchscheint.
@@ -163,6 +242,7 @@ def bearbeiten(pfad, sitzung, kaesten=()):
         sys.exit(f"FEHLER: {pfad} konnte nicht gelesen werden.")
 
     m = maske(pfad, sitzung)
+    m = maske_nachziehen(bgr, m)
     hg = hintergrund_fuellen(bgr, m)
     # Zweimal weichzeichnen ergibt eine ruhigere Fläche als einmal mit
     # doppeltem Radius und lässt keine Kanten stehen.
