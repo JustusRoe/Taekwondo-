@@ -1,14 +1,14 @@
 #!/usr/bin/env bash
 #
-# Baut das Auslieferungspaket: nur die Dateien, die auf den Server
-# gehören, sortiert nach dem Ort, an den sie kommen.
+# Baut den Ordner website/: nur die Dateien, die auf den Server gehören,
+# sortiert nach dem Ort, an den sie kommen.
 #
 #   werkzeuge/paket.sh [ZIELORDNER]
 #
-# Standardziel ist auslieferung/. Der Ordner wird bei jedem Lauf neu
-# angelegt, damit nichts von einem früheren Stand übrig bleibt.
+# Standardziel ist website/. Der Ordner wird bei jedem Lauf neu angelegt,
+# damit nichts von einem früheren Stand übrig bleibt.
 #
-#   auslieferung/
+#   website/
 #   ├── LIESMICH.md          was wohin kommt
 #   ├── www/                 → in den Webordner des Hostings
 #   ├── videos-privat/       → eine Ebene ÜBER dem Webordner
@@ -22,13 +22,17 @@ set -euo pipefail
 
 cd "$(dirname "$0")/.."
 WURZEL="$(pwd)"
-ZIEL="${1:-$WURZEL/auslieferung}"
+ZIEL="${1:-$WURZEL/website}"
 
 rot()   { printf '\033[31m%s\033[0m\n' "$1"; }
 gruen() { printf '\033[32m%s\033[0m\n' "$1"; }
 
+# Die Prüfsumme über die Quelldateien steht in einem eigenen Skript,
+# weil test/check.php sie auch braucht – siehe dort.
+quellen_pruefsumme() { bash "$WURZEL/werkzeuge/quellen-pruefsumme.sh"; }
+
 echo
-echo "Auslieferungspaket für die Taekwondo-Website"
+echo "Ordner website/ für die Taekwondo-Website bauen"
 echo "========================================================"
 
 # ---------------------------------------------------------
@@ -200,12 +204,15 @@ fi
 SEITEN="$(find "$ZIEL/www" -maxdepth 1 -name '*.html' | wc -l | tr -d ' ')"
 
 cat > "$ZIEL/LIESMICH.md" << 'BEIPACK'
-# Auslieferungspaket
+# Der Ordner website/
 
-Dieses Paket enthält genau die Dateien, die auf den Server gehören –
-keine Tests, keine Hilfsskripte, keine Rohaufnahmen. Erzeugt von
-`werkzeuge/paket.sh`; nichts hier von Hand ändern, sondern im
-Projektordner und das Paket neu bauen.
+Hier liegt genau das, was auf den Server gehört – keine Tests, keine
+Hilfsskripte, keine Rohaufnahmen. Erzeugt von `werkzeuge/paket.sh`.
+
+**Nichts hier von Hand ändern.** Änderungen gehören in den Projektordner
+eine Ebene höher; danach `werkzeuge/paket.sh` laufen lassen, und dieser
+Ordner entsteht neu. Ob er noch zu den Quelldateien passt, sagt
+`php test/check.php` – die Prüfsumme dafür steht in `STAND.txt`.
 
 ## Wohin was kommt
 
@@ -266,7 +273,30 @@ mehr auslesen.
 BEIPACK
 
 # ---------------------------------------------------------
-# 7. Übersicht
+# 7. Stand festhalten
+# ---------------------------------------------------------
+# website/ liegt im Repository, damit man es ohne Werkzeuge herunterladen
+# kann. Damit entsteht eine Gefahr: Wird eine Seite geändert und das
+# Paket nicht neu gebaut, lädt jemand eine alte Fassung auf den Server
+# und merkt es nicht. Deshalb bekommt der Ordner eine Prüfsumme über die
+# Quelldateien; test/check.php vergleicht sie und meldet, wenn das Paket
+# nicht mehr passt.
+{
+  echo "# Stand des Ordners website/"
+  echo "#"
+  echo "# Erzeugt von werkzeuge/paket.sh. Die Prüfsumme geht über alle"
+  echo "# Quelldateien, aus denen dieser Ordner entstanden ist."
+  echo "# test/check.php vergleicht sie und meldet einen veralteten Stand."
+  echo "#"
+  echo "erzeugt_am=$(date '+%Y-%m-%d %H:%M')"
+  if command -v git > /dev/null && [ -d "$WURZEL/.git" ]; then
+    echo "commit=$(git -C "$WURZEL" rev-parse --short HEAD 2> /dev/null || echo unbekannt)"
+  fi
+  echo "pruefsumme=$(quellen_pruefsumme)"
+} > "$ZIEL/STAND.txt"
+
+# ---------------------------------------------------------
+# 8. Übersicht
 # ---------------------------------------------------------
 echo
 gruen "Paket fertig: $ZIEL"
@@ -277,3 +307,5 @@ printf '  %-22s %s\n' "datenbank/" "schema.sql"
 printf '  %-22s %s\n' "gesamt" "$(du -sh "$ZIEL" | cut -f1)"
 echo
 echo "Wohin was kommt, steht in $ZIEL/LIESMICH.md"
+echo "Der Stand ist in $ZIEL/STAND.txt festgehalten; test/check.php"
+echo "meldet, wenn der Ordner nicht mehr zu den Quelldateien passt."

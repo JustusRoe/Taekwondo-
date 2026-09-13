@@ -289,6 +289,73 @@ pruefe('Server: nach dem Abmelden wieder gesperrt', $a['code'] === 302, 'HTTP ' 
 
 @unlink($keks);
 
+/* =========================================================
+   Der Ordner website/
+
+   Er liegt im Repository, damit man ihn ohne Werkzeuge herunterladen
+   kann – und genau daraus entsteht eine Gefahr: Wird eine Seite
+   geändert und der Ordner nicht neu gebaut, lädt jemand eine alte
+   Fassung auf den Server und merkt es nicht. Die Prüfsumme in
+   website/STAND.txt geht über die Quelldateien; stimmt sie nicht mehr,
+   ist der Ordner veraltet.
+   ========================================================= */
+echo "\nAuslieferungsordner\n";
+
+$wurzel = dirname(__DIR__);
+$stand  = $wurzel . '/website/STAND.txt';
+
+if (!is_file($stand)) {
+    pruefe('Der Ordner website/ ist gebaut', false,
+        'website/STAND.txt fehlt – einmal werkzeuge/paket.sh laufen lassen');
+} else {
+    $zeilen = parse_ini_file($stand) ?: [];
+    $notiert = (string) ($zeilen['pruefsumme'] ?? '');
+    $jetzt = trim((string) shell_exec(
+        'bash ' . escapeshellarg($wurzel . '/werkzeuge/quellen-pruefsumme.sh') . ' 2>/dev/null'
+    ));
+
+    pruefe('Der Ordner website/ passt zu den Quelldateien',
+        $jetzt !== '' && $notiert !== '' && $jetzt === $notiert,
+        $jetzt === '' || $notiert === ''
+            ? 'Prüfsumme nicht ermittelbar'
+            : 'notiert ' . $notiert . ', jetzt ' . $jetzt
+              . ' – einmal werkzeuge/paket.sh laufen lassen');
+
+    // Die Stichproben fangen ab, was eine Prüfsumme nicht sieht: einen
+    // Ordner, der zwar aktuell ist, aber unvollständig kopiert wurde.
+    $fehlend = [];
+    foreach (['www/index.html', 'www/training.html', 'www/.htaccess',
+              'www/assets/css/style.css', 'www/assets/js/main.js',
+              'www/backend/login.php', 'www/backend/einrichten.php',
+              'www/backend/lib/db.php', 'datenbank/schema.sql',
+              'LIESMICH.md'] as $datei) {
+        if (!is_file($wurzel . '/website/' . $datei)) {
+            $fehlend[] = $datei;
+        }
+    }
+    pruefe('Der Ordner website/ ist vollständig', $fehlend === [],
+        'fehlt: ' . implode(', ', $fehlend));
+
+    $videos = glob($wurzel . '/website/videos-privat/hanbon-kyorugi-[0-9][0-9].mp4') ?: [];
+    $bilder = glob($wurzel . '/website/www/assets/video/hanbon-kyorugi-[0-9][0-9].jpg') ?: [];
+    pruefe('Die Videoreihe liegt vollständig im Ordner website/',
+        count($videos) === 13 && count($bilder) === 13,
+        count($videos) . ' Videos, ' . count($bilder) . ' Vorschaubilder');
+
+    // Was dort nicht liegen darf. paket.sh prüft das beim Bauen auch,
+    // aber der Ordner ist eingecheckt und könnte von Hand angefasst
+    // worden sein.
+    $verboten = [];
+    foreach (['www/backend/config.php', 'www/mitglieder.html',
+              'www/assets/js/mitglieder.js', 'www/assets/js/videodaten.js'] as $datei) {
+        if (file_exists($wurzel . '/website/' . $datei)) {
+            $verboten[] = $datei;
+        }
+    }
+    pruefe('Im Ordner website/ liegt nichts, was dort nicht hingehört',
+        $verboten === [], 'gefunden: ' . implode(', ', $verboten));
+}
+
 echo str_repeat('-', 62), "\n";
 printf("%d Prüfungen bestanden, %d fehlgeschlagen\n", $bestanden, $fehler);
 exit($fehler === 0 ? 0 : 1);

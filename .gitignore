@@ -1,8 +1,11 @@
 # Zugangsdaten des Servers – niemals ins Repository
 backend/config.php
 
-# Private Videoablage (liegt im Echtbetrieb außerhalb des Web-Ordners)
-videos-privat/
+# Private Videoablage (liegt im Echtbetrieb außerhalb des Web-Ordners).
+# Mit fuehrendem Schraegstrich, also nur dieser Ordner hier: Ohne ihn
+# wuerde das Muster auf jeder Ebene greifen und auch die Videos in
+# website/videos-privat/ ausschliessen, die dort hingehoeren.
+/videos-privat/
 
 # Rohaufnahmen vom Handy. Der Ordner selbst gehört mit LIESMICH.md und
 # reihenfolge.txt ins Repository, die Aufnahmen darin nicht.
@@ -10,14 +13,14 @@ videos-roh/*
 !videos-roh/LIESMICH.md
 !videos-roh/reihenfolge.txt
 
-# Auslieferungspaket (wird von werkzeuge/paket.sh erzeugt)
+# Der Auslieferungsordner website/ ist bewusst NICHT hier eingetragen.
 #
-# Nicht eingecheckt, obwohl es praktisch waere: Jede Datei laege dann
-# zweimal im Repository, und eine Textaenderung muesste an beiden Stellen
-# nachgezogen werden. Ein Paket, das nicht mehr zur Quelle passt, ist
-# schlimmer als keins. Neu bauen dauert wenige Sekunden; wer es ohne
-# Werkzeuge braucht, holt es als ZIP aus dem Actions-Reiter bei GitHub.
-auslieferung/
+# Er liegt im Repository, damit man ihn ohne Werkzeuge herunterladen und
+# direkt hochladen kann. Der Preis dafuer: Jede Datei liegt zweimal im
+# Repository, und nach einer Aenderung muss werkzeuge/paket.sh neu
+# laufen. Damit ein veralteter Ordner nicht unbemerkt auf den Server
+# wandert, steht in website/STAND.txt eine Pruefsumme ueber die
+# Quelldateien, die test/check.php vergleicht.
 
 # Systemdateien
 .DS_Store

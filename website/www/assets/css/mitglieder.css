@@ -1,0 +1,900 @@
+/* =========================================================
+   Mitgliederbereich – ergänzt style.css
+   ========================================================= */
+
+/* ---------- Kopfzeile des Mitgliederbereichs ---------- */
+
+.member-header .header-inner { gap: 16px; }
+
+.member-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  margin-left: 14px;
+  padding: 5px 11px;
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  font-size: .68rem;
+  font-weight: 700;
+  letter-spacing: .12em;
+  text-transform: uppercase;
+  color: var(--accent);
+  white-space: nowrap;
+}
+.member-badge::before {
+  content: "";
+  width: 6px; height: 6px;
+  border-radius: 50%;
+  background: var(--accent);
+}
+
+.member-nav {
+  margin-left: auto;
+  display: flex;
+  align-items: center;
+  gap: 18px;
+}
+.member-user {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: .88rem;
+  color: var(--ink-2);
+}
+.member-avatar {
+  width: 32px; height: 32px;
+  flex: none;
+  display: grid;
+  place-items: center;
+  border-radius: 50%;
+  background: var(--bg-soft);
+  border: 1px solid var(--line);
+  font-size: .72rem;
+  font-weight: 700;
+  letter-spacing: .04em;
+  color: var(--ink);
+}
+.member-nav a {
+  font-size: .9rem;
+  font-weight: 500;
+  color: var(--ink-2);
+  text-decoration: none;
+}
+.member-nav a:hover { color: var(--accent); }
+
+/* ---------- Hinweisband „Entwurf" ---------- */
+
+.draft-note {
+  background: var(--accent-soft);
+  border-bottom: 1px solid #f3d6d7;
+  font-size: .86rem;
+  color: var(--ink-2);
+}
+.draft-note .container {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  padding-block: 12px;
+}
+.draft-note strong { color: var(--accent); }
+.draft-note p { margin: 0; }
+
+/* ---------- Anmeldung ---------- */
+
+.login-wrap {
+  min-height: calc(100vh - var(--header-h) - 120px);
+  display: grid;
+  place-items: center;
+  padding: clamp(32px, 6vw, 72px) 0;
+}
+.login-card {
+  width: 100%;
+  max-width: 430px;
+  background: #fff;
+  border: 1px solid var(--line);
+  border-top: 3px solid var(--accent);
+  padding: clamp(28px, 4vw, 42px);
+}
+.login-card h1 {
+  font-size: 1.6rem;
+  margin-bottom: .35em;
+}
+.login-intro {
+  font-size: .93rem;
+  color: var(--muted);
+  margin-bottom: 1.8em;
+}
+.login-card .field { margin-bottom: 18px; }
+.login-card .btn { width: 100%; margin-top: 6px; }
+
+.login-demo {
+  margin-top: 26px;
+  padding: 16px 18px;
+  background: var(--bg-soft);
+  border: 1px solid var(--line);
+  font-size: .86rem;
+  color: var(--ink-2);
+}
+.login-demo h2 {
+  font-family: var(--font-body);
+  font-size: .72rem;
+  font-weight: 700;
+  letter-spacing: .13em;
+  text-transform: uppercase;
+  color: var(--muted);
+  margin-bottom: .8em;
+}
+.login-demo dl {
+  margin: 0;
+  display: grid;
+  grid-template-columns: auto 1fr;
+  gap: 4px 14px;
+}
+.login-demo dt { color: var(--muted); }
+.login-demo dd {
+  margin: 0;
+  font-family: ui-monospace, "SFMono-Regular", "Consolas", monospace;
+  font-size: .85rem;
+  color: var(--ink);
+}
+.login-help {
+  margin-top: 22px;
+  font-size: .85rem;
+  color: var(--muted);
+}
+
+/* ---------- Videothek ---------- */
+
+.member-main { padding: clamp(34px, 5vw, 56px) 0 clamp(56px, 7vw, 88px); }
+
+.member-head {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 24px;
+  flex-wrap: wrap;
+  margin-bottom: 28px;
+}
+.member-head h1 { margin-bottom: .25em; font-size: clamp(1.7rem, 3vw, 2.2rem); }
+.member-head p { margin: 0; color: var(--muted); font-size: .95rem; }
+.member-count {
+  font-size: .84rem;
+  color: var(--muted);
+  white-space: nowrap;
+}
+
+.filters {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+  padding-block: 18px;
+  border-block: 1px solid var(--line);
+  margin-bottom: 30px;
+}
+.chip {
+  font: inherit;
+  text-decoration: none;
+  font-size: .87rem;
+  font-weight: 500;
+  color: var(--ink-2);
+  background: #fff;
+  border: 1px solid var(--line-strong);
+  border-radius: 999px;
+  padding: 7px 16px;
+  cursor: pointer;
+  transition: background-color .15s ease, color .15s ease, border-color .15s ease;
+}
+.chip:hover { border-color: var(--ink); }
+.chip[aria-pressed="true"] {
+  background: var(--accent);
+  border-color: var(--accent);
+  color: #fff;
+}
+.filter-spacer { flex: 1; }
+.filter-search {
+  position: relative;
+  min-width: 220px;
+}
+.filter-search input { padding-left: 36px; }
+.filter-search::before {
+  content: "";
+  position: absolute;
+  left: 14px; top: 50%;
+  width: 11px; height: 11px;
+  margin-top: -7px;
+  border: 1.6px solid var(--muted);
+  border-radius: 50%;
+}
+.filter-search::after {
+  content: "";
+  position: absolute;
+  left: 23px; top: 50%;
+  width: 6px; height: 1.6px;
+  margin-top: 3px;
+  background: var(--muted);
+  transform: rotate(45deg);
+}
+
+.video-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 26px;
+}
+
+.video-card {
+  display: flex;
+  flex-direction: column;
+  background: #fff;
+  border: 1px solid var(--line);
+  text-decoration: none;
+  color: inherit;
+  transition: border-color .2s ease, transform .2s ease, box-shadow .2s ease;
+}
+.video-card:hover {
+  border-color: var(--line-strong);
+  transform: translateY(-3px);
+  box-shadow: 0 16px 36px rgba(20, 23, 28, .08);
+  color: inherit;
+}
+.video-thumb {
+  position: relative;
+  aspect-ratio: 16 / 9;
+  overflow: hidden;
+  background: var(--ink);
+  border-bottom: 1px solid var(--line);
+}
+.video-thumb img {
+  width: 100%; height: 100%;
+  object-fit: cover;
+  transition: transform .4s ease, opacity .2s ease;
+}
+.video-card:hover .video-thumb img { transform: scale(1.04); opacity: .9; }
+
+.play-badge {
+  position: absolute;
+  left: 50%; top: 50%;
+  width: 52px; height: 52px;
+  margin: -26px 0 0 -26px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, .93);
+  display: grid;
+  place-items: center;
+  box-shadow: 0 6px 20px rgba(0, 0, 0, .25);
+  transition: transform .2s ease;
+}
+.play-badge::before {
+  content: "";
+  width: 0; height: 0;
+  margin-left: 4px;
+  border-style: solid;
+  border-width: 9px 0 9px 15px;
+  border-color: transparent transparent transparent var(--accent);
+}
+.video-card:hover .play-badge { transform: scale(1.08); }
+
+.video-duration {
+  position: absolute;
+  right: 10px; bottom: 10px;
+  background: rgba(16, 18, 22, .86);
+  color: #fff;
+  font-size: .74rem;
+  font-variant-numeric: tabular-nums;
+  padding: 3px 8px;
+  border-radius: 2px;
+}
+
+.video-body { padding: 20px 22px 22px; display: flex; flex-direction: column; flex: 1; }
+.video-tag {
+  font-size: .7rem;
+  font-weight: 700;
+  letter-spacing: .13em;
+  text-transform: uppercase;
+  color: var(--accent);
+  margin-bottom: .7em;
+}
+.video-card h3 { font-size: 1.08rem; margin-bottom: .4em; }
+.video-card .video-sub {
+  font-size: .87rem;
+  color: var(--muted);
+  margin-bottom: 1em;
+}
+.video-foot {
+  margin-top: auto;
+  padding-top: 14px;
+  border-top: 1px solid var(--line);
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  font-size: .8rem;
+  color: var(--muted);
+}
+
+.empty-state {
+  padding: 60px 0;
+  text-align: center;
+  color: var(--muted);
+}
+
+/* ---------- Player ---------- */
+
+.crumb {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-size: .88rem;
+  color: var(--muted);
+  text-decoration: none;
+  margin-bottom: 22px;
+}
+.crumb::before {
+  content: "";
+  width: 7px; height: 7px;
+  border: 1.6px solid var(--accent);
+  border-width: 0 0 1.6px 1.6px;
+  transform: rotate(45deg);
+}
+.crumb:hover { color: var(--accent); }
+
+/* Der Player steht einspaltig. Eine Begrenzung der Breite hält das Video in
+   einer Größe, in der Technik erkennbar bleibt, ohne den Bildschirm zu füllen. */
+.player-layout {
+  max-width: 980px;
+}
+
+.video-frame {
+  background: #000;
+  border: 1px solid var(--line);
+  line-height: 0;
+}
+.video-frame video {
+  width: 100%;
+  aspect-ratio: 16 / 9;
+  display: block;
+  background: #000;
+}
+
+.player-tools {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+  padding: 14px 0;
+  border-bottom: 1px solid var(--line);
+  margin-bottom: 22px;
+}
+/* .tool-btn steht jetzt in style.css – auch die Startseite braucht ihn. */
+.tool-label {
+  font-size: .72rem;
+  font-weight: 700;
+  letter-spacing: .12em;
+  text-transform: uppercase;
+  color: var(--muted);
+  margin-right: 2px;
+}
+.tool-sep { flex: 1; }
+
+.player-main h1 { font-size: clamp(1.5rem, 2.6vw, 2rem); margin-bottom: .3em; }
+.player-meta {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+  font-size: .87rem;
+  color: var(--muted);
+  margin-bottom: 1.4em;
+}
+.player-meta span:not(:last-child)::after { content: " ·"; }
+.player-desc { color: var(--ink-2); max-width: 62ch; }
+
+.resume {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 18px;
+  padding: 10px 16px;
+  background: var(--accent-soft);
+  border: 1px solid #f3d6d7;
+  border-radius: var(--radius);
+  font-size: .88rem;
+  color: var(--ink-2);
+}
+.resume button {
+  font: inherit;
+  font-size: .86rem;
+  font-weight: 600;
+  color: var(--accent);
+  background: none;
+  border: 0;
+  padding: 0;
+  cursor: pointer;
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+
+/* ---------- Verwaltung ---------- */
+
+.verwaltung-menue { display: flex; gap: 8px; margin-bottom: 26px; flex-wrap: wrap; }
+
+.verwaltung-layout {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 360px;
+  gap: clamp(24px, 3vw, 40px);
+  align-items: start;
+}
+
+.abschnitt-titel {
+  font-size: 1.15rem;
+  margin-bottom: .8em;
+}
+
+.verwaltung-liste {
+  background: #fff;
+  border: 1px solid var(--line);
+  position: sticky;
+  top: calc(var(--header-h) + 20px);
+  max-height: calc(100vh - var(--header-h) - 60px);
+  overflow-y: auto;
+}
+.verwaltung-liste h2 {
+  font-family: var(--font-body);
+  font-size: .74rem;
+  font-weight: 700;
+  letter-spacing: .13em;
+  text-transform: uppercase;
+  color: var(--muted);
+  margin: 0;
+  padding: 20px 22px 14px;
+  border-bottom: 1px solid var(--line);
+}
+.verwaltung-liste ul { list-style: none; margin: 0; padding: 0; }
+.verwaltung-liste li { padding: 14px 22px; }
+.verwaltung-liste li + li { border-top: 1px solid var(--line); }
+.verwaltung-liste strong { display: block; font-size: .93rem; }
+.listen-zeile {
+  display: block;
+  font-size: .82rem;
+  color: var(--muted);
+  margin-top: 2px;
+}
+.verwaltung-liste form { margin-top: 8px; }
+
+.tool-btn-klein { font-size: .78rem; padding: 5px 11px; }
+
+/* Aufklappbares Bearbeiten je Konto */
+.verwaltung-liste details { margin-top: 10px; }
+.verwaltung-liste summary {
+  display: inline-flex;
+  align-items: center;
+  list-style: none;
+  cursor: pointer;
+}
+.verwaltung-liste summary::-webkit-details-marker { display: none; }
+.konto-form {
+  display: grid;
+  gap: 10px;
+  margin-top: 12px;
+  padding: 14px;
+  background: var(--bg-soft);
+  border: 1px solid var(--line);
+}
+.konto-form label {
+  display: grid;
+  gap: 4px;
+  font-size: .8rem;
+  font-weight: 600;
+  color: var(--ink-2);
+}
+.konto-form label.kasten {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-weight: 500;
+}
+.konto-form input[type="checkbox"] { width: auto; }
+.konto-form button { justify-self: start; }
+
+/* Fortschritt beim Hochladen */
+.upload-stand { margin: -6px 0 22px; }
+.upload-balken {
+  height: 8px;
+  background: var(--bg-soft);
+  border: 1px solid var(--line);
+  overflow: hidden;
+}
+.upload-balken span {
+  display: block;
+  height: 100%;
+  width: 0;
+  background: var(--accent);
+  transition: width .2s ease;
+}
+.upload-text { font-size: .86rem; color: var(--ink-2); margin: 8px 0 0; }
+.upload-text.ist-fehler { color: var(--accent); font-weight: 600; }
+
+.feld-hinweis {
+  display: block;
+  font-size: .8rem;
+  color: var(--muted);
+  margin-top: 5px;
+}
+
+.passwort-zeile { display: flex; gap: 8px; align-items: stretch; }
+.passwort-zeile input { flex: 1; }
+
+/* Zugangsdaten nach dem Anlegen – bewusst auffällig, sie sind nur einmal zu sehen */
+.passwort-kasten {
+  background: #fff;
+  border: 2px solid var(--accent);
+  padding: 22px 24px;
+  margin-bottom: 30px;
+}
+.passwort-kasten h2 {
+  font-size: .74rem;
+  font-family: var(--font-body);
+  font-weight: 700;
+  letter-spacing: .13em;
+  text-transform: uppercase;
+  color: var(--accent);
+  margin: 0 0 14px;
+}
+.passwort-kasten dl {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px 40px;
+  margin: 0 0 14px;
+}
+.passwort-kasten dt {
+  font-size: .78rem;
+  text-transform: uppercase;
+  letter-spacing: .08em;
+  color: var(--muted);
+}
+.passwort-kasten dd {
+  margin: 2px 0 0;
+  font-family: ui-monospace, "SF Mono", Menlo, Consolas, monospace;
+  font-size: 1.15rem;
+  font-weight: 600;
+  user-select: all;
+}
+.passwort-kasten p { font-size: .88rem; color: var(--ink-2); margin: 0; }
+
+.form-status.ist-fehler { border-left-color: var(--accent); }
+
+.next-up { margin-top: clamp(40px, 5vw, 64px); }
+.next-up h2 {
+  font-size: 1.25rem;
+  padding-top: 26px;
+  border-top: 1px solid var(--line);
+  margin-bottom: 1em;
+}
+
+/* ---------- Responsive ---------- */
+
+@media (max-width: 980px) {
+  .verwaltung-layout { grid-template-columns: 1fr; }
+  .verwaltung-liste { position: static; max-height: none; }
+}
+
+@media (max-width: 760px) {
+  .member-badge { display: none; }
+  .member-user span { display: none; }
+  .member-nav { gap: 14px; }
+  .filters { gap: 8px; }
+  .filter-search { min-width: 100%; order: -1; }
+  .login-wrap { min-height: 0; }
+}
+
+@media (max-width: 620px) {
+  /* Vereinsname einzeilig halten, damit die Kopfzeile nicht umbricht */
+  .member-header .brand-text span { display: none; }
+  .member-header .brand-text strong { white-space: nowrap; font-size: .98rem; }
+  .member-header .brand-mark { width: 32px; height: 32px; }
+  .member-nav { gap: 12px; }
+  .member-nav a { font-size: .84rem; }
+  .member-avatar { display: none; }
+}
+
+@media (max-width: 620px) {
+  /* Auf dem Telefon passt die Werkzeugleiste nicht in eine Zeile. Ohne
+     Umbruchstelle landet "Tempo" neben "+ 10 s" und die Tempostufen stehen
+     allein darunter. Der Abstandhalter wird deshalb zum Zeilenumbruch:
+     erst die Sprungtasten, dann das Tempo mit seiner Beschriftung. */
+  .player-tools { gap: 8px; }
+  .tool-sep { flex: 0 0 100%; height: 0; }
+}
+
+/* Tippziele auf Touch-Geräten – siehe Erläuterung in style.css */
+@media (pointer: coarse) {
+  .chip,
+  .crumb,
+  .member-nav a {
+    min-height: 44px;
+    display: inline-flex;
+    align-items: center;
+  }
+  .crumb { margin-bottom: 14px; }
+}
+
+/* =========================================================
+   Zugangsverwaltung: Kennzahlen, Tabelle, Bearbeitungsfeld
+   ========================================================= */
+
+.kennzahlen {
+  list-style: none;
+  margin: 0 0 26px;
+  padding: 0;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+  gap: 14px;
+}
+.kennzahlen li {
+  background: #fff;
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  padding: 16px 18px;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+.kennzahlen strong {
+  font-family: var(--font-head);
+  font-size: 1.7rem;
+  line-height: 1.1;
+}
+.kennzahlen span { font-size: .82rem; color: var(--muted); }
+
+/* Suchen und filtern */
+.konten-filter {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-end;
+  gap: 12px;
+  margin-bottom: 18px;
+}
+.konten-filter .field { margin: 0; }
+.konten-filter .field:first-child { flex: 1 1 240px; }
+.konten-filter .tool-btn { height: 42px; display: inline-flex; align-items: center; }
+
+/* Kontenliste */
+.konten-tabelle {
+  width: 100%;
+  border-collapse: collapse;
+  background: #fff;
+  font-size: .92rem;
+}
+.konten-tabelle th,
+.konten-tabelle td {
+  text-align: left;
+  padding: 12px 14px;
+  border-bottom: 1px solid var(--line);
+  vertical-align: middle;
+}
+.konten-tabelle thead th {
+  font-size: .72rem;
+  font-weight: 700;
+  letter-spacing: .1em;
+  text-transform: uppercase;
+  color: var(--muted);
+  background: var(--bg-soft);
+  white-space: nowrap;
+}
+.konten-tabelle tbody th { font-weight: 600; }
+.konten-tabelle tbody tr:hover td,
+.konten-tabelle tbody tr:hover th { background: var(--accent-soft); }
+.konten-tabelle tr.ist-offen td,
+.konten-tabelle tr.ist-offen th { background: var(--accent-soft); }
+.konten-tabelle code { font-size: .88em; color: var(--ink-2); }
+.konten-tabelle .leer { color: var(--muted); }
+.konten-tabelle .spalte-aktion { text-align: right; white-space: nowrap; }
+.konten-tabelle .tool-btn { text-decoration: none; }
+
+.marke {
+  display: inline-block;
+  font-size: .72rem;
+  font-weight: 700;
+  letter-spacing: .06em;
+  text-transform: uppercase;
+  padding: 3px 9px;
+  border-radius: 999px;
+  white-space: nowrap;
+}
+.marke-trainer { background: var(--accent-soft); color: var(--accent-dark); }
+.marke-aus     { background: #eceef1; color: var(--muted); }
+.marke-warten  { background: #fff4e0; color: #8a5a00; }
+
+/* Bearbeitungsfeld über der Tabelle */
+.konto-panel {
+  background: #fff;
+  border: 1px solid var(--line);
+  border-top: 3px solid var(--accent);
+  border-radius: var(--radius);
+  padding: 22px 24px 26px;
+  margin-bottom: 30px;
+}
+.konto-panel-kopf {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  flex-wrap: wrap;
+  margin-bottom: 14px;
+}
+.konto-panel-kopf h2 { margin: 0; font-size: 1.2rem; }
+.konto-panel-kopf .tool-btn { text-decoration: none; }
+.konto-warnung {
+  background: var(--accent-soft);
+  border-left: 3px solid var(--accent);
+  padding: 12px 16px;
+  margin: 0 0 20px;
+  font-size: .9rem;
+  color: var(--ink-2);
+}
+.konto-panel-raster {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 26px;
+  align-items: start;
+}
+.konto-panel-raster h3 {
+  margin: 0 0 4px;
+  font-size: .78rem;
+  font-weight: 700;
+  letter-spacing: .1em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+.konto-hinweis { font-size: .85rem; color: var(--muted); margin: 0; }
+
+.anlegen-block { margin-top: 34px; }
+.anlegen-block > summary {
+  display: inline-flex;
+  align-items: center;
+  cursor: pointer;
+  list-style: none;
+}
+.anlegen-block > summary::-webkit-details-marker { display: none; }
+.anlegen-block[open] > summary { margin-bottom: 18px; }
+
+.listen-leer {
+  background: #fff;
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  padding: 20px 22px;
+  color: var(--muted);
+  font-size: .92rem;
+}
+
+/* Fehlerliste eines CSV-Imports */
+.import-fehler {
+  background: #fff;
+  border: 1px solid var(--line);
+  border-left: 3px solid var(--accent);
+  border-radius: var(--radius);
+  padding: 18px 22px;
+  margin-bottom: 26px;
+}
+.import-fehler h2 { margin: 0 0 10px; font-size: 1rem; }
+.import-fehler ul { margin: 0; padding-left: 20px; display: grid; gap: 6px; }
+.import-fehler li { font-size: .88rem; color: var(--ink-2); }
+
+@media (max-width: 700px) {
+  /* Auf dem Telefon fallen Benutzername und letzte Anmeldung weg – Name,
+     Rolle und Status reichen zum Wiederfinden, alles Weitere steht im
+     Bearbeitungsfeld. */
+  .konten-tabelle thead th:nth-child(2),
+  .konten-tabelle tbody td:nth-child(2),
+  .konten-tabelle thead th:nth-child(5),
+  .konten-tabelle tbody td:nth-child(5) { display: none; }
+  .konten-tabelle th, .konten-tabelle td { padding: 11px 10px; }
+}
+
+/* =========================================================
+   Terminverwaltung
+   ========================================================= */
+
+.termin-block { margin-bottom: 40px; }
+.termin-erklaerung {
+  max-width: 68ch;
+  margin: 0 0 18px;
+  color: var(--muted);
+  font-size: .93rem;
+}
+
+/* Zeitraum erzeugen – eine Zeile, damit der Schritt klein wirkt */
+.termin-erzeugen {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-end;
+  gap: 14px;
+  background: #fff;
+  border: 1px solid var(--line);
+  border-top: 3px solid var(--accent);
+  border-radius: var(--radius);
+  padding: 20px 22px;
+}
+.termin-erzeugen .field { margin: 0; }
+.termin-erzeugen .btn { margin-left: auto; }
+
+/* Liste zum Anpassen */
+.termin-tabelle {
+  width: 100%;
+  border-collapse: collapse;
+  background: #fff;
+  font-size: .92rem;
+}
+.termin-tabelle th,
+.termin-tabelle td {
+  text-align: left;
+  padding: 9px 12px;
+  border-bottom: 1px solid var(--line);
+  vertical-align: middle;
+}
+.termin-tabelle thead th {
+  font-size: .72rem;
+  font-weight: 700;
+  letter-spacing: .1em;
+  text-transform: uppercase;
+  color: var(--muted);
+  background: var(--bg-soft);
+  white-space: nowrap;
+}
+.termin-tabelle tbody th { font-weight: 600; white-space: nowrap; }
+.termin-tabelle tbody th strong { display: block; }
+.termin-tabelle tbody th span { font-size: .78rem; color: var(--muted); font-weight: 400; }
+
+.termin-tabelle .termin-monat th {
+  background: var(--bg-soft);
+  font-family: var(--font-head);
+  font-size: .9rem;
+  letter-spacing: 0;
+  text-transform: none;
+  color: var(--ink);
+}
+.termin-tabelle .spalte-training { white-space: nowrap; color: var(--ink-2); }
+.termin-tabelle .spalte-training span { font-size: .82rem; color: var(--muted); }
+.termin-tabelle .spalte-frei { text-align: center; }
+.termin-tabelle .spalte-frei input { width: 18px; height: 18px; accent-color: var(--accent); }
+
+.termin-tabelle select,
+.termin-tabelle input[type="text"] {
+  font: inherit;
+  font-size: .88rem;
+  padding: 6px 8px;
+  border: 1px solid var(--line-strong);
+  border-radius: var(--radius);
+  background: #fff;
+  width: 100%;
+  min-width: 120px;
+}
+
+/* Gestrichene Termine sind auf einen Blick zu erkennen */
+.termin-tabelle tr.ist-frei th,
+.termin-tabelle tr.ist-frei td { background: var(--bg-soft); }
+.termin-tabelle tr.ist-frei .spalte-training { color: var(--muted); text-decoration: line-through; }
+.termin-tabelle tr.ist-frei select { opacity: .5; }
+
+.termin-speichern {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  flex-wrap: wrap;
+  margin-top: 18px;
+}
+
+.termin-sonderfall > summary {
+  display: inline-flex;
+  align-items: center;
+  cursor: pointer;
+  list-style: none;
+}
+.termin-sonderfall > summary::-webkit-details-marker { display: none; }
+.termin-sonderfall[open] > summary { margin-bottom: 22px; }
+
+@media (max-width: 700px) {
+  /* Auf dem Telefon fällt die Trainingsspalte weg – Datum, Halle und
+     Ausfall reichen zum Anpassen, die Zeiten sind ohnehin immer gleich. */
+  .termin-tabelle thead th:nth-child(2),
+  .termin-tabelle tbody td.spalte-training { display: none; }
+  .termin-tabelle th, .termin-tabelle td { padding: 8px 7px; }
+  .termin-erzeugen .btn { margin-left: 0; width: 100%; }
+}

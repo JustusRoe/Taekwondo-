@@ -5,7 +5,7 @@
 # Rechner, um an die schlanke Fassung zu kommen:
 #
 #   GitHub → Reiter "Actions" → oberster Lauf → unten "Artifacts"
-#   → "auslieferung" herunterladen und auspacken.
+#   → „website" herunterladen und auspacken.
 #
 # Im ZIP liegen www/, videos-privat/ und datenbank/ – wohin was kommt,
 # steht in der LIESMICH.md darin.
@@ -39,7 +39,7 @@ jobs:
       - name: Als ZIP ablegen
         uses: actions/upload-artifact@v4
         with:
-          name: auslieferung
-          path: auslieferung/
+          name: website
+          path: website/
           retention-days: 30
           if-no-files-found: error

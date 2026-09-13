@@ -1,0 +1,83 @@
+<?php
+declare(strict_types=1);
+require_once __DIR__ . '/lib/seite.php';
+
+$mitglied = anmeldung_verlangen();
+
+$bereich = (string) ($_GET['bereich'] ?? 'alle');
+$suche   = trim((string) ($_GET['q'] ?? ''));
+
+$sql = 'SELECT v.* FROM videos v WHERE v.sichtbar = 1';
+$werte = [];
+
+if ($bereich !== 'alle') {
+    $sql .= ' AND v.bereich = ?';
+    $werte[] = $bereich;
+}
+if ($suche !== '') {
+    $sql .= ' AND (v.titel LIKE ? OR v.beschreibung LIKE ? OR v.trainer LIKE ?)';
+    $muster = '%' . $suche . '%';
+    array_push($werte, $muster, $muster, $muster);
+}
+/* Videos einer Reihe zuerst, in ihrer Nummer – der Einschrittkampf wird
+   in der Reihenfolge 1 bis 13 gelernt, nach Datum stuende er verkehrt
+   herum. Alles ohne Reihe (reihenfolge = 0) folgt danach, neueste zuerst
+   wie bisher. */
+$sql .= ' ORDER BY CASE WHEN v.reihenfolge = 0 THEN 1 ELSE 0 END,'
+      . ' v.reihenfolge, v.veroeffentlicht_am DESC, v.id DESC';
+
+$stmt = db()->prepare($sql);
+$stmt->execute($werte);
+$videos = $stmt->fetchAll();
+
+$gesamt = (int) db()->query('SELECT COUNT(*) FROM videos WHERE sichtbar = 1')->fetchColumn();
+$bereiche = db()->query(
+    'SELECT DISTINCT bereich FROM videos WHERE sichtbar = 1 ORDER BY bereich'
+)->fetchAll(PDO::FETCH_COLUMN);
+
+kopf('Videothek', $mitglied);
+?>
+
+<main id="main" class="member-main">
+  <div class="container">
+
+    <div class="member-head">
+      <div>
+        <h1>Videothek</h1>
+        <p>Formenlauf (Poomsae) und Einschrittkampf (Hanbon Kyorugi).</p>
+      </div>
+      <p class="member-count">
+        <?= count($videos) === $gesamt
+              ? $gesamt . ' Videos'
+              : count($videos) . ' von ' . $gesamt . ' Videos' ?>
+      </p>
+    </div>
+
+    <form class="filters" method="get" action="">
+      <span class="tool-label">Bereich</span>
+      <a class="chip" href="?<?= http_build_query(['bereich' => 'alle', 'q' => $suche]) ?>"
+         aria-pressed="<?= $bereich === 'alle' ? 'true' : 'false' ?>">Alle</a>
+      <?php foreach ($bereiche as $b): ?>
+        <a class="chip" href="?<?= http_build_query(['bereich' => $b, 'q' => $suche]) ?>"
+           aria-pressed="<?= $bereich === $b ? 'true' : 'false' ?>"><?= h($b) ?></a>
+      <?php endforeach; ?>
+      <span class="filter-spacer"></span>
+      <span class="filter-search">
+        <label class="visually-hidden" for="q">Videos durchsuchen</label>
+        <input type="search" id="q" name="q" value="<?= h($suche) ?>" placeholder="Suchen …">
+        <input type="hidden" name="bereich" value="<?= h($bereich) ?>">
+      </span>
+    </form>
+
+    <?php if ($videos): ?>
+      <div class="video-grid">
+        <?php foreach ($videos as $v) { video_karte($v); } ?>
+      </div>
+    <?php else: ?>
+      <p class="empty-state">Zu dieser Auswahl gibt es noch kein Video.</p>
+    <?php endif; ?>
+
+  </div>
+</main>
+
+<?php fuss(); ?>

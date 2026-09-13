@@ -116,10 +116,12 @@ Angaben, sie werden gleich gebraucht:
 
 Der Host heißt bei IONOS **nicht** `localhost`. Das ist der häufigste Fehler.
 
-Danach `backend/schema.sql` einspielen: In der Datenbankübersicht phpMyAdmin
-öffnen, links die Datenbank wählen, Reiter *Importieren*, Datei auswählen,
-ausführen. Danach stehen die Tabellen `mitglieder`, `videos`,
-`trainingstermine` und `login_versuche` bereit, dazu ein erstes Trainerkonto.
+Danach `website/datenbank/schema.sql` einspielen: In der Datenbankübersicht
+phpMyAdmin öffnen, links die Datenbank wählen, Reiter *Importieren*, Datei
+auswählen, ausführen. Danach stehen die Tabellen `mitglieder`, `videos`,
+`trainingstermine` und `login_versuche` bereit – noch ohne jeden Zugang. Das
+erste Trainerkonto entsteht in Schritt 9 über `einrichten.php`, mit einem
+Passwort, das du selbst wählst.
 
 ## 5. Dateien hochladen
 
@@ -143,30 +145,41 @@ und der ganze Mitgliederbereich ist wertlos:
         └── backend/
 ```
 
-### Am einfachsten: das fertige Paket
+### Am einfachsten: der Ordner `website/`
 
-Statt von Hand auszusortieren, was hochgehört und was nicht, gibt es ein
-Paket, das genau das enthält:
+Von Hand aussortieren muss niemand. Im Repository liegt der Ordner
+**`website/`** – darin steckt genau das, was auf den Server gehört,
+schon sortiert nach Zielort:
 
-```
-werkzeuge/paket.sh
-```
-
-Das Ergebnis liegt in `auslieferung/` und ist schon sortiert:
-
-| Ordner im Paket | Wohin auf dem Server |
+| Ordner in `website/` | Wohin auf dem Server |
 | --- | --- |
 | `www/` | der **Inhalt** in den öffentlichen Ordner |
 | `videos-privat/` | der **Inhalt** eine Ebene darüber |
 | `datenbank/schema.sql` | nicht hochladen – in phpMyAdmin importieren (Schritt 4) |
 
-Wer keine Kommandozeile benutzen will, holt dasselbe Paket als ZIP bei
-GitHub: Reiter *Actions* → obersten Lauf öffnen → unten bei *Artifacts*
-`auslieferung` herunterladen.
+Herunterladen geht auf drei Wegen, je nachdem was da ist:
 
-Das Skript prüft sich selbst und bricht ab, wenn die Seiten noch auf
-Entwurf stehen, wenn Testzugänge im Paket auftauchen oder wenn eine
-Rohaufnahme mitgerutscht ist.
+* **Mit Git:** `git pull`, dann liegt `website/` im Projektordner.
+* **Ohne Git:** Bei GitHub auf *Code → Download ZIP*; `website/` ist darin.
+* **Nur den Ordner:** Reiter *Actions* → obersten Lauf öffnen → unten bei
+  *Artifacts* `website` herunterladen. Das ist derselbe Inhalt, aber ohne
+  den Rest des Projekts.
+
+**Nach jeder Änderung an der Website neu bauen:**
+
+```
+werkzeuge/paket.sh
+```
+
+Das ist wichtig, weil der Ordner eingecheckt ist: Wird eine Seite
+geändert und der Ordner nicht neu gebaut, lädt man sonst eine alte
+Fassung hoch und merkt es nicht. Dagegen steht in `website/STAND.txt`
+eine Prüfsumme über die Quelldateien, und `php test/check.php` meldet,
+wenn sie nicht mehr passt.
+
+Das Skript prüft sich außerdem selbst und bricht ab, wenn die Seiten noch
+auf Entwurf stehen, wenn Zugangsdaten oder Testzugänge hineingerutscht
+sind oder wenn eine Rohaufnahme mitkommt.
 
 ### Oder von Hand
 
@@ -175,7 +188,7 @@ dazu `.htaccess`, `robots.txt` sowie die Ordner `assets/`, `downloads/`
 und `backend/`.
 
 **Das bleibt auf deinem Rechner:** `test/`, `werkzeuge/`, `videos-roh/`,
-`auslieferung/`, `README.md`, `LIVEGANG.md`, `CHECKLISTE-INHALTE.md`,
+`website/`, `README.md`, `LIVEGANG.md`, `CHECKLISTE-INHALTE.md`,
 `.git/`, `.github/`, `.nojekyll`. Das sind Entwicklungs- und
 Pflegewerkzeuge, die auf dem Server nichts verloren haben.
 

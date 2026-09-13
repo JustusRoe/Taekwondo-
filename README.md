@@ -57,6 +57,7 @@ nachgezogen werden – dafür kommt die Seite ohne Build-Schritt aus.
 │   └── video/                   Platzhaltervideos (MP4 + WebM) und Vorschaubilder
 ├── LIVEGANG.md                  Anleitung: von IONOS bis zur erreichbaren Seite
 ├── .htaccess                    Servereinstellungen (HTTPS, Zwischenspeicher)
+├── website/                     Fertig sortiert zum Hochladen (werkzeuge/paket.sh)
 ├── werkzeuge/                   Hilfsskripte, nicht Teil der Website
 ├── videos-roh/                  Ablage der Rohaufnahmen (Inhalt nicht im Repository)
 ├── downloads/                   PDF-Dokumente des Download-Bereichs
@@ -310,33 +311,44 @@ php werkzeuge/livegang.php --entwurf    # wieder sperren
 
 Die Seiten des Mitgliederbereichs behalten ihr `noindex` in jedem Fall.
 
-### Das Auslieferungspaket
+### Der Ordner `website/`
 
 Im Projektordner liegen Tests, Hilfsskripte, Rohaufnahmen und die Entwurfsfassung
-des Mitgliederbereichs – nichts davon gehört auf den Server. `werkzeuge/paket.sh`
-stellt zusammen, was hochgehört, und sortiert es nach Zielort:
-
-```bash
-werkzeuge/paket.sh
-```
+des Mitgliederbereichs – nichts davon gehört auf den Server. `website/` enthält
+genau das, was hochgehört, sortiert nach Zielort:
 
 ```
-auslieferung/
+website/
 ├── LIESMICH.md          was wohin kommt
+├── STAND.txt            Prüfsumme über die Quelldateien
 ├── www/                 → in den öffentlichen Ordner des Hostings
 ├── videos-privat/       → eine Ebene darüber, ausserhalb des Webordners
 └── datenbank/           → schema.sql in phpMyAdmin importieren
 ```
 
-Das Paket ist bewusst nicht eingecheckt: Jede Datei läge sonst zweimal im
-Repository, und eine Textänderung müsste an zwei Stellen nachgezogen werden. Wer es
-ohne Kommandozeile braucht, holt es als ZIP bei GitHub unter *Actions* → oberster
-Lauf → *Artifacts*; die Datei entsteht bei jedem Push
-(`.github/workflows/paket.yml`).
+Der Ordner ist **eingecheckt**, damit man ihn ohne Werkzeuge herunterladen und
+direkt hochladen kann – per `git pull`, über *Code → Download ZIP* oder als
+Artifact aus dem *Actions*-Reiter (`.github/workflows/paket.yml` baut ihn bei
+jedem Push).
 
-Das Skript prüft sich selbst und bricht ab, wenn die Seiten noch auf Entwurf stehen,
-wenn Zugangsdaten oder Testzugänge im Paket auftauchen oder wenn eine Rohaufnahme
-mitgerutscht ist.
+Gebaut wird er von:
+
+```bash
+werkzeuge/paket.sh
+```
+
+**Nach jeder Änderung an der Website neu bauen.** Das ist der Preis dafür, dass er
+eingecheckt ist: Sonst lädt jemand eine alte Fassung hoch und merkt es nicht.
+Dagegen steht in `website/STAND.txt` eine Prüfsumme über die Quelldateien; sie wird
+von `werkzeuge/quellen-pruefsumme.sh` berechnet – dieselbe Liste für beide Seiten,
+damit sie nicht auseinanderlaufen kann – und `php test/check.php` meldet, wenn sie
+nicht mehr passt. Vier Prüfungen decken den Ordner ab: Stand, Vollständigkeit, die
+13 Videos samt Vorschaubildern und die Abwesenheit von `config.php`, Entwurfsseiten
+und Testzugängen.
+
+Das Skript prüft sich zusätzlich selbst und bricht ab, wenn die Seiten noch auf
+Entwurf stehen, wenn Zugangsdaten oder Testzugänge im Paket auftauchen oder wenn
+eine Rohaufnahme mitgerutscht ist.
 
 ## Vorschau im Netz (GitHub Pages)
 
