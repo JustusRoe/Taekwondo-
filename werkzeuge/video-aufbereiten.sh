@@ -42,6 +42,10 @@
 #   pip install imageio-ffmpeg
 set -euo pipefail
 
+# Ordner des Projekts, damit das Skript von ueberall aufgerufen werden
+# kann und werkzeuge/vorschaubild.py trotzdem findet.
+WURZEL="$(cd "$(dirname "$0")/.." && pwd)"
+
 hilfe() {
   sed -n '2,44p' "$0" | sed 's/^# \{0,1\}//'
   exit 1
@@ -143,16 +147,30 @@ aufbereiten() {
 
   # Vorschaubild aus dem ersten Drittel – da steht die Technik meist
   # schon, der Anfang zeigt oft nur das Zugehen.
-  # ffmpeg endet ohne Ausgabedatei mit Rückgabewert 1 – mit "set -o
-  # pipefail" würde das Skript hier abbrechen, obwohl die Zeile nur die
-  # Laufzeit auslesen soll. Deshalb das || true.
-  dauer="$({ "$FF" -hide_banner -i "$quelle" 2>&1 || true; } \
-           | sed -n 's/.*Duration: \([0-9:.]*\).*/\1/p' | head -1)"
-  sek="$(python3 -c "
+  #
+  # Bevorzugt über werkzeuge/vorschaubild.py: Das schneidet um die
+  # Personen herum zu, statt die Halle in ganzer Breite zu zeigen. Ein
+  # Einzelbild über die ganze Breite lässt die beiden klein und je
+  # nach Aufnahme irgendwo im Bild stehen; als Reihe von dreizehn
+  # Kacheln wirkt das unruhig. Fehlen dafür numpy oder opencv, gibt es
+  # das ganze Bild – besser als keins.
+  if python3 -c 'import cv2, numpy' 2> /dev/null \
+     && [ -f "$WURZEL/werkzeuge/vorschaubild.py" ]; then
+    FFMPEG="$FF" python3 "$WURZEL/werkzeuge/vorschaubild.py" "$quelle" \
+      --ziel "$ZIEL/$name.jpg" 2>&1 | sed 's/^/  /'
+  else
+    echo "   Hinweis: numpy/opencv fehlen – Vorschaubild ohne Zuschnitt."
+    # ffmpeg endet ohne Ausgabedatei mit Rückgabewert 1 – mit "set -o
+    # pipefail" würde das Skript hier abbrechen, obwohl die Zeile nur die
+    # Laufzeit auslesen soll. Deshalb das || true.
+    dauer="$({ "$FF" -nostdin -hide_banner -i "$quelle" 2>&1 || true; } \
+             | sed -n 's/.*Duration: \([0-9:.]*\).*/\1/p' | head -1)"
+    sek="$(python3 -c "
 t='$dauer'.split(':')
 print(max(0.5, (int(t[0])*3600 + int(t[1])*60 + float(t[2])) / 3))" )"
-  "$FF" -hide_banner -loglevel error -y -ss "$sek" -i "$quelle" -frames:v 1 \
-    -vf "$filter" -q:v 4 "$ZIEL/$name.jpg"
+    "$FF" -nostdin -hide_banner -loglevel error -y -ss "$sek" -i "$quelle" \
+      -frames:v 1 -vf "$filter" -q:v 4 "$ZIEL/$name.jpg"
+  fi
 
   printf '   %-22s %6s MP4  %6s WebM  %5s Bild\n' "$name" \
     "$(du -h "$ZIEL/$name.mp4" | cut -f1)" \
