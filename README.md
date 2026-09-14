@@ -151,6 +151,35 @@ Abschnitten – so lässt sich das Springen und Spulen ausprobieren, ohne echte 
 veröffentlichen. Sie liegen als MP4 (H.264, das Format für den Echtbetrieb) und
 zusätzlich als WebM vor, damit sie auch in Browsern ohne H.264 abspielen.
 
+### Vorschaubilder
+
+Als Vorschaubild dient das **erste Bild** der Aufnahme: Da stehen sich beide
+gegenüber, bevor die Technik beginnt. Über eine ganze Reihe hinweg sieht das
+gleich aus – die Kacheln bilden damit eine Reihe und zeigen nicht dreizehn
+verschiedene Momente.
+
+Zugeschnitten wird auf die beiden, sonst stehen sie klein in der ganzen Halle.
+Sie zu finden geht nicht über die Farbe: Der weiße Dobok ist so hell wie der
+Hallenboden, eine Bodenlinie so farbig wie ein roter Gürtel. Verlässlich ist,
+dass die Kamera stillsteht – aus fünfzehn Einzelbildern entsteht per Medianwert
+ein Bild der leeren Halle, und der Unterschied dazu zeigt die Personen.
+
+Der Ausschnitt kommt dabei aus allen fünfzehn Bildern zusammen, nicht aus dem
+ersten: Dort stehen beide still, und wer stillsteht, steckt im Hallenbild mit
+drin und wird nicht erkannt – vor allem die Beine. Über die ganze Aufnahme
+bewegt sich dagegen jeder Körperteil irgendwann, und der Ausschnitt schneidet
+keine Füße ab.
+
+```bash
+python3 werkzeuge/vorschaubild.py assets/video/IMG_1255.mov \
+    --ziel assets/video/hanbon-kyorugi-01.jpg
+```
+
+`--bei 0.5` nimmt stattdessen die Mitte der Aufnahme. Zugeschnitten wird immer
+aus dem Original in 1920 × 1080, nicht aus dem fertigen 720p-Video – der engere
+Ausschnitt kostet damit keine Schärfe. `video-aufbereiten.sh` ruft das Werkzeug
+für jedes neue Video selbst auf.
+
 ### Echte Aufnahmen aufbereiten
 
 Handyvideos sind HEVC in 10 Bit mit HLG-Farben – das spielen viele Browser nicht

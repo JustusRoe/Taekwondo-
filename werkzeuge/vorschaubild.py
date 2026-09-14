@@ -5,23 +5,31 @@ Vorschaubild einer Trainingsaufnahme zuschneiden.
     python3 werkzeuge/vorschaubild.py assets/video/IMG_1255.mov \
         --ziel assets/video/hanbon-kyorugi-01.jpg
 
-Das Problem: Ein Einzelbild aus der Mitte des Videos zeigt die Halle in
-ganzer Breite, und die beiden Personen stehen je nach Aufnahme mittig,
-links oder rechts darin – klein, mit viel leerem Boden. Dreizehn solcher
-Bilder nebeneinander wirken unruhig, und man erkennt kaum, was darauf
-passiert.
+Genommen wird das **erste Bild** der Aufnahme: Da stehen sich beide
+gegenüber, bevor die Technik beginnt. Über eine ganze Reihe hinweg sieht
+das gleich aus, und genau das ist der Zweck – die Kacheln sollen eine
+Reihe bilden und nicht dreizehn verschiedene Momente zeigen.
 
-Also muss der Ausschnitt den beiden folgen. Woran erkennt man sie? Nicht
-an der Farbe: Der weiße Dobok ist so hell wie der Hallenboden, und
-Bodenlinien sind so farbig wie ein roter Gürtel. Verlässlich ist etwas
-anderes – die Kamera steht still. Was sich also über die Aufnahme hinweg
-verändert, sind die Personen, und was gleich bleibt, ist die Halle.
+Das Problem ist der Ausschnitt. Ein Einzelbild zeigt die Halle in ganzer
+Breite, und die beiden stehen je nach Aufnahme mittig, links oder rechts
+darin – klein, mit viel leerem Boden. Also muss der Ausschnitt den beiden
+folgen.
 
-Daraus wird ein Bild der leeren Halle: mehrere Einzelbilder über das
-Video verteilt, je Bildpunkt der Mittelwert der Helligkeiten (der
-Medianwert). Weil die beiden sich bewegen, gewinnt an jeder Stelle die
-Halle. Der Unterschied zwischen dem gewählten Einzelbild und diesem
-Hallenbild zeigt dann die Personen, und um die wird zugeschnitten.
+Woran erkennt man sie? Nicht an der Farbe: Der weiße Dobok ist so hell
+wie der Hallenboden, und Bodenlinien sind so farbig wie ein roter Gürtel.
+Verlässlich ist etwas anderes – die Kamera steht still. Was sich über die
+Aufnahme hinweg verändert, sind die Personen, und was gleich bleibt, ist
+die Halle.
+
+Daraus wird ein Bild der leeren Halle: fünfzehn Einzelbilder über das
+Video verteilt, je Bildpunkt der Medianwert. Weil die beiden sich
+bewegen, gewinnt an jeder Stelle die Halle. Der Unterschied dazu zeigt
+die Personen.
+
+Bestimmt wird der Ausschnitt aber nicht aus dem ersten Bild, sondern aus
+allen fünfzehn zusammen – siehe bewegungsraum(). Im ersten Bild stehen
+beide still, und wer stillsteht, steckt im Hallenbild mit drin und wird
+nicht erkannt.
 
 Zugeschnitten wird aus der Originalaufnahme in voller Auflösung, nicht
 aus dem fertigen 720p-Video – so kostet der engere Ausschnitt keine
@@ -104,15 +112,15 @@ def bild_bei(ff, quelle, sekunde, ordner, name):
     return None
 
 
-def hallenbild(ff, quelle, dauer, ordner):
+def analysebilder(ff, quelle, dauer, ordner):
     """
-    Die Halle ohne Personen: Medianwert mehrerer Einzelbilder.
+    Einzelbilder über die Aufnahme verteilt, klein und ohne Farbumrechnung.
 
-    Klein und ohne Farbumrechnung. Beides braucht es hier nicht – gesucht
-    ist nur, wo die Personen stehen, und dafür genügt eine schmale
-    Fassung. Mit voller Auflösung und Tonwertkette dauerte ein Video zwei
-    Minuten. Ein einziger ffmpeg-Aufruf holt jetzt alle Bilder, statt
-    fünfzehnmal neu in die Datei zu springen.
+    Beides braucht es hier nicht – gesucht ist nur, wo die Personen
+    stehen, und dafür genügt eine schmale Fassung. Mit voller Auflösung
+    und Tonwertkette dauerte ein Video zwei Minuten. Ein einziger
+    ffmpeg-Aufruf holt jetzt alle Bilder, statt fünfzehnmal neu in die
+    Datei zu springen.
     """
     muster = os.path.join(ordner, "h%03d.png")
     rate = HALLENBILDER / max(dauer, 0.1)
@@ -122,7 +130,7 @@ def hallenbild(ff, quelle, dauer, ordner):
          "-frames:v", str(HALLENBILDER), muster],
         capture_output=True, text=True, stdin=subprocess.DEVNULL)
     if ergebnis.returncode != 0:
-        return None
+        return []
 
     bilder = []
     for i in range(1, HALLENBILDER + 1):
@@ -131,6 +139,11 @@ def hallenbild(ff, quelle, dauer, ordner):
             b = cv2.imread(pfad)
             if b is not None:
                 bilder.append(b)
+    return bilder
+
+
+def hallenbild(bilder):
+    """Die Halle ohne Personen: Medianwert der Einzelbilder."""
     if len(bilder) < 3:
         return None
     return np.median(np.stack(bilder), axis=0).astype(np.uint8)
@@ -140,6 +153,29 @@ def hochrechnen(kasten, von_breite, nach_breite):
     """Rechteck aus der Analysefassung auf die Größe des Originals."""
     f = nach_breite / von_breite
     return tuple(int(round(w * f)) for w in kasten)
+
+
+def bewegungsraum(bilder, halle):
+    """
+    Der Bereich, in dem sich die beiden während der Aufnahme aufhalten.
+
+    Der Ausschnitt wird nicht aus dem gewählten Einzelbild bestimmt,
+    sondern aus allen. Der Grund liegt am Vorschaubild selbst: Gewünscht
+    ist das erste Bild, und da stehen beide in der Ausgangsstellung
+    still. Wer stillsteht, steckt aber im Bild der leeren Halle mit drin
+    und wird darum nicht erkannt – besonders die Beine, die sich am
+    Anfang gar nicht rühren. Der Ausschnitt schnitt dann Füße ab.
+
+    Über die ganze Aufnahme hinweg bewegt sich dagegen jeder Körperteil
+    irgendwann. Die Summe aller erkannten Rechtecke deckt deshalb
+    zuverlässig ab, wo die beiden stehen und wohin sie treten – Füße
+    und ausgestreckte Beine eingeschlossen.
+    """
+    kaesten = [k for k in (personen_kasten(b, halle) for b in bilder) if k]
+    if not kaesten:
+        return None
+    return (min(k[0] for k in kaesten), min(k[1] for k in kaesten),
+            max(k[2] for k in kaesten), max(k[3] for k in kaesten))
 
 
 def personen_kasten(bild, halle):
@@ -195,11 +231,11 @@ def zuschneiden(bild, kasten):
     hoehe, breite = bild.shape[:2]
     x0, y0, x1, y1 = kasten
 
-    # Unten etwas dazugeben. Die Erkennung vergleicht mit dem Bild der
-    # leeren Halle, und ein Fuß, der die ganze Aufnahme über still steht,
-    # steckt in diesem Hallenbild mit drin – er fehlt dann im erkannten
-    # Rechteck, und der Ausschnitt schneidet ihn ab.
-    y1 = min(hoehe, y1 + int((y1 - y0) * 0.12))
+    # Ein kleiner Zuschlag nach unten. Früher waren es zwölf Prozent, um
+    # stillstehende Füße auszugleichen, die im Bild der leeren Halle
+    # steckten; das erledigt jetzt bewegungsraum(). Geblieben ist etwas
+    # Luft für den Schatten unter den Füßen.
+    y1 = min(hoehe, y1 + int((y1 - y0) * 0.04))
 
     ziel_hoehe = min(hoehe, max(1, int((y1 - y0) / ANTEIL_HOEHE)))
     ziel_breite = int(ziel_hoehe * SEITENVERHAELTNIS)
@@ -232,8 +268,13 @@ def main():
                                 formatter_class=argparse.RawDescriptionHelpFormatter)
     p.add_argument("quelle", help="Originalaufnahme (.mov)")
     p.add_argument("--ziel", required=True, help="Pfad des Vorschaubilds (.jpg)")
-    p.add_argument("--bei", type=float, default=1 / 3,
-                   help="Zeitpunkt als Anteil der Laufzeit (Standard 1/3)")
+    # Das erste Bild: Da stehen sich beide gegenüber, bevor die Technik
+    # beginnt. Über dreizehn Videos hinweg sieht das gleich aus, und
+    # genau das ist der Zweck – die Kacheln sollen eine Reihe bilden und
+    # nicht dreizehn verschiedene Momente zeigen.
+    p.add_argument("--bei", type=float, default=0.0,
+                   help="Zeitpunkt als Anteil der Laufzeit (Standard 0, "
+                        "also das erste Bild)")
     args = p.parse_args()
 
     ff = ffmpeg_pfad()
@@ -246,8 +287,9 @@ def main():
         if bild is None:
             sys.exit(f"FEHLER: Kein Einzelbild aus {args.quelle} zu holen.")
 
-        halle = hallenbild(ff, args.quelle, dauer, ordner)
-        kasten = personen_kasten(bild, halle) if halle is not None else None
+        bilder = analysebilder(ff, args.quelle, dauer, ordner)
+        halle = hallenbild(bilder)
+        kasten = bewegungsraum(bilder, halle) if halle is not None else None
         if kasten is not None:
             kasten = hochrechnen(kasten, halle.shape[1], bild.shape[1])
 
@@ -257,7 +299,7 @@ def main():
         ergebnis = cv2.resize(bild, (BREITE, HOEHE), interpolation=cv2.INTER_AREA)
     else:
         x0, y0, x1, y1 = kasten
-        print(f"   {os.path.basename(args.quelle)}: Personen bei "
+        print(f"   {os.path.basename(args.quelle)}: Bewegungsraum "
               f"x {x0}–{x1}, y {y0}–{y1} von {bild.shape[1]}×{bild.shape[0]}")
         ergebnis = zuschneiden(bild, kasten)
 
